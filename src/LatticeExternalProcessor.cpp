@@ -27,4 +27,3 @@ void LatticeProcessor::process(float** buffer, int numChannels, int blockSize, s
         }
     }
 }
-
