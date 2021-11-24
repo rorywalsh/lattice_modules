@@ -9,7 +9,7 @@ template <typename... Types>
 void ignoreParameters (Types&&...) noexcept {}
 
 /* parameter structure - takes parameter name and
- a vector holding [min, max, increment, defaultValue]*/
+ a vector holding [min, max, increment, defaultValue, skew]*/
 struct ExternalParameter
 {
     std::vector<float> range;
@@ -27,7 +27,7 @@ public:
     LatticeProcessor(){};
     
     /* Called by the host to create parameters. Returns a vector of ExternalPatamers */
-    static std::vector<ExternalParameter> createParameters();
+    void createParameters(std::vector<ExternalParameter> &parameters);
     /* This function is called by the host before playback/performance */
     void prepareProcessor(int sr, int block);
     /* Main processing function - paramValues is a list of parameter values passed from the host in
@@ -36,3 +36,18 @@ public:
 };
 
 
+/* wrappers for class members - do not edit */
+extern "C" void createParameters(std::vector<ExternalParameter> &parameters){
+    struct LatticeProcessor p;
+    p.createParameters(parameters);
+}
+
+extern "C" void prepareProcessor(int sr, int bs){
+    struct LatticeProcessor p;
+    p.prepareProcessor(sr, bs);
+}
+
+extern "C" void process(float** buffer, int channels, int blockSize, std::vector<std::atomic<float>*> params){
+    struct LatticeProcessor p;
+    p.process(buffer, channels, blockSize, params);
+}
