@@ -7,7 +7,6 @@ std::vector<ExternalParameter> LatticeProcessor::createParameters()
     std::vector<ExternalParameter> parameters;
     ExternalParameter param { "Gain", {0, 1, 0.001, 001, 1}}; // { min, max, increment, defaultValue, skew }
     parameters.push_back(param);
-    std::cout << parameters.size();
     return parameters;
 }
 
@@ -29,4 +28,20 @@ void LatticeProcessor::process(float** buffer, int numChannels, int blockSize, s
             buffer[chan][i] = buffer[chan][i] * 0;//gain;
         }
     }
+}
+
+/* wrappers for class members - do not edit */
+extern "C" std::vector<ExternalParameter> createParameters(){
+    struct LatticeProcessor p;
+    p.createParameters();
+}
+
+extern "C" void prepareProcessor(int sr, int bs){
+    struct LatticeProcessor p;
+    p.prepareProcessor(sr, bs);
+}
+
+extern "C" void process(float** buffer, int channels, int blockSize, std::vector<std::atomic<float>*> params){
+    struct LatticeProcessor p;
+    p.process(buffer, channels, blockSize, params);
 }

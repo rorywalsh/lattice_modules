@@ -27,7 +27,7 @@ public:
     LatticeProcessor(){};
     
     /* Called by the host to create parameters. Returns a vector of ExternalPatamers */
-    std::vector<ExternalParameter> createParameters();
+    static std::vector<ExternalParameter> createParameters();
     /* This function is called by the host before playback/performance */
     void prepareProcessor(int sr, int block);
     /* Main processing function - paramValues is a list of parameter values passed from the host in
@@ -35,18 +35,4 @@ public:
     void process(float** buffer, int numChannels, int blockSize, std::vector<std::atomic<float>*> paramValues);
 };
 
-/* wrappers for class members - do not edit */
-extern "C" std::vector<ExternalParameter> createParameters(){
-    struct LatticeProcessor p;
-    p.createParameters();
-}
 
-extern "C" void prepareProcessor(int sr, int bs){
-    struct LatticeProcessor p;
-    p.prepareProcessor(sr, bs);
-}
-
-extern "C" void process(float** buffer, int channels, int blockSize, std::vector<std::atomic<float>*> params){
-    struct LatticeProcessor p;
-    p.process(buffer, channels, blockSize, params);
-}
