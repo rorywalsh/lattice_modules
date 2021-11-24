@@ -25,7 +25,7 @@ void LatticeProcessor::process(float** buffer, int numChannels, int blockSize, s
         for ( int chan = 0 ; chan < numChannels; chan++)
         {
             float gain = (*paramValues[0]);
-            buffer[chan][i] = buffer[chan][i] * 0;//gain;
+            buffer[chan][i] = buffer[chan][i] * gain;
         }
     }
 }
