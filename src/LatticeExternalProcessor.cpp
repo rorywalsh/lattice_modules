@@ -1,6 +1,9 @@
 
 #include "LatticeExternalProcessor.h"
 
+// define indices for parameters
+#define GAIN 0
+
 /*  Called by the host to create set of parameters */
 void LatticeProcessor::createParameters(std::vector<ExternalParameter> &parameters)
 {
@@ -22,8 +25,8 @@ void LatticeProcessor::process(float** buffer, int numChannels, int blockSize, s
     {
         for ( int chan = 0 ; chan < numChannels; chan++)
         {
-            float gain = (*paramValues[0]);
-            buffer[chan][i] = buffer[chan][i] * gain;
+            buffer[chan][i] = buffer[chan][i] * (paramValues[GAIN]->load());
         }
     }
 }
+
