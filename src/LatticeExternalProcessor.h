@@ -20,35 +20,21 @@ struct ExternalParameter
 
 
 
-/* External processing class. The name of the node as it appears in the host is set by the library name.*/
-class LatticeProcessor
+/* External processing sub-class */
+class ExternalProcessor
 {
 public:
-    LatticeProcessor(){};
+    ExternalProcessor(){};
     
     /* Called by the host to create parameters. Returns a vector of ExternalPatamers */
-    void createParameters(std::vector<ExternalParameter> &parameters);
+    virtual void createParameters(std::vector<ExternalParameter> &parameters) = 0;
     /* This function is called by the host before playback/performance */
-    void prepareProcessor(int sr, int block);
+    virtual void prepareProcessor(int sr, int block) = 0;
     /* Main processing function - paramValues is a list of parameter values passed from the host in
      order of their creation */
-    void process(float** buffer, int numChannels, int blockSize, std::vector<std::atomic<float>*> paramValues);
+    virtual void process(float** buffer, int numChannels, int blockSize, std::vector<std::atomic<float>*> paramValues) = 0;
     
 };
 
-
-/* wrappers for class members - do not edit */
-extern "C" void createParameters(std::vector<ExternalParameter> &parameters){
-    struct LatticeProcessor p;
-    p.createParameters(parameters);
-}
-
-extern "C" void prepareProcessor(int sr, int bs){
-    struct LatticeProcessor p;
-    p.prepareProcessor(sr, bs);
-}
-
-extern "C" void process(float** buffer, int channels, int blockSize, std::vector<std::atomic<float>*> params){
-    struct LatticeProcessor p;
-    p.process(buffer, channels, blockSize, params);
-}
+typedef ExternalProcessor* create_t();
+typedef void destroy_t(ExternalProcessor*);
