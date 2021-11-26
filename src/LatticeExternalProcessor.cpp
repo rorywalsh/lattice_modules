@@ -28,7 +28,7 @@ public:
         {
             for ( int chan = 0 ; chan < numChannels; chan++)
             {
-                buffer[chan][i] = buffer[chan][i] * (paramValues[GAIN]->load());
+                buffer[chan][i] = buffer[chan][i] * paramMap.at("Gain")->load();
             }
         }
     }

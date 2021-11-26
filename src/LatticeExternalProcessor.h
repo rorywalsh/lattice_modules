@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <map>
 
 
 template <typename... Types>
@@ -23,6 +24,9 @@ struct ExternalParameter
 /* External processing sub-class */
 class ExternalProcessor
 {
+    
+    
+    
 public:
     ExternalProcessor(){};
     
@@ -33,6 +37,14 @@ public:
     /* Main processing function - paramValues is a list of parameter values passed from the host in
      order of their creation */
     virtual void process(float** buffer, int numChannels, int blockSize, std::vector<std::atomic<float>*> paramValues) = 0;
+    
+    std::map<std::string, std::atomic<float>*> paramMap;
+    virtual void mapParameters(std::vector<std::atomic<float>*> paramValues)
+    {
+        paramMap["Gain"] = paramValues[0];
+    }
+    
+
     
 };
 
