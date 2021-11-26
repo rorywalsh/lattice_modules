@@ -25,7 +25,7 @@ struct ExternalParameter
 class ExternalProcessor
 {
     
-    
+    std::map<std::string, std::atomic<float>*> paramMap;
     
 public:
     ExternalProcessor(){};
@@ -38,7 +38,14 @@ public:
      order of their creation */
     virtual void process(float** buffer, int numChannels, int blockSize, std::vector<std::atomic<float>*> paramValues) = 0;
     
-    std::map<std::string, std::atomic<float>*> paramMap;
+    /* Used to query the current value of a parameter - the names correspond to the names used
+        in the createParameters() function */
+    float getParameter(std::string name)
+    {
+        return paramMap.at(name)->load();
+    }
+    
+    /* Called by the host to fill paramValues*/
     virtual void mapParameters(std::vector<std::atomic<float>*> paramValues)
     {
         paramMap["Gain"] = paramValues[0];
