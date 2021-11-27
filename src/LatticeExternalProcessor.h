@@ -45,14 +45,35 @@ public:
         return paramMap.at(name)->load();
     }
     
+    /* called by the host when a note is started */
+    void startNote(int midiNoteNumber, float velocity)
+    {
+        
+    }
+    
+    /* called by the host when a note is stoped */
+    void stopNote (float velocity)
+    {
+        
+    }
+    
+    double getMidiNoteInHertz (const int noteNumber, const double Atuning)
+    {
+        return Atuning * std::pow (2.0, (noteNumber - 69) / 12.0);
+    }
+    
     /* Called by the host to fill paramValues*/
     virtual void mapParameters(std::vector<std::atomic<float>*> paramValues)
     {
         paramMap["Gain"] = paramValues[0];
     }
     
+    void setMidiNoteNumber(int noteNumber)  { midiNoteNumber = noteNumber;      }
+    int getMidiNoteNumber()                 { return midiNoteNumber;            }
 
     
+private:
+    int midiNoteNumber = 0;
 };
 
 typedef ExternalProcessor* create_t();
