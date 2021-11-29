@@ -30,7 +30,7 @@ class ExternalProcessor
     std::map<std::string, std::atomic<float>*> paramMap;
     
 public:
-    ExternalProcessor(){};
+    ExternalProcessor(){}
     
     /* Called by the host to create parameters. Returns a vector of ExternalPatamers */
     virtual void createParameters(std::vector<ExternalParameter> &parameters) = 0;
@@ -41,15 +41,30 @@ public:
     virtual void process(float** buffer, int numChannels, int blockSize, std::vector<std::atomic<float>*> paramValues) = 0;
     /* Called by the host when a paremeter changes */
     virtual void hostParameterChanged(const std::string& parameterID, float newValue) = 0;
+    
     /* Used to query the current value of a parameter - the names correspond to the names used
         in the createParameters() function */
-    float getParameter(std::string name)    {        return paramMap.at(name)->load();    }
+    float getParameter(std::string name)
+    {
+        return paramMap.at(name)->load();
+    }
+    
     /* called by the host when a note is started */
-    virtual void startNote(int midiNoteNumber, float velocity)    {            }
+    virtual void startNote(int midiNoteNumber, float velocity)
+    {
+        
+    }
+    
     /* called by the host when a note is stoped */
-    virtual void stopNote (float velocity)    {            }
-    /* Used to get frequency from Midi note */
-    double getMidiNoteInHertz (const int noteNumber, const double Atuning)    {        return Atuning * std::pow (2.0, (noteNumber - 69) / 12.0);    }
+    virtual void stopNote (float velocity)
+    {
+        
+    }
+    
+    double getMidiNoteInHertz (const int noteNumber, const double Atuning)
+    {
+        return Atuning * std::pow (2.0, (noteNumber - 69) / 12.0);
+    }
     
     /* Called by the host to fill paramValues*/
     virtual void mapParameters(std::vector<std::atomic<float>*> paramValues, std::vector<std::string> paramNames)
@@ -58,14 +73,14 @@ public:
             paramMap[paramNames[i]] = paramValues[0];
     }
     
-    /* Called by host when a Midi note is triggered */
     void setMidiNoteNumber(int noteNumber)  { midiNoteNumber = noteNumber;      }
-    /* Used to query current Midi note */
     int getMidiNoteNumber()                 { return midiNoteNumber;            }
 
     
 private:
     int midiNoteNumber = 0;
+    int numInChannels = 2;
+    int numOutChannels = 2;
 };
 
 typedef ExternalProcessor* create_t();

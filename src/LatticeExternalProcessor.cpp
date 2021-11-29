@@ -14,6 +14,12 @@ public:
         parameters.push_back(param);
     }
     
+    /*  This function is called by the host whenever a parameter changes */
+    void hostParameterChanged(const std::string& parameterID, float newValue)
+    {
+        
+    }
+    
     /*  This function is called by the host before playback/performance */
     void prepareProcessor(int sr, int block) override
     {
