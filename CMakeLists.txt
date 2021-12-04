@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 project (LatticeExternal)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set(SOURCES src/LatticeExternalProcessor.cpp src/LatticeExternalProcessor.h)
 set(SOURCES_STANDALONE src/LatticeExternalTestApp.cpp)
@@ -13,9 +12,11 @@ else()
 endif()
 
 set(STANDALONE "LatticeTestApp")
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/src PREFIX "Source" FILES ${SOURCES} ${SOURCES_STANDALONE})
+source_group(TREE ${CMAKE_SOURCE_DIR}/src PREFIX "Source" FILES ${SOURCES} ${SOURCES_STANDALONE})
 
 add_compile_options ( -fdeclspec -fms-extensions)
+
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 # Create standalone test application
 add_executable(${STANDALONE} ${SOURCES_STANDALONE})
@@ -28,5 +29,7 @@ target_link_libraries(${STANDALONE} ${LIB_SNDFILE})
 # Create plugin module
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+
+add_subdirectory(${CMAKE_SOURCE_DIR}/delay)
 
 
