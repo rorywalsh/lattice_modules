@@ -42,6 +42,20 @@ public:
     /* Called by the host when a paremeter changes */
     virtual void hostParameterChanged(const std::string& parameterID, float newValue) = 0;
     
+    /* called by host to register parameter callback function */
+    void registerCallback(const std::function<void(const std::string&, float)> &func)
+    {
+        paramCallback = func;
+    }
+    
+    /* Call this to inform the host that a parameter has been updated.
+       Be careful that you don't call this too often! */
+    void updateParameter(const std::string& parameterID, float newValue)
+    {
+        if(paramCallback != nullptr)
+            paramCallback(parameterID, newValue);
+    }
+    
     /* Used to query the current value of a parameter - the names correspond to the names used
         in the createParameters() function */
     float getParameter(std::string name)
@@ -81,6 +95,7 @@ private:
     int midiNoteNumber = 0;
     int numInChannels = 2;
     int numOutChannels = 2;
+    std::function<void(const std::string&, float)> paramCallback;
 };
 
 typedef ExternalProcessor* create_t();

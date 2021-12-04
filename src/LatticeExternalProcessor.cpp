@@ -1,16 +1,17 @@
 
 #include "LatticeExternalProcessor.h"
 
-// define indices for parameters
-#define GAIN 0
-//
+#include <iterator>
 
 class Processor : public ExternalProcessor
 {
 public:
+    Processor()
+    {}
+    
     void createParameters(std::vector<ExternalParameter> &parameters) override
     {
-        ExternalParameter param { "Gain", {0, 1, 0.001, 0.001, 1}}; // { min, max, increment, defaultValue, skew }
+        ExternalParameter param{ "Frequency", {0, 22050, 10, 1, .5}}; // { min, max, increment, defaultValue, skew }
         parameters.push_back(param);
     }
     
@@ -26,7 +27,13 @@ public:
         ignoreParameters(sr, block);
     }
     
-    /*  Main processing function called continously by the host on the audio thread.
+    
+    void triggerParameterUpdate(const std::string& parameterID, float newValue)
+    {
+        updateParameter(parameterID, newValue);
+    }
+    
+    /*  Main processing function called continuously by the host on the audio thread.
         paramValues is a list of parameter values passed from the host in order of their creation */
     void process(float** buffer, int numChannels, int blockSize, std::vector<std::atomic<float>*> paramValues) override
     {
@@ -34,10 +41,13 @@ public:
         {
             for ( int chan = 0 ; chan < numChannels; chan++)
             {
-                buffer[chan][i] = buffer[chan][i] * getParameter("Gain");
+                buffer[chan][i] = buffer[chan][i];
             }
         }
     }
+    
+private:
+ 
 };
 
 // the class factories
