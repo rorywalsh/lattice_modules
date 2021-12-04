@@ -11,7 +11,7 @@ public:
     
     void createParameters(std::vector<ExternalParameter> &parameters) override
     {
-        ExternalParameter param{ "Frequency", {0, 22050, 10, 1, .5}}; // { min, max, increment, defaultValue, skew }
+        ExternalParameter param{ "Gain", {0, 1, .1, 1, .5}}; // { min, max, increment, defaultValue, skew }
         parameters.push_back(param);
     }
     
@@ -41,7 +41,7 @@ public:
         {
             for ( int chan = 0 ; chan < numChannels; chan++)
             {
-                buffer[chan][i] = buffer[chan][i];
+                buffer[chan][i] = buffer[chan][i] * getParameter("Gain");                
             }
         }
     }
@@ -52,5 +52,5 @@ private:
 
 // the class factories
 extern "C" ExternalProcessor* create(){             return new Processor;         }
-extern "C" void destroy(ExternalProcessor* p){      delete p;                       }
+extern "C" void destroy(ExternalProcessor* p){      delete p;                     }
 
