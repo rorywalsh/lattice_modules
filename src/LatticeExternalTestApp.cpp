@@ -6,24 +6,52 @@
 #include <dlfcn.h>
 #endif
 
-
-struct Range{
-    Range(float mi, float ma, float val):min(mi), max(ma), value(val){}
-    
-    float getRandomValue()
+//==================================================================
+// Simple class for generating random parameters
+// =================================================================
+struct RandomParameter{
+    int min = 0;
+    int max = 0;
+    float prevSample = 0;
+    std::vector<float> table;
+    RandomParameter(float mi, float ma)
+    :min(mi), max(ma)
     {
-        return min + (float(std::rand())/float(RAND_MAX))*max-min;
+        table.resize(65536);
+        std::vector<int> frequencies(10);
+        for (int i = 0 ; i < frequencies.size() ; i++){
+            frequencies[i] = 1 + float(std::rand())/float(RAND_MAX) * 5;
+        }
+        
+        for (int i = 0; i < table.size(); i++)
+        {
+            for (int y = 0; y < frequencies.size(); y++) {
+                auto freq = frequencies[y];
+                float t = sin(2*M_PI*freq*((float)i/(float)table.size()));
+                table[i] += t / frequencies.size();
+            }
+        }
     }
-    float min, max;
-    float value = 0;
+    
+    float getValue(int index)
+    {
+        int i = index % table.size();
+        return min + abs(table[index]) * abs(max-min);
+    }
 };
 
+//==================================================================
+// Simple command line parser
+// =================================================================
 bool cmdOptionExists(const std::string& commandLine, const std::string& option)
 {
     auto found = commandLine.find(option);
     return found != -1 ? true : false;
 }
 
+//==================================================================
+// Main test application.
+// =================================================================
 
 int main(int argc, const char **argv)
 {
@@ -43,7 +71,7 @@ int main(int argc, const char **argv)
     ExternalProcessor* extProc;
     SF_INFO sfinfo;
     SNDFILE *fpin, *fpout;
-    int bufferSize = 22050;
+    int bufferSize = 10;
     std::filesystem::path moduleFile = argv[1];
     std::filesystem::path inFile = argv[2];
     std::filesystem::path outFile = argv[3];
@@ -69,14 +97,14 @@ int main(int argc, const char **argv)
     std::vector<ExternalParameter> parameters;
     extProc->createParameters(parameters);
     std::vector<std::string> paramNames;
-    std::vector<Range> paramRanges;
+    std::vector<RandomParameter> randomParameters;
     for ( auto p : parameters)
     {
         if(p.range.size()!=5)
             std::cout << "Range parameters are not set correctly for " << std::filesystem::absolute(inFile).u8string();
 
         paramNames.push_back(p.parameterName);
-        paramRanges.push_back(Range(p.range[0], p.range[1], p.range[2]));
+        randomParameters.push_back(RandomParameter(p.range[0], p.range[1]));
         std::atomic<float> attomicParam( p.range[2] );
         paramValues.push_back(&attomicParam);
     }
@@ -88,16 +116,19 @@ int main(int argc, const char **argv)
     fpout = sf_open(std::filesystem::absolute(outFile).u8string().c_str(), SFM_WRITE, &sfinfo);
     
     int n = 0;
+    int pIndex = 0;
     float windspeed = 0;
     if(sfinfo.channels <= 2)
     {
         std::vector<float> buffer(bufferSize);
         do {
-
-            for(int i = 0 ; i < paramValues.size() ; i++)
+            if(randomiseValues)
             {
-                std::atomic<float> value( paramRanges[i].getRandomValue() );
-                *paramValues[i] = value.load();
+                for(int i = 0 ; i < paramValues.size() ; i++)
+                {
+                    std::atomic<float> value = randomParameters[i].getValue(pIndex++);
+                    *paramValues[i] = value.load();
+                }
             }
             n = sf_read_float(fpin, buffer.data(), bufferSize);
             auto d = buffer.data();
