@@ -17,6 +17,7 @@ source_group(TREE ${CMAKE_SOURCE_DIR}/src PREFIX "Source" FILES ${SOURCES} ${SOU
 add_compile_options ( -fdeclspec -fms-extensions)
 
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 # Create standalone test application
 add_executable(${STANDALONE} ${SOURCES_STANDALONE})
@@ -26,10 +27,13 @@ include_directories("/Volumes/SSD_Drive/Mac/libsndfile/build/include")
 set(LIB_SNDFILE "/Volumes/SSD_Drive/Mac/libsndfile/build/libsndfile.a")
 target_link_libraries(${STANDALONE} ${LIB_SNDFILE})
 
+include_directories("${CMAKE_SOURCE_DIR}/aurora/include")
+
 # Create plugin module
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
-add_subdirectory(${CMAKE_SOURCE_DIR}/delay)
+add_subdirectory(${CMAKE_SOURCE_DIR}/gain)
+add_subdirectory(${CMAKE_SOURCE_DIR}/simple_synth)
 
 

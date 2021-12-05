@@ -18,12 +18,17 @@ class SimpleSynthProcessor : public ExternalProcessor
         
         
         const std::vector<float> &operator()(float a, float f, bool gate) {
-            
             return env(osc(a, f), gate);
         }
         
+        void setAttack(float value)     {    att = value;           }
+        void setDecay(float value)      {    dec = value;           }
+        void setSustain(float value)    {    sus = value;           }
+        void setRelease(float value)    {    env.release(value);    }
+        
+
     private:
-        float att, dec, sus;
+        float att, dec, sus, rel;
         Aurora::TableSet<float> sawWave;
         Aurora::TableSet<float> squareWave;
         Aurora::TableSet<float> triangleWave;

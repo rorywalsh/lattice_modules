@@ -4,7 +4,7 @@
 
 
 SimpleSynthProcessor::Synth::Synth(float rt, float sr)
-: att(0.1f), dec(0.3f), sus(0.7f),
+: att(0.1f), dec(0.3f), sus(0.7f), rel(rt),
 squareWave(Aurora::SQUARE),
 triangleWave(Aurora::TRIANGLE),
 sawWave(Aurora::SAW),
@@ -57,8 +57,23 @@ void SimpleSynthProcessor::hostParameterChanged(const std::string& parameterID, 
     if(parameterID == "Wave")
     {
         synth.setWaveform(int(newValue));
-        synth.
     }
+    else if(parameterID == "Attack")
+    {
+        synth.setAttack(newValue);
+    }
+    else if(parameterID == "Decay")
+    {
+        synth.setDecay(newValue);
+    }
+    else if(parameterID == "Sustain")
+    {
+        synth.setSustain(newValue);
+    }
+    else if(parameterID == "Release")
+    {
+        synth.setRelease(newValue);
+    }    
 }
 
 void SimpleSynthProcessor::prepareProcessor(int sr, int block)
