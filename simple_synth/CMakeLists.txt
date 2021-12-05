@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.15)
-project (DelayExternal)
+project (SimpleSynth)
 
 include_directories("../src/")
 
-set(SOURCE DelayProcessor.cpp)
+set(SOURCE SimpleSynthProcessor.cpp SimpleSynthProcessor.h)
 
 if(MSVC)
     set(PLATFORM "Windows")
