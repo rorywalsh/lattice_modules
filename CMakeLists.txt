@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.15)
-project (LatticeExternal)
+project (LatticeNodeCLI)
 
 
-set(SOURCES src/LatticeExternalProcessor.cpp src/LatticeExternalProcessor.h)
+set(SOURCES src/LatticeExternalProcessor.h)
 set(SOURCES_STANDALONE src/LatticeExternalTestApp.cpp)
 
 if(MSVC)
@@ -20,18 +20,15 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 # Create standalone test application
-add_executable(${STANDALONE} ${SOURCES_STANDALONE})
-target_compile_features(${STANDALONE} PRIVATE cxx_std_17)
-target_compile_options(${STANDALONE} PRIVATE -D${PLATFORM})
+add_executable(${PROJECT_NAME} ${SOURCES_STANDALONE})
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+target_compile_options(${PROJECT_NAME} PRIVATE -D${PLATFORM})
 include_directories("/Volumes/SSD_Drive/Mac/libsndfile/build/include")
 set(LIB_SNDFILE "/Volumes/SSD_Drive/Mac/libsndfile/build/libsndfile.a")
-target_link_libraries(${STANDALONE} ${LIB_SNDFILE})
+target_link_libraries(${PROJECT_NAME} ${LIB_SNDFILE})
 
 include_directories("${CMAKE_SOURCE_DIR}/aurora/include")
 
-# Create plugin module
-add_library(${PROJECT_NAME} SHARED ${SOURCES})
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/gain)
 add_subdirectory(${CMAKE_SOURCE_DIR}/simple_synth)
