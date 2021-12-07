@@ -3,7 +3,7 @@ project (LatticeNodeCLI)
 
 
 set(SOURCES src/LatticeExternalProcessor.h)
-set(SOURCES_STANDALONE src/LatticeExternalTestApp.cpp)
+set(SOURCES_STANDALONE src/LatticeExternalTestApp.cpp src/LatticeExternalProcessor.h)
 
 if(MSVC)
     set(PLATFORM "Windows")
