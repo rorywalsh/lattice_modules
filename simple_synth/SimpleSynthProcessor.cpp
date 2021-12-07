@@ -43,6 +43,14 @@ SimpleSynthProcessor::SimpleSynthProcessor()
     
 }
 
+void SimpleSynthProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+{
+    inputs.push_back("Input 1");
+    inputs.push_back("Input 2");
+    outputs.push_back("Output 1");
+    outputs.push_back("Output 2");
+}
+
 void SimpleSynthProcessor::createParameters(std::vector<ExternalParameter> &parameters)
 {
     parameters.push_back({"Attack", {0, 1, 0.001, 0.001, 1}});
@@ -76,17 +84,18 @@ void SimpleSynthProcessor::hostParameterChanged(const std::string& parameterID, 
     }    
 }
 
-void SimpleSynthProcessor::prepareProcessor(int sr, int block)
+void SimpleSynthProcessor::prepareProcessor(int /* sr */, int /* block */)
 {
-    ignoreParameters(sr, block);
+
 }
 
-void SimpleSynthProcessor::startNote(int midiNoteNumber, float velocity)
+void SimpleSynthProcessor::startNote(int midiNoteNumber, float /* velocity */)
 {
+    setMidiNoteNumber(midiNoteNumber);
     isNoteOn = true;
 }
 
-void SimpleSynthProcessor::stopNote (float velocity)
+void SimpleSynthProcessor::stopNote (float /* velocity */)
 {
     isNoteOn = false;
 }
@@ -104,9 +113,11 @@ void SimpleSynthProcessor::process(float** buffer, int numChannels, int blockSiz
     for(int i = 0; i < blockSize ; i++)
       for(int chan = 0 ;  chan < numChannels; chan++)
           buffer[chan][i] = out[i];
+    
+    
 }
 
 // the class factories
-extern "C" ExternalProcessor* create(){             return new SimpleSynthProcessor;         }
-extern "C" void destroy(ExternalProcessor* p){      delete p;                     }
+extern "C" LatticeNodeProcessor* create(){     return new SimpleSynthProcessor;         }
+extern "C" void destroy(LatticeNodeProcessor* p){      delete p;                     }
 

@@ -1,11 +1,11 @@
 #pragma once
-#include "LatticeExternalProcessor.h"
+#include "LatticeNodeProcessor.h"
 #include "../../aurora/include/BlOsc.h"
 #include "../../aurora/include/Env.h"
 
 #include <iterator>
 
-class SimpleSynthProcessor : public ExternalProcessor
+class SimpleSynthProcessor : public LatticeNodeProcessor
 {
     /* Basic synth class thata contains Aurora::Env, Aurora::BlOsc,
        and Aurora::TableSet objects */
@@ -39,6 +39,8 @@ class SimpleSynthProcessor : public ExternalProcessor
 public:
     SimpleSynthProcessor();
     
+    void createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs);
+    
     /* This function is called by he host to populate the parameter vector */
     void createParameters(std::vector<ExternalParameter> &parameters) override;
     
@@ -60,6 +62,16 @@ public:
     /*  Main processing function called continuously by the host on the audio thread.
         paramValues is a list of parameter values passed from the host in order of their creation */
     void process(float** buffer, int numChannels, int blockSize, std::vector<std::atomic<float>*> paramValues) override;
+    
+    void createDescription(std::string& description) override
+    {
+        description = "(selectable waveform and ADSR)";
+    }
+    
+    SimpleSynthProcessor* Clone() override
+    {
+        return new SimpleSynthProcessor(*this);
+    }
     
 private:
     SimpleSynthProcessor::Synth synth;

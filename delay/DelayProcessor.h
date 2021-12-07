@@ -1,12 +1,14 @@
 #pragma once
-#include "LatticeExternalProcessor.h"
+#include "LatticeNodeProcessor.h"
 #include "Del.h"
 #include <iterator>
 
-class DelayProcessor : public ExternalProcessor
+class DelayProcessor : public LatticeNodeProcessor
 {
 public:
     DelayProcessor();
+    
+    void createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs);
     
     /* This function is called by he host to populate the parameter vector */
     void createParameters(std::vector<ExternalParameter> &parameters) override;
@@ -24,6 +26,15 @@ public:
         paramValues is a list of parameter values passed from the host in order of their creation */
     void process(float** buffer, int numChannels, int blockSize, std::vector<std::atomic<float>*> paramValues) override;
     
+    DelayProcessor* Clone() override
+    {
+        return new DelayProcessor(*this);
+    }
+    
+    void createDescription(std::string& description) override
+    {
+        description = "(variable delay with feedback)";
+    }
 private:
     Aurora::Del<float> delayL;
     Aurora::Del<float> delayR;
