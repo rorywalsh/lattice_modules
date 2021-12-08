@@ -1,9 +1,9 @@
 #pragma once
-#include "LatticeNodeProcessor.h"
+#include "LatticeProcessorModule.h"
 #include "Del.h"
 #include <iterator>
 
-class DelayProcessor : public LatticeNodeProcessor
+class DelayProcessor : public LatticeProcessorModule
 {
 public:
     DelayProcessor();

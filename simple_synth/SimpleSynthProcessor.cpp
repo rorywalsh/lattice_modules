@@ -89,7 +89,7 @@ void SimpleSynthProcessor::prepareProcessor(int /* sr */, int /* block */)
 
 }
 
-void SimpleSynthProcessor::startNote(int midiNoteNumber, float /* velocity */)
+void SimpleSynthProcessor::startNote(int midiNoteNumber, float/* velocity */)
 {
     setMidiNoteNumber(midiNoteNumber);
     isNoteOn = true;
@@ -118,6 +118,6 @@ void SimpleSynthProcessor::process(float** buffer, int numChannels, int blockSiz
 }
 
 // the class factories
-extern "C" LatticeNodeProcessor* create(){     return new SimpleSynthProcessor;         }
-extern "C" void destroy(LatticeNodeProcessor* p){      delete p;                     }
+extern "C" LatticeProcessorModule* create(){     return new SimpleSynthProcessor;         }
+extern "C" void destroy(LatticeProcessorModule* p){      delete p;                     }
 

@@ -60,6 +60,6 @@ void DelayProcessor::process(float** buffer, int numChannels, int blockSize, std
 }
 
 // the class factories
-extern "C" LatticeNodeProcessor* create(){             return new DelayProcessor;         }
-extern "C" void destroy(LatticeNodeProcessor* p){      delete p;                     }
+extern "C" LatticeProcessorModule* create(){             return new DelayProcessor;         }
+extern "C" void destroy(LatticeProcessorModule* p){      delete p;                     }
 

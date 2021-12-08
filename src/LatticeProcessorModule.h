@@ -19,13 +19,13 @@ struct ExternalParameter
 
 
 /* External processing sub-class */
-class LatticeNodeProcessor
+class LatticeProcessorModule
 {
 
 	std::map<std::string, std::atomic<float>*> paramMap;
 
 public:
-	LatticeNodeProcessor() {}
+	LatticeProcessorModule() {}
 
 	/* Called by the host to create channel layout. Override and setup inputs/outputs */
 	virtual void createChannelLayout(std::vector<std::string>& inputs, std::vector<std::string>& outputs)
@@ -108,5 +108,5 @@ private:
 	std::function<void(const std::string&, float)> paramCallback;
 };
 
-typedef LatticeNodeProcessor* create_t();
-typedef void destroy_t(LatticeNodeProcessor*);
+typedef LatticeProcessorModule* create_t();
+typedef void destroy_t(LatticeProcessorModule*);

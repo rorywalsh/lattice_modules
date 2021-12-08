@@ -1,6 +1,6 @@
 #include "sndfile.h"
 #include <filesystem>
-#include "LatticeNodeProcessor.h"
+#include "LatticeProcessorModule.h"
 #include <cstdlib>
 #ifdef MacOS
 #include <dlfcn.h>
@@ -68,7 +68,7 @@ int main(int argc, const char **argv)
         std::cout << "Randomising default values...";
     }
     
-    LatticeNodeProcessor* extProc;
+    LatticeProcessorModule* extProc;
     SF_INFO sfinfo;
     SNDFILE *fpin, *fpout;
     int bufferSize = 10;

@@ -1,11 +1,11 @@
 #pragma once
-#include "LatticeNodeProcessor.h"
+#include "LatticeProcessorModule.h"
 #include "../../aurora/include/BlOsc.h"
 #include "../../aurora/include/Env.h"
 
 #include <iterator>
 
-class SimpleSynthProcessor : public LatticeNodeProcessor
+class SimpleSynthProcessor : public LatticeProcessorModule
 {
     /* Basic synth class thata contains Aurora::Env, Aurora::BlOsc,
        and Aurora::TableSet objects */

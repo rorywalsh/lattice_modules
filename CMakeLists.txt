@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.15)
 project (LatticeNodeCLI)
 
 
-set(SOURCES src/LatticeNodeProcessor.h)
-set(SOURCES_STANDALONE src/LatticeExternalTestApp.cpp src/LatticeNodeProcessor.h)
+set(SOURCES src/LatticeProcessorModule.h)
+set(SOURCES_STANDALONE src/LatticeExternalTestApp.cpp src/LatticeProcessorModule.h)
 
 if(MSVC)
     set(PLATFORM "Windows")
