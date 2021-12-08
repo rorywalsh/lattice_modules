@@ -67,12 +67,7 @@ public:
     {
         description = "(selectable waveform and ADSR)";
     }
-    
-    SimpleSynthProcessor* Clone() override
-    {
-        return new SimpleSynthProcessor(*this);
-    }
-    
+
 private:
     SimpleSynthProcessor::Synth synth;
     bool isNoteOn = false;
