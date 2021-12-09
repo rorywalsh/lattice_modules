@@ -55,8 +55,13 @@ bool cmdOptionExists(const std::string& commandLine, const std::string& option)
 
 int main(int argc, const char **argv)
 {
-    std::srand(std::time(nullptr));
     std::cout << "Usage: ./LatticeTestApp inputModule inputFile outputFile.wav [--randomValues]";
+    if(argc < 4)
+        return 0;
+
+    std::srand(std::time(nullptr));
+
+
     std::vector<std::string> allArgs(argv, argv + argc);
     std::string commandLine;
     for (auto const& s : allArgs) { commandLine += s; }
