@@ -33,5 +33,6 @@ include_directories("${CMAKE_SOURCE_DIR}/aurora/include")
 add_subdirectory(${CMAKE_SOURCE_DIR}/gain)
 add_subdirectory(${CMAKE_SOURCE_DIR}/delay)
 add_subdirectory(${CMAKE_SOURCE_DIR}/simple_synth)
+add_subdirectory(${CMAKE_SOURCE_DIR}/chorus)
 
 

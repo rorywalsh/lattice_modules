@@ -31,8 +31,8 @@ public:
         description = "(variable delay with feedback)";
     }
 private:
-    Aurora::Del<float> delayL;
-    Aurora::Del<float> delayR;
+    Aurora::Del<float, Aurora::vdelayi> delayL;
+    Aurora::Del<float, Aurora::vdelayi> delayR;
     std::vector<float> inL;
     std::vector<float> inR;
 };

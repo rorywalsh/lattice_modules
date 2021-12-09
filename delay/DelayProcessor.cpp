@@ -4,8 +4,8 @@
 
 
 DelayProcessor::DelayProcessor():
-delayL(2, Aurora::vdelay<float>, 44100),
-delayR(2, Aurora::vdelay<float>, 44100)
+delayL(2, 44100),
+delayR(2, 44100)
 {
     
 }
