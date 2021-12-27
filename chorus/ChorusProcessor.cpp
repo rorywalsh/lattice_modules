@@ -44,6 +44,7 @@ void ChorusProcessor::process(float** buffer, int numChannels, int blockSize, st
    
     inL.resize(blockSize);
     inR.resize(blockSize);
+    chorus.vsize(blockSize);
 
     
     std::copy(buffer[0], buffer[0] + blockSize, inL.begin());

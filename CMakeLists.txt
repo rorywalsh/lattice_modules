@@ -35,5 +35,6 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/delay)
 add_subdirectory(${CMAKE_SOURCE_DIR}/simple_synth)
 add_subdirectory(${CMAKE_SOURCE_DIR}/chorus)
 add_subdirectory(${CMAKE_SOURCE_DIR}/ks_synth)
+add_subdirectory(${CMAKE_SOURCE_DIR}/lattice_synth)
 
 
