@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project (LatticeNodeCLI)
 
 if(NOT DEFINED BUILD_VERSION)
-	set(BUILD_VERSION 0.0.35)
+	set(BUILD_VERSION 0.0.36)
 endif()
 
 set(SOURCES src/LatticeProcessorModule.h)
