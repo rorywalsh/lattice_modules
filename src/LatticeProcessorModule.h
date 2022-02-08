@@ -22,6 +22,23 @@ struct ModuleParameter
 		:parameterName(name), range(paramRange) {}
 };
 
+/* host info - one of these is passed to the process 
+ method each time is it called. Can be used to query 
+ everything from current BPM to whether or not the 
+ host is playing. (Note: only available in effect plugins)
+*/
+struct HostInfo
+{
+	double bpm = 120;
+	int timeSigNumerator = 4;
+	int timeSigDenomiator = 4;
+	long int timeInSamples = 0;
+	bool isPlaying = false;
+	bool isRecording = false;
+	bool isLooping = false;
+	double timeInSeconds = 0;
+};
+
 
 /* External processing sub-class */
 class LatticeProcessorModule
@@ -50,12 +67,12 @@ public:
 	
     /* Main processing function - paramValues is a list of parameter values passed from the host in
 	 order of their creation */
-    virtual void process(float** /*buffer*/, int /*numChannels*/, int /*blockSize*/, std::vector<std::atomic<float>*> /*paramValues*/) {}
+	virtual void process(float** /*buffer*/, int /*numChannels*/, int /*blockSize*/, std::vector<std::atomic<float>*> /*paramValues*/, const HostInfo = {}) {}
 	
     /* Called by the host when a paremeter changes. The parameterID in this instance is a combination of the unique name for the module,
      assigned by the host, and the parameter name itself, i.e, 'Super Synth 11 - Attack'. Use the getParameterName method to extract
-     the parameter name */
-	virtual void hostParameterChanged(const std::string& parameterID, float /*newValue*/)
+     the parameter name - note that in the case of audio FX, you can just called getparameter() from your process block*/
+	virtual void hostParameterChanged(const std::string& /*parameterID*/, float /*newValue*/)
     {
         //const std::string parameterName =
     }
@@ -142,6 +159,14 @@ public:
         return parameterId.substr(parameterId.find("-")+2);
     }
     
+	/* override this method if you want to draw to the Lattice generic editor viewport */
+	virtual std::string getSVGXml() { return ""; }
+
+	/* override this method and return true if you wish to enable drawing on the generic editor viewport. 
+	Note that you should only return true when you need the graphics updated. Leaving this permanently set 
+	to true will have a negative effect on performance. */
+	virtual bool canDraw() { return false; }
+
 private:
 	int midiNoteNumber = 0;
     std::string nodeName;
