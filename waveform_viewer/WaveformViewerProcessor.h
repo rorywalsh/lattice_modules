@@ -35,7 +35,7 @@ public:
 	std::string getSVGXml() override;
 
 	/* override this method and return true if you wish to enable drawing on the generic editor viewport */
-	bool canDraw() override { return true; }
+	bool canDraw() override { return okToDraw; }
 
 	std::string getModuleName() override { return "Gain"; }
 

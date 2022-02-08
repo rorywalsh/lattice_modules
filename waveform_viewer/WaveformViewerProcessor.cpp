@@ -82,3 +82,20 @@ std::string WaveformViewerProcessor::getSVGXml()
 	doc << svgPath;
 	return doc.toString();
 }
+
+
+// the class factories
+#ifdef WIN32
+    extern "C" 
+    {
+        __declspec(dllexport) LatticeProcessorModule* create() { return new WaveformViewerProcessor; }
+    };
+
+    extern "C" 
+    {
+        __declspec(dllexport) void destroy(LatticeProcessorModule* p) { delete p; }
+    };
+#else
+    extern "C" LatticeProcessorModule* create(){     return new SimpleSynthProcessor;         }
+    extern "C" void destroy(LatticeProcessorModule* p){      delete p;                     }
+#endif

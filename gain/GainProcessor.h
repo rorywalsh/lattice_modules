@@ -33,7 +33,3 @@ private:
  
 };
 
-// the class factories
-//extern "C" ExternalProcessor* create(){             return new GainProcessor;         }
-//extern "C" void destroy(ExternalProcessor* p){      delete p;                     }
-

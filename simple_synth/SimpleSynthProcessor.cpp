@@ -118,6 +118,17 @@ void SimpleSynthProcessor::process(float** buffer, int numChannels, int blockSiz
 }
 
 // the class factories
-extern "C" LatticeProcessorModule* create(){     return new SimpleSynthProcessor;         }
-extern "C" void destroy(LatticeProcessorModule* p){      delete p;                     }
+#ifdef WIN32
+    extern "C" 
+    {
+        __declspec(dllexport) LatticeProcessorModule* create() { return new SimpleSynthProcessor; }
+    };
 
+    extern "C" 
+    {
+        __declspec(dllexport) void destroy(LatticeProcessorModule* p) { delete p; }
+    };
+#else
+    extern "C" LatticeProcessorModule* create(){     return new SimpleSynthProcessor;         }
+    extern "C" void destroy(LatticeProcessorModule* p){      delete p;                     }
+#endif
