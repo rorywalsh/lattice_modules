@@ -42,7 +42,7 @@ public:
     void createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs);
     
     /* This function is called by he host to populate the parameter vector */
-    void createParameters(std::vector<ExternalParameter> &parameters) override;
+    void createParameters(std::vector<ModuleParameter> &parameters) override;
     
     /*  This function is called by the host whenever a parameter changes */
     void hostParameterChanged(const std::string& parameterID, float newValue);
@@ -61,7 +61,7 @@ public:
     
     /*  Main processing function called continuously by the host on the audio thread.
         paramValues is a list of parameter values passed from the host in order of their creation */
-    void process(float** buffer, int numChannels, int blockSize, std::vector<std::atomic<float>*> paramValues) override;
+    void process(float** buffer, int numChannels, int blockSize, const HostInfo = {}) override;
     
     void createDescription(std::string& description) override
     {

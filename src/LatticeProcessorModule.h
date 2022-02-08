@@ -65,9 +65,11 @@ public:
 	/* This function is called by the host before playback/performance */
 	virtual void prepareProcessor(int /*sr*/, int /*block*/) {}
 	
-    /* Main processing function - paramValues is a list of parameter values passed from the host in
-	 order of their creation */
-	virtual void process(float** /*buffer*/, int /*numChannels*/, int /*blockSize*/, std::vector<std::atomic<float>*> /*paramValues*/, const HostInfo = {}) {}
+    /* Main processing function - hostInfo is a structure containing information from the host */
+	virtual void process(float** /*buffer*/, 
+						 int /*numChannels*/, 
+						 int /*blockSize*/, 
+						 const HostInfo = {}) {}
 	
     /* Called by the host when a paremeter changes. The parameterID in this instance is a combination of the unique name for the module,
      assigned by the host, and the parameter name itself, i.e, 'Super Synth 11 - Attack'. Use the getParameterName method to extract

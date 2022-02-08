@@ -51,7 +51,7 @@ void SimpleSynthProcessor::createChannelLayout(std::vector<std::string> &inputs,
     outputs.push_back("Output 2");
 }
 
-void SimpleSynthProcessor::createParameters(std::vector<ExternalParameter> &parameters)
+void SimpleSynthProcessor::createParameters(std::vector<ModuleParameter> &parameters)
 {
     parameters.push_back({"Attack", {0, 1, 0.001, 0.001, 1}});
     parameters.push_back({"Decay", {0, 2, 0.1, 0.001, 1}});
@@ -105,7 +105,7 @@ void SimpleSynthProcessor::triggerParameterUpdate(const std::string& parameterID
     updateParameter(parameterID, newValue);
 }
 
-void SimpleSynthProcessor::process(float** buffer, int numChannels, int blockSize, std::vector<std::atomic<float>*> paramValues)
+void SimpleSynthProcessor::process(float** buffer, int numChannels, int blockSize, const HostInfo)
 {
     const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
     synth.setBlockSize(blockSize);

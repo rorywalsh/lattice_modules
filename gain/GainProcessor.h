@@ -1,15 +1,13 @@
 #pragma once
-#include "../LatticeProcessorModule.h"
-#include "OnePole.h"
+#include "LatticeProcessorModule.h"
 #include <iterator>
-#include "../simple_svg_1.0.0.hpp"
 
 class GainProcessor : public LatticeProcessorModule
 {
 public:
     GainProcessor();
     
-    void createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs) override;
+    void createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs);
     
     /* This function is called by he host to populate the parameter vector */
     void createParameters(std::vector<ModuleParameter> &parameters) override;
@@ -25,43 +23,17 @@ public:
     
     /*  Main processing function called continuously by the host on the audio thread.
         paramValues is a list of parameter values passed from the host in order of their creation */
-    void process(float** buffer, int numChannels, int blockSize, std::vector<std::atomic<float>*> paramValues, const HostInfo hostInfo) override;
-    
-    void createDescription(std::string& description)
+    void process(float** buffer, int numChannels, int blockSize, const HostInfo = {}) override;
+
+    void createDescription(std::string& description) override
     {
-        description = "";
+        description = "(basic gain)";
     }
-
-    /* override this method if you want to draw to the Lattice generic editor viewport */
-    std::string getSVGXml() override;
-
-    /* override this method and return true if you wish to enable drawing on the generic editor viewport */
-    bool canDraw() override { return true; }
-    
-    std::string getModuleName() override {    return "Gain";     }
-    
-	static int remap(float value, float rangeMin, float rangeMax, float newRangeMin, float newRangeMax)
-	{
-		return newRangeMin + (value - rangeMin) * (newRangeMax - newRangeMin) / (rangeMax - rangeMin);
-	}
-
-	double getRMS(std::vector<float> const& v)
-	{
-		double sum = 0;
-		auto const count = static_cast<float>(v.size());
-
-		for (int i = 0; i < count; i++)
-			sum += pow(v[i], 2);
-
-		return sqrt(sum / count);
-	}
-
-
 private:
-	float amp = .5f;
-    std::vector<float> inL;
-    std::vector<float> inR;
-	std::vector<float> samples;
-	bool okToDraw = true;
+ 
 };
+
+// the class factories
+//extern "C" ExternalProcessor* create(){             return new GainProcessor;         }
+//extern "C" void destroy(ExternalProcessor* p){      delete p;                     }
 
