@@ -33,7 +33,6 @@ SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 include_directories("${CMAKE_SOURCE_DIR}/aurora/include")
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/gain)
-add_subdirectory(${CMAKE_SOURCE_DIR}/gain_debug)
 add_subdirectory(${CMAKE_SOURCE_DIR}/waveform_viewer)
 add_subdirectory(${CMAKE_SOURCE_DIR}/simple_synth)
 
