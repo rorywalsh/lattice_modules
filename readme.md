@@ -3,6 +3,7 @@
 This repo contains the Lattice Module API. This API provides an interface to the Lattice prototyping environment. This repo makes use the following 3rd party frameworks:
 
 https://github.com/vlazzarini/aurora
+
 https://github.com/adishavit/simple-svg
 
 
