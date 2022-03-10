@@ -219,7 +219,7 @@ public:
 	to true will have a negative effect on performance. */
 	virtual bool canDraw() { return false; }
     
-    void createDescription(std::string& description) {   return "";  }
+    virtual void createDescription(std::string& description) {   return "";  }
 
 private:
 	int midiNoteNumber = 0;
