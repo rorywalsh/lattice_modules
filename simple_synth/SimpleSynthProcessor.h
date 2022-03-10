@@ -7,7 +7,7 @@
 
 class SimpleSynthProcessor : public LatticeProcessorModule
 {
-    /* Basic synth class thata contains Aurora::Env, Aurora::BlOsc,
+    /* Basic synth class that contains Aurora::Env, Aurora::BlOsc,
        and Aurora::TableSet objects */
     class Synth {
         
@@ -25,7 +25,9 @@ class SimpleSynthProcessor : public LatticeProcessorModule
         void setDecay(float value)      {    dec = value;           }
         void setSustain(float value)    {    sus = value;           }
         void setRelease(float value)    {    env.release(value);    }
-        
+        float getAttack()     {    return att;           }
+        float getDecay()      {    return dec;           }
+        float getSustain()    {    return sus;           }
 
     private:
         float att, dec, sus, rel;
@@ -61,7 +63,7 @@ public:
     
     /*  Main processing function called continuously by the host on the audio thread.
         paramValues is a list of parameter values passed from the host in order of their creation */
-    void process(float** buffer, int numChannels, int blockSize, const HostInfo = {}) override;
+    void process(float** buffer, int numChannels, int blockSize) override;
     
     void createDescription(std::string& description) override
     {
@@ -72,8 +74,4 @@ private:
     SimpleSynthProcessor::Synth synth;
     bool isNoteOn = false;
 };
-
-// the class factories
-//extern "C" ExternalProcessor* create(){             return new GainProcessor;         }
-//extern "C" void destroy(ExternalProcessor* p){      delete p;                     }
 

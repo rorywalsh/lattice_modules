@@ -53,32 +53,33 @@ void SimpleSynthProcessor::createChannelLayout(std::vector<std::string> &inputs,
 
 void SimpleSynthProcessor::createParameters(std::vector<ModuleParameter> &parameters)
 {
-    parameters.push_back({"Attack", {0, 1, 0.001, 0.001, 1}});
-    parameters.push_back({"Decay", {0, 2, 0.1, 0.001, 1}});
-    parameters.push_back({"Sustain", {0, 1, 0.001, 0.001, 1}});
-    parameters.push_back({"Release", {0, 3, 0.001, 0.001, 1}});
+    parameters.push_back({"Attack", {0, 1, synth.getAttack(), 0.001, 1}});
+    parameters.push_back({"Decay", {0, 2, synth.getDecay(), 0.001, 1}});
+    parameters.push_back({"Sustain", {0, 1, synth.getSustain(), 0.001, 1}});
+    parameters.push_back({"Release", {0, 3, 0.1, 0.001, 1}});
     parameters.push_back({"Wave", {1, 3, 1, 1, 1}});
 }
 
 void SimpleSynthProcessor::hostParameterChanged(const std::string& parameterID, float newValue)
 {
-    if(parameterID == "Wave")
+    const std::string paramName = getParameterNameFromId(parameterID);
+    if(paramName == "Wave")
     {
         synth.setWaveform(int(newValue));
     }
-    else if(parameterID == "Attack")
+    else if(paramName == "Attack")
     {
         synth.setAttack(newValue);
     }
-    else if(parameterID == "Decay")
+    else if(paramName == "Decay")
     {
         synth.setDecay(newValue);
     }
-    else if(parameterID == "Sustain")
+    else if(paramName == "Sustain")
     {
         synth.setSustain(newValue);
     }
-    else if(parameterID == "Release")
+    else if(paramName == "Release")
     {
         synth.setRelease(newValue);
     }    
@@ -105,7 +106,7 @@ void SimpleSynthProcessor::triggerParameterUpdate(const std::string& parameterID
     updateParameter(parameterID, newValue);
 }
 
-void SimpleSynthProcessor::process(float** buffer, int numChannels, int blockSize, const HostInfo)
+void SimpleSynthProcessor::process(float** buffer, int numChannels, int blockSize)
 {
     const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
     synth.setBlockSize(blockSize);

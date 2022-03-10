@@ -25,6 +25,7 @@ public:
         paramValues is a list of parameter values passed from the host in order of their creation */
     void process(float** buffer, int numChannels, int blockSize, const HostInfo = {}) override;
 
+    
     void createDescription(std::string& description) override
     {
         description = "(basic gain)";
