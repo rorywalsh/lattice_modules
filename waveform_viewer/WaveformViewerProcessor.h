@@ -14,7 +14,7 @@ public:
 	void createParameters(std::vector<ModuleParameter>& parameters) override;
 
 	/*  This function is called by the host whenever a parameter changes */
-	void hostParameterChanged(const std::string& parameterID, float newValue);
+	void hostParameterChanged(const std::string& parameterID, float newValue) override;
 
 	/*  This function is called by the host before playback/performance */
 	void prepareProcessor(int sr, int block) override;
@@ -26,10 +26,6 @@ public:
 		paramValues is a list of parameter values passed from the host in order of their creation */
 	void process(float** buffer, int numChannels, int blockSize, const HostInfo hostInfo) override;
 
-	void createDescription(std::string& description)
-	{
-		description = "";
-	}
 
 	/* override this method if you want to draw to the Lattice generic editor viewport */
 	std::string getSVGXml() override;

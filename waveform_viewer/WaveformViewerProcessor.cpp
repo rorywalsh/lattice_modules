@@ -25,7 +25,7 @@ void WaveformViewerProcessor::createParameters(std::vector<ModuleParameter>& par
 
 void WaveformViewerProcessor::hostParameterChanged(const std::string& /*parameterID*/, float /*newValue*/)
 {
-	//    ignoreParameters(parameterID, newValue);
+
 }
 
 void WaveformViewerProcessor::prepareProcessor(int /*sr*/, int /*block*/)
@@ -96,6 +96,6 @@ std::string WaveformViewerProcessor::getSVGXml()
         __declspec(dllexport) void destroy(LatticeProcessorModule* p) { delete p; }
     };
 #else
-    extern "C" LatticeProcessorModule* create(){     return new SimpleSynthProcessor;         }
+    extern "C" LatticeProcessorModule* create(){     return new WaveformViewerProcessor;         }
     extern "C" void destroy(LatticeProcessorModule* p){      delete p;                     }
 #endif
