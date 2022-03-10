@@ -408,7 +408,7 @@ namespace svg
 		Point edge;
 		double width;
 		double height;
-		double corners;
+		double corners = 0;
 	};
 
 	//===================================================
@@ -418,7 +418,7 @@ namespace svg
     public:
         Rectangle(Point const & edge, double width, double height,
             Fill const & fill = Fill(), Stroke const & stroke = Stroke())
-            : Shape(fill, stroke), edge(edge), width(width), corners(corners),
+            : Shape(fill, stroke), edge(edge), width(width),
             height(height) { }
 
         std::string toString(Layout const & layout) const
@@ -440,7 +440,6 @@ namespace svg
         Point edge;
         double width;
         double height;
-		double corners;
     };
 
     class Line : public Shape

@@ -9,14 +9,16 @@ https://github.com/adishavit/simple-svg
 
 Examples:
 * Gain - this is a bare-bones processing module with a single gain control
-* GainDebug - same as above, but shows how debug information can be placed on the module's editor in Lattice
 * SimpleSynth - a bare-bones synth example. 
+* WaveformViewer - a bare-bones example of how to draw SVGs directly to a viewport on a Lattice node. 
+
 
 To build:
 
 ```
 git clone https://github.com/rorywalsh/lattice_external
 cd lattice_external
+git submodule update --init --recursive
 mkdir build && cd build
 cmake .. 
 cmake --build .
