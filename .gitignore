@@ -1,0 +1,4 @@
+# Intermediate object files
+*._*
+build
+bin
