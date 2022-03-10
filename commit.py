@@ -37,6 +37,7 @@ with open("CMakeLists.txt", "w") as f:
     f.write(newFileText)
 
 os.system('git add src')
+os.system('git add readme')
 os.system('git add delay')
 os.system('git add gain')
 os.system('git add simple_synth')
