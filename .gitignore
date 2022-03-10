@@ -1,4 +1,5 @@
 # Intermediate object files
 *._*
+.DS_*
 build
 bin
