@@ -27,7 +27,7 @@ void GainProcessor::hostParameterChanged(const std::string& parameterID, float n
     //ignoreParameters(parameterID, newValue);
 }
 
-void GainProcessor::prepareProcessor(int sr, int block)
+void GainProcessor::prepareProcessor(int sr, std::size_t block)
 {
     //ignoreParameters(sr, block);
 }
@@ -37,7 +37,7 @@ void GainProcessor::triggerParameterUpdate(const std::string& parameterID, float
     updateParameter(parameterID, newValue);
 }
 
-void GainProcessor::process(float** buffer,	int numChannels, int blockSize, const HostInfo)
+void GainProcessor::process(float** buffer,	int numChannels, std::size_t blockSize, const HostData)
 {
     for ( int i = 0 ; i < blockSize ; i++)
     {

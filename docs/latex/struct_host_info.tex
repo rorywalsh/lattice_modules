@@ -1,0 +1,91 @@
+\hypertarget{struct_host_info}{}\doxysection{Host\+Info Struct Reference}
+\label{struct_host_info}\index{HostInfo@{HostInfo}}
+
+
+A simple host info struct.  
+
+
+
+
+{\ttfamily \#include $<$Lattice\+Processor\+Module.\+h$>$}
+
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+double \mbox{\hyperlink{struct_host_info_a5f706ba43f415f4dd41272b07e3f4c90}{bpm}} = 120
+\item 
+int \mbox{\hyperlink{struct_host_info_a0c83ce8073da0bee8e47a45b4e0802be}{time\+Sig\+Numerator}} = 4
+\item 
+int \mbox{\hyperlink{struct_host_info_abc40ddaecfbf4698b8cd8521e7aaf18a}{time\+Sig\+Denomiator}} = 4
+\item 
+long int \mbox{\hyperlink{struct_host_info_a94bbfc2e83ce00af59e792fd6d99f9d0}{time\+In\+Samples}} = 0
+\item 
+bool \mbox{\hyperlink{struct_host_info_a8b009055147b5c79a154c702204f31d3}{is\+Playing}} = false
+\item 
+bool \mbox{\hyperlink{struct_host_info_a123c9b6cd8d94358b60c6eddcf9dba7a}{is\+Recording}} = false
+\item 
+bool \mbox{\hyperlink{struct_host_info_a3cee221bd36c52a0f38136aa8395ac44}{is\+Looping}} = false
+\item 
+double \mbox{\hyperlink{struct_host_info_a1a7dc009d5d5998373ce02d858eb627a}{time\+In\+Seconds}} = 0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A simple host info struct. 
+
+One of these is passed to the {\ttfamily \mbox{\hyperlink{class_lattice_processor_module_a1f76dc73529617fafe1a88a2bced0827}{Lattice\+Processor\+Module\+::process()}}} method each time is it called. This can be used to query everything from the current host BPM to whether or not the host is actually playing. (Note\+: only available in effect plugins) 
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{struct_host_info_a5f706ba43f415f4dd41272b07e3f4c90}\label{struct_host_info_a5f706ba43f415f4dd41272b07e3f4c90}} 
+\index{HostInfo@{HostInfo}!bpm@{bpm}}
+\index{bpm@{bpm}!HostInfo@{HostInfo}}
+\doxysubsubsection{\texorpdfstring{bpm}{bpm}}
+{\footnotesize\ttfamily double Host\+Info\+::bpm = 120}
+
+The current host BPM \mbox{\Hypertarget{struct_host_info_a3cee221bd36c52a0f38136aa8395ac44}\label{struct_host_info_a3cee221bd36c52a0f38136aa8395ac44}} 
+\index{HostInfo@{HostInfo}!isLooping@{isLooping}}
+\index{isLooping@{isLooping}!HostInfo@{HostInfo}}
+\doxysubsubsection{\texorpdfstring{isLooping}{isLooping}}
+{\footnotesize\ttfamily bool Host\+Info\+::is\+Looping = false}
+
+Indicates if the host is looping \mbox{\Hypertarget{struct_host_info_a8b009055147b5c79a154c702204f31d3}\label{struct_host_info_a8b009055147b5c79a154c702204f31d3}} 
+\index{HostInfo@{HostInfo}!isPlaying@{isPlaying}}
+\index{isPlaying@{isPlaying}!HostInfo@{HostInfo}}
+\doxysubsubsection{\texorpdfstring{isPlaying}{isPlaying}}
+{\footnotesize\ttfamily bool Host\+Info\+::is\+Playing = false}
+
+Indicates if the host is playing \mbox{\Hypertarget{struct_host_info_a123c9b6cd8d94358b60c6eddcf9dba7a}\label{struct_host_info_a123c9b6cd8d94358b60c6eddcf9dba7a}} 
+\index{HostInfo@{HostInfo}!isRecording@{isRecording}}
+\index{isRecording@{isRecording}!HostInfo@{HostInfo}}
+\doxysubsubsection{\texorpdfstring{isRecording}{isRecording}}
+{\footnotesize\ttfamily bool Host\+Info\+::is\+Recording = false}
+
+Indicates if the host is recording \mbox{\Hypertarget{struct_host_info_a94bbfc2e83ce00af59e792fd6d99f9d0}\label{struct_host_info_a94bbfc2e83ce00af59e792fd6d99f9d0}} 
+\index{HostInfo@{HostInfo}!timeInSamples@{timeInSamples}}
+\index{timeInSamples@{timeInSamples}!HostInfo@{HostInfo}}
+\doxysubsubsection{\texorpdfstring{timeInSamples}{timeInSamples}}
+{\footnotesize\ttfamily long int Host\+Info\+::time\+In\+Samples = 0}
+
+The current performance time in samples \mbox{\Hypertarget{struct_host_info_a1a7dc009d5d5998373ce02d858eb627a}\label{struct_host_info_a1a7dc009d5d5998373ce02d858eb627a}} 
+\index{HostInfo@{HostInfo}!timeInSeconds@{timeInSeconds}}
+\index{timeInSeconds@{timeInSeconds}!HostInfo@{HostInfo}}
+\doxysubsubsection{\texorpdfstring{timeInSeconds}{timeInSeconds}}
+{\footnotesize\ttfamily double Host\+Info\+::time\+In\+Seconds = 0}
+
+The current performance time in seconds \mbox{\Hypertarget{struct_host_info_abc40ddaecfbf4698b8cd8521e7aaf18a}\label{struct_host_info_abc40ddaecfbf4698b8cd8521e7aaf18a}} 
+\index{HostInfo@{HostInfo}!timeSigDenomiator@{timeSigDenomiator}}
+\index{timeSigDenomiator@{timeSigDenomiator}!HostInfo@{HostInfo}}
+\doxysubsubsection{\texorpdfstring{timeSigDenomiator}{timeSigDenomiator}}
+{\footnotesize\ttfamily int Host\+Info\+::time\+Sig\+Denomiator = 4}
+
+The time signature denomiator \mbox{\Hypertarget{struct_host_info_a0c83ce8073da0bee8e47a45b4e0802be}\label{struct_host_info_a0c83ce8073da0bee8e47a45b4e0802be}} 
+\index{HostInfo@{HostInfo}!timeSigNumerator@{timeSigNumerator}}
+\index{timeSigNumerator@{timeSigNumerator}!HostInfo@{HostInfo}}
+\doxysubsubsection{\texorpdfstring{timeSigNumerator}{timeSigNumerator}}
+{\footnotesize\ttfamily int Host\+Info\+::time\+Sig\+Numerator = 4}
+
+The time signature numerator 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Lattice\+Processor\+Module.\+h\end{DoxyCompactItemize}

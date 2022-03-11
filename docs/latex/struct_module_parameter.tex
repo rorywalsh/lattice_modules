@@ -1,0 +1,117 @@
+\hypertarget{struct_module_parameter}{}\doxysection{Module\+Parameter Struct Reference}
+\label{struct_module_parameter}\index{ModuleParameter@{ModuleParameter}}
+
+
+Module parameters.  
+
+
+
+
+{\ttfamily \#include $<$Lattice\+Processor\+Module.\+h$>$}
+
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{struct_module_parameter_aa047668d1ff5e0fd90161be113a4d9f4}{Param\+Type}} \{ \mbox{\hyperlink{struct_module_parameter_aa047668d1ff5e0fd90161be113a4d9f4a2669c7c84b33ffd7f17231ec3e156c3f}{Trigger}} = -\/99
+, \mbox{\hyperlink{struct_module_parameter_aa047668d1ff5e0fd90161be113a4d9f4a574edbd7cddec8e0878cbfbc54014ab6}{Switch}} = -\/98
+, \mbox{\hyperlink{struct_module_parameter_aa047668d1ff5e0fd90161be113a4d9f4a7e6b90225c6648c3f00d8d4a2ebdbadb}{Slider}} = -\/97
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct_module_parameter_aac3336887e0c750cdf42fd59b58bfafa}{Module\+Parameter}} (std\+::string name, std\+::vector$<$ double $>$ param\+Range, std\+::string param\+Label=\char`\"{}\char`\"{}, \mbox{\hyperlink{struct_module_parameter_aa047668d1ff5e0fd90161be113a4d9f4}{Module\+Parameter\+::\+Param\+Type}} type=Param\+Type\+::\+Slider)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::string \mbox{\hyperlink{struct_module_parameter_a327ce18b2bb99e329a609cacd11721ef}{parameter\+Name}}
+\item 
+std\+::vector$<$ double $>$ \mbox{\hyperlink{struct_module_parameter_aced4ce6f6633a985f3def5c78390518d}{range}}
+\item 
+std\+::string \mbox{\hyperlink{struct_module_parameter_a5ff68605199a79968a9d73f4a2dce03f}{label}} = \{\}
+\item 
+\mbox{\hyperlink{struct_module_parameter_aa047668d1ff5e0fd90161be113a4d9f4}{Param\+Type}} \mbox{\hyperlink{struct_module_parameter_ae2175b6640f1cfc5022cd4c450c4dc63}{param\+Type}} = Param\+Type\+::\+Slider
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Module parameters. 
+
+This is the main Lattice parameter struct. As as many of these to as you need to the {\ttfamily std\+::vector\texorpdfstring{$<$}{<}\mbox{\hyperlink{struct_module_parameter}{Module\+Parameter}}\texorpdfstring{$>$}{>}\& parameters} that is passed to the {\ttfamily Lattice\+Module\+Processor\+::create\+Parameters(std\+::vector\texorpdfstring{$<$}{<}\mbox{\hyperlink{struct_module_parameter}{Module\+Parameter}}\texorpdfstring{$>$}{>}\& parameters)} method. Each parameter added here will be accessible in the Lattice graph when you double click the processor module. 
+
+\doxysubsection{Member Enumeration Documentation}
+\mbox{\Hypertarget{struct_module_parameter_aa047668d1ff5e0fd90161be113a4d9f4}\label{struct_module_parameter_aa047668d1ff5e0fd90161be113a4d9f4}} 
+\index{ModuleParameter@{ModuleParameter}!ParamType@{ParamType}}
+\index{ParamType@{ParamType}!ModuleParameter@{ModuleParameter}}
+\doxysubsubsection{\texorpdfstring{ParamType}{ParamType}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{struct_module_parameter_aa047668d1ff5e0fd90161be113a4d9f4}{Module\+Parameter\+::\+Param\+Type}}}
+
+Parameter Type enum \begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Trigger@{Trigger}!ModuleParameter@{ModuleParameter}}\index{ModuleParameter@{ModuleParameter}!Trigger@{Trigger}}}\mbox{\Hypertarget{struct_module_parameter_aa047668d1ff5e0fd90161be113a4d9f4a2669c7c84b33ffd7f17231ec3e156c3f}\label{struct_module_parameter_aa047668d1ff5e0fd90161be113a4d9f4a2669c7c84b33ffd7f17231ec3e156c3f}} 
+Trigger&A trigger button -\/ shown only a single state button \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Switch@{Switch}!ModuleParameter@{ModuleParameter}}\index{ModuleParameter@{ModuleParameter}!Switch@{Switch}}}\mbox{\Hypertarget{struct_module_parameter_aa047668d1ff5e0fd90161be113a4d9f4a574edbd7cddec8e0878cbfbc54014ab6}\label{struct_module_parameter_aa047668d1ff5e0fd90161be113a4d9f4a574edbd7cddec8e0878cbfbc54014ab6}} 
+Switch&A switch button -\/ shown as an dual state button \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Slider@{Slider}!ModuleParameter@{ModuleParameter}}\index{ModuleParameter@{ModuleParameter}!Slider@{Slider}}}\mbox{\Hypertarget{struct_module_parameter_aa047668d1ff5e0fd90161be113a4d9f4a7e6b90225c6648c3f00d8d4a2ebdbadb}\label{struct_module_parameter_aa047668d1ff5e0fd90161be113a4d9f4a7e6b90225c6648c3f00d8d4a2ebdbadb}} 
+Slider&A slider (default) -\/ shown as a horizontal slider \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{struct_module_parameter_aac3336887e0c750cdf42fd59b58bfafa}\label{struct_module_parameter_aac3336887e0c750cdf42fd59b58bfafa}} 
+\index{ModuleParameter@{ModuleParameter}!ModuleParameter@{ModuleParameter}}
+\index{ModuleParameter@{ModuleParameter}!ModuleParameter@{ModuleParameter}}
+\doxysubsubsection{\texorpdfstring{ModuleParameter()}{ModuleParameter()}}
+{\footnotesize\ttfamily Module\+Parameter\+::\+Module\+Parameter (\begin{DoxyParamCaption}\item[{std\+::string}]{name,  }\item[{std\+::vector$<$ double $>$}]{param\+Range,  }\item[{std\+::string}]{param\+Label = {\ttfamily \char`\"{}\char`\"{}},  }\item[{\mbox{\hyperlink{struct_module_parameter_aa047668d1ff5e0fd90161be113a4d9f4}{Module\+Parameter\+::\+Param\+Type}}}]{type = {\ttfamily ParamType\+:\+:Slider} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Creates a module parameter. You can add as many of these as you wish to your module by pushing to the {\ttfamily std\+::vector\texorpdfstring{$<$}{<}\mbox{\hyperlink{struct_module_parameter}{Module\+Parameter}}\texorpdfstring{$>$}{>}\& parameters} argument that gets passed to \texorpdfstring{$<$}{<}\mbox{\hyperlink{class_lattice_processor_module_a69686ef945daf7265fc37f367b5bb21d}{Lattice\+Processor\+Module\+::create\+Parameters()}}\texorpdfstring{$>$}{>}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void} ChorusProcessor::createParameters(std::vector<ModuleParameter> \&parameters)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    parameters.push\_back(\{ \textcolor{stringliteral}{"{}Delay Time (L)"{}}, \{0, 5, .017f, .001f, 1\}\});}
+\DoxyCodeLine{    parameters.push\_back(\{ \textcolor{stringliteral}{"{}LFO Frequency (L)"{}}, \{0, 10, .93, .001f, 1\}\});}
+\DoxyCodeLine{    parameters.push\_back(\{ \textcolor{stringliteral}{"{}Delay Time (R)"{}}, \{0, 5, .013f, .001f, 1\}\});}
+\DoxyCodeLine{    parameters.push\_back(\{ \textcolor{stringliteral}{"{}LFO Frequency (R)"{}}, \{0, 10, .083f, .001f, 1\} \});}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ 
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{struct_module_parameter_a5ff68605199a79968a9d73f4a2dce03f}\label{struct_module_parameter_a5ff68605199a79968a9d73f4a2dce03f}} 
+\index{ModuleParameter@{ModuleParameter}!label@{label}}
+\index{label@{label}!ModuleParameter@{ModuleParameter}}
+\doxysubsubsection{\texorpdfstring{label}{label}}
+{\footnotesize\ttfamily std\+::string Module\+Parameter\+::label = \{\}}
+
+Set this to use a different label than the one given to parameter\+Name \mbox{\Hypertarget{struct_module_parameter_a327ce18b2bb99e329a609cacd11721ef}\label{struct_module_parameter_a327ce18b2bb99e329a609cacd11721ef}} 
+\index{ModuleParameter@{ModuleParameter}!parameterName@{parameterName}}
+\index{parameterName@{parameterName}!ModuleParameter@{ModuleParameter}}
+\doxysubsubsection{\texorpdfstring{parameterName}{parameterName}}
+{\footnotesize\ttfamily std\+::string Module\+Parameter\+::parameter\+Name}
+
+Name of your module parameter -\/ this is the name that will appear in the module editor in Lattice \mbox{\Hypertarget{struct_module_parameter_ae2175b6640f1cfc5022cd4c450c4dc63}\label{struct_module_parameter_ae2175b6640f1cfc5022cd4c450c4dc63}} 
+\index{ModuleParameter@{ModuleParameter}!paramType@{paramType}}
+\index{paramType@{paramType}!ModuleParameter@{ModuleParameter}}
+\doxysubsubsection{\texorpdfstring{paramType}{paramType}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_module_parameter_aa047668d1ff5e0fd90161be113a4d9f4}{Param\+Type}} Module\+Parameter\+::param\+Type = Param\+Type\+::\+Slider}
+
+Set the type of basic UI element to use for the parameter. If you select a a switch or trigger, many sure your parameter range is between 0 and 1, and the increment is set to 1 \mbox{\Hypertarget{struct_module_parameter_aced4ce6f6633a985f3def5c78390518d}\label{struct_module_parameter_aced4ce6f6633a985f3def5c78390518d}} 
+\index{ModuleParameter@{ModuleParameter}!range@{range}}
+\index{range@{range}!ModuleParameter@{ModuleParameter}}
+\doxysubsubsection{\texorpdfstring{range}{range}}
+{\footnotesize\ttfamily std\+::vector$<$double$>$ Module\+Parameter\+::range}
+
+A vector holding min, max, increment, default\+Value, and skew values for your parameter. A skew of 1 is linear, while a skew of less than one will result in non-\/linear behaviour. 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Lattice\+Processor\+Module.\+h\end{DoxyCompactItemize}

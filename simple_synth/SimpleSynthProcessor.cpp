@@ -85,7 +85,7 @@ void SimpleSynthProcessor::hostParameterChanged(const std::string& parameterID, 
     }    
 }
 
-void SimpleSynthProcessor::prepareProcessor(int /* sr */, int /* block */)
+void SimpleSynthProcessor::prepareProcessor(int /* sr */, std::size_t /* block */)
 {
 
 }
@@ -106,7 +106,7 @@ void SimpleSynthProcessor::triggerParameterUpdate(const std::string& parameterID
     updateParameter(parameterID, newValue);
 }
 
-void SimpleSynthProcessor::process(float** buffer, int numChannels, int blockSize)
+void SimpleSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
 {
     const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
     synth.setBlockSize(blockSize);

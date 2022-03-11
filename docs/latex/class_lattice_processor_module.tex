@@ -1,0 +1,300 @@
+\hypertarget{class_lattice_processor_module}{}\doxysection{Lattice\+Processor\+Module Class Reference}
+\label{class_lattice_processor_module}\index{LatticeProcessorModule@{LatticeProcessorModule}}
+
+
+Base class for all modules.  
+
+
+
+
+{\ttfamily \#include $<$Lattice\+Processor\+Module.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \mbox{\hyperlink{class_lattice_processor_module_a8b54c714447ab72ee93593d1c415796b}{create\+Channel\+Layout}} (std\+::vector$<$ std\+::string $>$ \&inputs, std\+::vector$<$ std\+::string $>$ \&outputs)
+\item 
+virtual void \mbox{\hyperlink{class_lattice_processor_module_a69686ef945daf7265fc37f367b5bb21d}{create\+Parameters}} (std\+::vector$<$ \mbox{\hyperlink{struct_module_parameter}{Module\+Parameter}} $>$ \&parameters)
+\item 
+virtual void \mbox{\hyperlink{class_lattice_processor_module_aedcd3339e348da28ecfdd23f45f0d876}{prepare\+Processor}} (int sr, int block\+Size)
+\item 
+virtual void \mbox{\hyperlink{class_lattice_processor_module_ab6c96f6e54267c9ec62c6c6b1abe38d8}{process}} (float $\ast$$\ast$buffer, int num\+Channels, int block\+Size, const \mbox{\hyperlink{struct_host_data}{Host\+Data}} info)
+\item 
+virtual void \mbox{\hyperlink{class_lattice_processor_module_ada6b353ab139203d6b10d331a4c5dbb2}{process}} (float $\ast$$\ast$buffer, int num\+Channels, int block\+Size, std\+::vector$<$ \mbox{\hyperlink{struct_lattice_midi_message}{Lattice\+Midi\+Message}} $>$ \&midi\+Messages)
+\item 
+virtual void \mbox{\hyperlink{class_lattice_processor_module_a6912f9af33a24ea4a527f4e57a9241fa}{process\+Synth\+Voice}} (float $\ast$$\ast$buffer, int num\+Channels, int block\+Size)
+\item 
+\mbox{\Hypertarget{class_lattice_processor_module_ab1ec40c2f5cb6c7a7b8c3edf729c4573}\label{class_lattice_processor_module_ab1ec40c2f5cb6c7a7b8c3edf729c4573}} 
+virtual int {\bfseries get\+Number\+Of\+Voices} ()
+\item 
+virtual void \mbox{\hyperlink{class_lattice_processor_module_a252e786c3fb1fd22c8746456f7e4027f}{host\+Parameter\+Changed}} (const std\+::string \&parameter\+ID, float new\+Value)
+\item 
+virtual void \mbox{\hyperlink{class_lattice_processor_module_adae4fccd2a77bd83f2237edbc3213194}{start\+Note}} (int midi\+Note\+Number, float velocity)
+\item 
+virtual std\+::string \mbox{\hyperlink{class_lattice_processor_module_a532dc4fe6404fc695a74d9560cbb7124}{get\+Module\+Name}} ()
+\item 
+virtual void \mbox{\hyperlink{class_lattice_processor_module_adb441d893752df1e8340fe1ef6b59450}{stop\+Note}} (float velocity)
+\item 
+double \mbox{\hyperlink{class_lattice_processor_module_a9430f142bc9d91ffd3a742e83d8b97ec}{get\+Midi\+Note\+In\+Hertz}} (const int note\+Number, const double a\+Tuning=440)
+\item 
+int \mbox{\hyperlink{class_lattice_processor_module_ac5bf11de5c45f9c85252b30c6b9d3c6d}{get\+Midi\+Note\+Number}} ()
+\item 
+void \mbox{\hyperlink{class_lattice_processor_module_a82d80a24abc608eeedf1335b16c37c16}{update\+Parameter}} (const std\+::string \&parameter\+ID, float new\+Value)
+\item 
+float \mbox{\hyperlink{class_lattice_processor_module_abb1721316018048f6ece026a621d42bc}{get\+Parameter}} (std\+::string name)
+\item 
+std\+::string \mbox{\hyperlink{class_lattice_processor_module_a0099b7640f4af0994db2392431a74759}{get\+Parameter\+Name\+From\+Id}} (std\+::string parameter\+Id)
+\item 
+virtual std\+::string \mbox{\hyperlink{class_lattice_processor_module_ab3731bae92d30fc083660959170b4f23}{get\+SVGXml}} ()
+\item 
+virtual bool \mbox{\hyperlink{class_lattice_processor_module_aad95ba85178dbbd77b66eeb0635822c6}{can\+Draw}} ()
+\item 
+virtual std\+::string \mbox{\hyperlink{class_lattice_processor_module_a8fca4d60cd5c9fac01898b8dfb8846a2}{create\+Description}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Base class for all modules. 
+
+This is the main base class for all Lattice modules. Every module must inherit from this class 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_lattice_processor_module_aad95ba85178dbbd77b66eeb0635822c6}\label{class_lattice_processor_module_aad95ba85178dbbd77b66eeb0635822c6}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!canDraw@{canDraw}}
+\index{canDraw@{canDraw}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{canDraw()}{canDraw()}}
+{\footnotesize\ttfamily virtual bool Lattice\+Processor\+Module\+::can\+Draw (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+override this method and return true if you wish to enable drawing on the generic editor viewport. Note that you should only return true when you need the graphics updated. Leaving this permanently set to true will have a negative effect on performance. 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ out}}  & {\em can\+Draw\+Flag} & Set to true to notify drawing can take place, otherwise set to false. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_lattice_processor_module_a8b54c714447ab72ee93593d1c415796b}\label{class_lattice_processor_module_a8b54c714447ab72ee93593d1c415796b}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!createChannelLayout@{createChannelLayout}}
+\index{createChannelLayout@{createChannelLayout}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{createChannelLayout()}{createChannelLayout()}}
+{\footnotesize\ttfamily virtual void Lattice\+Processor\+Module\+::create\+Channel\+Layout (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$ \&}]{inputs,  }\item[{std\+::vector$<$ std\+::string $>$ \&}]{outputs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+This method is called by the host to create channel layout. Override to configure your plugin\textquotesingle{}s inputs and outputs 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em inputs} & Fill this with your input channels. \\
+\hline
+\mbox{\texttt{ in}}  & {\em outputs} & Fill this with your output channels. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_lattice_processor_module_a8fca4d60cd5c9fac01898b8dfb8846a2}\label{class_lattice_processor_module_a8fca4d60cd5c9fac01898b8dfb8846a2}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!createDescription@{createDescription}}
+\index{createDescription@{createDescription}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{createDescription()}{createDescription()}}
+{\footnotesize\ttfamily virtual std\+::string Lattice\+Processor\+Module\+::create\+Description (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+Called by Lattice when a user right-\/clicks and module and select \textquotesingle{}Show Info\textquotesingle{} 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ out}}  & {\em description} & Text that will appear in a module\textquotesingle{}s info window. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_lattice_processor_module_a69686ef945daf7265fc37f367b5bb21d}\label{class_lattice_processor_module_a69686ef945daf7265fc37f367b5bb21d}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!createParameters@{createParameters}}
+\index{createParameters@{createParameters}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{createParameters()}{createParameters()}}
+{\footnotesize\ttfamily virtual void Lattice\+Processor\+Module\+::create\+Parameters (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \mbox{\hyperlink{struct_module_parameter}{Module\+Parameter}} $>$ \&}]{parameters }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+This method is called by the host to create the plugin parameters. Override and fill the {\ttfamily \mbox{\hyperlink{struct_module_parameter}{Module\+Parameter}}} vector 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em parameters} & Fill this with your modules parameters. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_lattice_processor_module_a9430f142bc9d91ffd3a742e83d8b97ec}\label{class_lattice_processor_module_a9430f142bc9d91ffd3a742e83d8b97ec}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!getMidiNoteInHertz@{getMidiNoteInHertz}}
+\index{getMidiNoteInHertz@{getMidiNoteInHertz}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{getMidiNoteInHertz()}{getMidiNoteInHertz()}}
+{\footnotesize\ttfamily double Lattice\+Processor\+Module\+::get\+Midi\+Note\+In\+Hertz (\begin{DoxyParamCaption}\item[{const int}]{note\+Number,  }\item[{const double}]{a\+Tuning = {\ttfamily 440} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+returns the MIDI note number in Hertz, according to A tuning 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ out}}  & {\em note\+In\+Hertz} & the current midi note number in Hz. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_lattice_processor_module_ac5bf11de5c45f9c85252b30c6b9d3c6d}\label{class_lattice_processor_module_ac5bf11de5c45f9c85252b30c6b9d3c6d}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!getMidiNoteNumber@{getMidiNoteNumber}}
+\index{getMidiNoteNumber@{getMidiNoteNumber}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{getMidiNoteNumber()}{getMidiNoteNumber()}}
+{\footnotesize\ttfamily int Lattice\+Processor\+Module\+::get\+Midi\+Note\+Number (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+retrieves the current MIDI note number 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ out}}  & {\em note\+Number} & the current MIDI note number \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_lattice_processor_module_a532dc4fe6404fc695a74d9560cbb7124}\label{class_lattice_processor_module_a532dc4fe6404fc695a74d9560cbb7124}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!getModuleName@{getModuleName}}
+\index{getModuleName@{getModuleName}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{getModuleName()}{getModuleName()}}
+{\footnotesize\ttfamily virtual std\+::string Lattice\+Processor\+Module\+::get\+Module\+Name (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+Override this method to provide a unique name for the module 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ out}}  & {\em module\+Name} & The name of the module as shown in Lattice \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_lattice_processor_module_abb1721316018048f6ece026a621d42bc}\label{class_lattice_processor_module_abb1721316018048f6ece026a621d42bc}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!getParameter@{getParameter}}
+\index{getParameter@{getParameter}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{getParameter()}{getParameter()}}
+{\footnotesize\ttfamily float Lattice\+Processor\+Module\+::get\+Parameter (\begin{DoxyParamCaption}\item[{std\+::string}]{name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Used to query the current value of a parameter -\/ the names correspond to the names used in the \mbox{\hyperlink{class_lattice_processor_module_a69686ef945daf7265fc37f367b5bb21d}{create\+Parameters()}} function \mbox{\Hypertarget{class_lattice_processor_module_a0099b7640f4af0994db2392431a74759}\label{class_lattice_processor_module_a0099b7640f4af0994db2392431a74759}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!getParameterNameFromId@{getParameterNameFromId}}
+\index{getParameterNameFromId@{getParameterNameFromId}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{getParameterNameFromId()}{getParameterNameFromId()}}
+{\footnotesize\ttfamily std\+::string Lattice\+Processor\+Module\+::get\+Parameter\+Name\+From\+Id (\begin{DoxyParamCaption}\item[{std\+::string}]{parameter\+Id }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+this method will extract the parameter name, as defined in \texorpdfstring{$<$}{<}\mbox{\hyperlink{class_lattice_processor_module_a69686ef945daf7265fc37f367b5bb21d}{create\+Parameters()}}\texorpdfstring{$>$}{>}, from the unique paramater\+Id assigned to each parameter by the host 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em parameter\+Id} & The long version of the parameter typically in the form of \textquotesingle{}module parameter\mbox{[}Module\+Name (Node\+Num)\mbox{]}\textquotesingle{} \\
+\hline
+\mbox{\texttt{ out}}  & {\em parameter\+Name} & The parameter name defined when \texorpdfstring{$<$}{<}create\+Parameter()\texorpdfstring{$>$}{>} was called by the host. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_lattice_processor_module_ab3731bae92d30fc083660959170b4f23}\label{class_lattice_processor_module_ab3731bae92d30fc083660959170b4f23}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!getSVGXml@{getSVGXml}}
+\index{getSVGXml@{getSVGXml}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{getSVGXml()}{getSVGXml()}}
+{\footnotesize\ttfamily virtual std\+::string Lattice\+Processor\+Module\+::get\+SVGXml (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+override this method if you want to draw to the Lattice generic editor viewport 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ out}}  & {\em svg\+String} & A valid SVG XML file. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_lattice_processor_module_a252e786c3fb1fd22c8746456f7e4027f}\label{class_lattice_processor_module_a252e786c3fb1fd22c8746456f7e4027f}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!hostParameterChanged@{hostParameterChanged}}
+\index{hostParameterChanged@{hostParameterChanged}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{hostParameterChanged()}{hostParameterChanged()}}
+{\footnotesize\ttfamily virtual void Lattice\+Processor\+Module\+::host\+Parameter\+Changed (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{parameter\+ID,  }\item[{float}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+Called by the host when a paremeter changes. The parameter\+ID in this instance is a combination of the unique name for the module, assigned by the host, and the parameter name itself, i.\+e, \textquotesingle{}Super Synth 11 -\/ Attack\textquotesingle{}. Use the \texorpdfstring{$<$}{<}get\+Parameter\+Name()\texorpdfstring{$>$}{>} method to extract the parameter name -\/ note that in the case of audio FX, you can just called \mbox{\hyperlink{class_lattice_processor_module_abb1721316018048f6ece026a621d42bc}{get\+Parameter()}} from your process block. 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em parameter\+ID} & The name of the parameter that has been update. This will also contain information about the module instance, so use \texorpdfstring{$<$}{<}get\+Parameter\+Name()\texorpdfstring{$>$}{>} to extract the actual module parameter name. \\
+\hline
+\mbox{\texttt{ in}}  & {\em new\+Value} & The parameter value sent by the host. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_lattice_processor_module_aedcd3339e348da28ecfdd23f45f0d876}\label{class_lattice_processor_module_aedcd3339e348da28ecfdd23f45f0d876}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!prepareProcessor@{prepareProcessor}}
+\index{prepareProcessor@{prepareProcessor}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{prepareProcessor()}{prepareProcessor()}}
+{\footnotesize\ttfamily virtual void Lattice\+Processor\+Module\+::prepare\+Processor (\begin{DoxyParamCaption}\item[{int}]{sr,  }\item[{int}]{block\+Size }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+This function is called by the host before playback/performance. Override it to set your plugin\textquotesingle{}s sample rate and block size 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em sr} & The sample rate as set by the host \\
+\hline
+\mbox{\texttt{ in}}  & {\em block\+Size} & The blocks size, as set by the host. This is subject to change \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_lattice_processor_module_ab6c96f6e54267c9ec62c6c6b1abe38d8}\label{class_lattice_processor_module_ab6c96f6e54267c9ec62c6c6b1abe38d8}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!process@{process}}
+\index{process@{process}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{process()}{process()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual void Lattice\+Processor\+Module\+::process (\begin{DoxyParamCaption}\item[{float $\ast$$\ast$}]{buffer,  }\item[{int}]{num\+Channels,  }\item[{int}]{block\+Size,  }\item[{const \mbox{\hyperlink{struct_host_data}{Host\+Data}}}]{info }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+\begin{DoxyVerb}One of three overloaded process() functions available. Buffer is an array of audio channels. Each channel array will be blockSize samples longer. You can access and modify the sample data like this:
+\end{DoxyVerb}
+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{for} ( \textcolor{keywordtype}{int} i = 0 ; i < blockSize ; i++)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    \textcolor{keywordflow}{for} ( \textcolor{keywordtype}{int} chan = 0 ; chan < numChannels; chan++)}
+\DoxyCodeLine{    \{}
+\DoxyCodeLine{        \textcolor{comment}{//buffer[chan][i] = buffer[chan][i] * getParameter("{}Gain"{});                }}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em buffer} & An array of audio channels. \\
+\hline
+\mbox{\texttt{ in}}  & {\em num\+Channels} & The number of channels in the buffer array \\
+\hline
+\mbox{\texttt{ in}}  & {\em block\+Size} & The number of samples in each channel \\
+\hline
+\mbox{\texttt{ in}}  & {\em Host\+Info} & A struct filled with host information \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_lattice_processor_module_ada6b353ab139203d6b10d331a4c5dbb2}\label{class_lattice_processor_module_ada6b353ab139203d6b10d331a4c5dbb2}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!process@{process}}
+\index{process@{process}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{process()}{process()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily virtual void Lattice\+Processor\+Module\+::process (\begin{DoxyParamCaption}\item[{float $\ast$$\ast$}]{buffer,  }\item[{int}]{num\+Channels,  }\item[{int}]{block\+Size,  }\item[{std\+::vector$<$ \mbox{\hyperlink{struct_lattice_midi_message}{Lattice\+Midi\+Message}} $>$ \&}]{midi\+Messages }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+One of two overloaded \mbox{\hyperlink{class_lattice_processor_module_ab6c96f6e54267c9ec62c6c6b1abe38d8}{process()}} functions available. Buffer is an array of audio channels. Each channel array will be block\+Size samples longer. This process is passed a reference to a vector of Lattice\+Midi\+Messages. 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em buffer} & An array of audio channels. \\
+\hline
+\mbox{\texttt{ in}}  & {\em num\+Channels} & The number of channels in the buffer array \\
+\hline
+\mbox{\texttt{ in}}  & {\em block\+Size} & The number of samples in each channel \\
+\hline
+\mbox{\texttt{ in}}  & {\em midi\+Messages} & A \mbox{\hyperlink{struct_lattice_midi_message}{Lattice\+Midi\+Message}} vector. Read from this to access incoming MIDI data, and write to it to output MIDI data. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_lattice_processor_module_a6912f9af33a24ea4a527f4e57a9241fa}\label{class_lattice_processor_module_a6912f9af33a24ea4a527f4e57a9241fa}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!processSynthVoice@{processSynthVoice}}
+\index{processSynthVoice@{processSynthVoice}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{processSynthVoice()}{processSynthVoice()}}
+{\footnotesize\ttfamily virtual void Lattice\+Processor\+Module\+::process\+Synth\+Voice (\begin{DoxyParamCaption}\item[{float $\ast$$\ast$}]{buffer,  }\item[{int}]{num\+Channels,  }\item[{int}]{block\+Size }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+This processing method is called by synth modules. No MIDI messages are passed directly to this function. Instead, the start and stop notes methods will be called. Lattice will allocating an instance of the module to each voice. Lattice will set the number of voices when it calls \texorpdfstring{$<$}{<}get\+Number\+Of\+Voices()\texorpdfstring{$>$}{>}. Buffer is an array of audio channels. Each channel array will be block\+Size samples longer. This process is passed a reference to a vector of Lattice\+Midi\+Messages. 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em buffer} & An array of audio channels. \\
+\hline
+\mbox{\texttt{ in}}  & {\em num\+Channels} & The number of channels in the buffer array \\
+\hline
+\mbox{\texttt{ in}}  & {\em block\+Size} & The number of samples in each channel \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_lattice_processor_module_adae4fccd2a77bd83f2237edbc3213194}\label{class_lattice_processor_module_adae4fccd2a77bd83f2237edbc3213194}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!startNote@{startNote}}
+\index{startNote@{startNote}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{startNote()}{startNote()}}
+{\footnotesize\ttfamily virtual void Lattice\+Processor\+Module\+::start\+Note (\begin{DoxyParamCaption}\item[{int}]{midi\+Note\+Number,  }\item[{float}]{velocity }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+called by the host when a note is started 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em midi\+Note\+Number} & Midi note number sent from host \\
+\hline
+\mbox{\texttt{ in}}  & {\em midi\+Note\+Number} & Midi velocity in the range of 0 to 1 \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_lattice_processor_module_adb441d893752df1e8340fe1ef6b59450}\label{class_lattice_processor_module_adb441d893752df1e8340fe1ef6b59450}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!stopNote@{stopNote}}
+\index{stopNote@{stopNote}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{stopNote()}{stopNote()}}
+{\footnotesize\ttfamily virtual void Lattice\+Processor\+Module\+::stop\+Note (\begin{DoxyParamCaption}\item[{float}]{velocity }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+called by the host when a note is stoped 
+\begin{DoxyParams}{Parameters}
+{\em velocity} & Midi velocity in the range of 0 to 1 \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_lattice_processor_module_a82d80a24abc608eeedf1335b16c37c16}\label{class_lattice_processor_module_a82d80a24abc608eeedf1335b16c37c16}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!updateParameter@{updateParameter}}
+\index{updateParameter@{updateParameter}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{updateParameter()}{updateParameter()}}
+{\footnotesize\ttfamily void Lattice\+Processor\+Module\+::update\+Parameter (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{parameter\+ID,  }\item[{float}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Call this to inform the host that a parameter has been updated. Be careful that you don\textquotesingle{}t call this too often! 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em parameter\+ID} & The parameter in the host you wish to update \\
+\hline
+\mbox{\texttt{ in}}  & {\em new\+Value} & The value you wish to set the parameter to. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Lattice\+Processor\+Module.\+h\end{DoxyCompactItemize}

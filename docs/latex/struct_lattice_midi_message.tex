@@ -1,0 +1,81 @@
+\hypertarget{struct_lattice_midi_message}{}\doxysection{Lattice\+Midi\+Message Struct Reference}
+\label{struct_lattice_midi_message}\index{LatticeMidiMessage@{LatticeMidiMessage}}
+
+
+MIDI message class.  
+
+
+
+
+{\ttfamily \#include $<$Lattice\+Processor\+Module.\+h$>$}
+
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{struct_lattice_midi_message_abec72c3468f95f55926301807de366e0}\label{struct_lattice_midi_message_abec72c3468f95f55926301807de366e0}} 
+enum {\bfseries Type} \{ {\bfseries note\+On} =1
+, {\bfseries note\+Off}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct_lattice_midi_message_a2340d2cadb05101632726ad3020c9bf8}{Lattice\+Midi\+Message}} (Lattice\+Midi\+Message\+::\+Type type, int chan, int note\+Num, float vel)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+Type \mbox{\hyperlink{struct_lattice_midi_message_af8e85e2eeab8de04fdacd3f1c36528a1}{msg\+Type}} = Type\+::note\+Off
+\item 
+int \mbox{\hyperlink{struct_lattice_midi_message_a7cc0e8983bfc010be4564a1fa6ede42d}{note}} = 60
+\item 
+int \mbox{\hyperlink{struct_lattice_midi_message_a04af72ceead9adcf8e0650a77d8ea2c3}{channel}} = 0
+\item 
+float \mbox{\hyperlink{struct_lattice_midi_message_ac24c4a5656779cb5f43cdb75e04a35b2}{velocity}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+MIDI message class. 
+
+A simple MIDI message struct. {\ttfamily \mbox{\hyperlink{struct_lattice_midi_message}{Lattice\+Midi\+Message}}} vectors of can be accessed in the {\ttfamily \texorpdfstring{$<$}{<}\mbox{\hyperlink{class_lattice_processor_module_ab6c96f6e54267c9ec62c6c6b1abe38d8}{Lattice\+Processor\+Module\+::process()}}\texorpdfstring{$>$}{>}} 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{struct_lattice_midi_message_a2340d2cadb05101632726ad3020c9bf8}\label{struct_lattice_midi_message_a2340d2cadb05101632726ad3020c9bf8}} 
+\index{LatticeMidiMessage@{LatticeMidiMessage}!LatticeMidiMessage@{LatticeMidiMessage}}
+\index{LatticeMidiMessage@{LatticeMidiMessage}!LatticeMidiMessage@{LatticeMidiMessage}}
+\doxysubsubsection{\texorpdfstring{LatticeMidiMessage()}{LatticeMidiMessage()}}
+{\footnotesize\ttfamily Lattice\+Midi\+Message\+::\+Lattice\+Midi\+Message (\begin{DoxyParamCaption}\item[{Lattice\+Midi\+Message\+::\+Type}]{type,  }\item[{int}]{chan,  }\item[{int}]{note\+Num,  }\item[{float}]{vel }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Creates a simple MIDI message that can be added to a incoming MIDI vector in \texorpdfstring{$<$}{<}\mbox{\hyperlink{class_lattice_processor_module_ab6c96f6e54267c9ec62c6c6b1abe38d8}{Lattice\+Processor\+Module\+::process()}}\texorpdfstring{$>$}{>} 
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{struct_lattice_midi_message_a04af72ceead9adcf8e0650a77d8ea2c3}\label{struct_lattice_midi_message_a04af72ceead9adcf8e0650a77d8ea2c3}} 
+\index{LatticeMidiMessage@{LatticeMidiMessage}!channel@{channel}}
+\index{channel@{channel}!LatticeMidiMessage@{LatticeMidiMessage}}
+\doxysubsubsection{\texorpdfstring{channel}{channel}}
+{\footnotesize\ttfamily int Lattice\+Midi\+Message\+::channel = 0}
+
+MIDI channel \mbox{\Hypertarget{struct_lattice_midi_message_af8e85e2eeab8de04fdacd3f1c36528a1}\label{struct_lattice_midi_message_af8e85e2eeab8de04fdacd3f1c36528a1}} 
+\index{LatticeMidiMessage@{LatticeMidiMessage}!msgType@{msgType}}
+\index{msgType@{msgType}!LatticeMidiMessage@{LatticeMidiMessage}}
+\doxysubsubsection{\texorpdfstring{msgType}{msgType}}
+{\footnotesize\ttfamily Type Lattice\+Midi\+Message\+::msg\+Type = Type\+::note\+Off}
+
+Message type, on or off \mbox{\Hypertarget{struct_lattice_midi_message_a7cc0e8983bfc010be4564a1fa6ede42d}\label{struct_lattice_midi_message_a7cc0e8983bfc010be4564a1fa6ede42d}} 
+\index{LatticeMidiMessage@{LatticeMidiMessage}!note@{note}}
+\index{note@{note}!LatticeMidiMessage@{LatticeMidiMessage}}
+\doxysubsubsection{\texorpdfstring{note}{note}}
+{\footnotesize\ttfamily int Lattice\+Midi\+Message\+::note = 60}
+
+MIDI note number \mbox{\Hypertarget{struct_lattice_midi_message_ac24c4a5656779cb5f43cdb75e04a35b2}\label{struct_lattice_midi_message_ac24c4a5656779cb5f43cdb75e04a35b2}} 
+\index{LatticeMidiMessage@{LatticeMidiMessage}!velocity@{velocity}}
+\index{velocity@{velocity}!LatticeMidiMessage@{LatticeMidiMessage}}
+\doxysubsubsection{\texorpdfstring{velocity}{velocity}}
+{\footnotesize\ttfamily float Lattice\+Midi\+Message\+::velocity}
+
+MIDI velocity as a float between 0 and 1 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Lattice\+Processor\+Module.\+h\end{DoxyCompactItemize}

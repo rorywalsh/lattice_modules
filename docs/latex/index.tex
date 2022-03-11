@@ -1,0 +1,5 @@
+Lattice is an audio prototyping framework. This API provides a means of creating DSP modules that can be added to the Lattice audio graph. Anyone familiar with plugin standards such as VST, AU, ladspa, etc, should be able to find their way around quickly enough.
+
+All module parameters can be accessed in the Lattice graph through a generic editor window. They can also be exposed to the host by adding them to them directly to the Lattice plugin editor.
+
+Modules can act as effects processors (audio/\+MIDI), or synths. When loaded as a synth, Lattice manages each voice by allocating a new instance of the module. You can set the number of voices, thus allow both mono and polyphonic voicing. 

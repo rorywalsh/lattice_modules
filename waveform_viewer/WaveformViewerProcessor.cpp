@@ -28,7 +28,7 @@ void WaveformViewerProcessor::hostParameterChanged(const std::string& /*paramete
 
 }
 
-void WaveformViewerProcessor::prepareProcessor(int /*sr*/, int /*block*/)
+void WaveformViewerProcessor::prepareProcessor(int /*sr*/, std::size_t /*block*/)
 {
 
 }
@@ -40,7 +40,7 @@ void WaveformViewerProcessor::triggerParameterUpdate(const std::string& paramete
 }
 
 
-void WaveformViewerProcessor::process(float** buffer, int /*numChannels*/, int blockSize,const HostInfo hostInfo)
+void WaveformViewerProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData hostInfo)
 {
 	inL.resize(blockSize);
 	inR.resize(blockSize);

@@ -1,0 +1,773 @@
+\hypertarget{simple__svg__1_80_80_8hpp_source}{}\doxysection{simple\+\_\+svg\+\_\+1.0.0.hpp}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{comment}{/*******************************************************************************}}
+\DoxyCodeLine{2 \textcolor{comment}{*  The "{}New BSD License"{} : http://www.opensource.org/licenses/bsd-\/license.php  *}}
+\DoxyCodeLine{3 \textcolor{comment}{********************************************************************************}}
+\DoxyCodeLine{4 \textcolor{comment}{}}
+\DoxyCodeLine{5 \textcolor{comment}{Copyright (c) 2010, Mark Turney}}
+\DoxyCodeLine{6 \textcolor{comment}{All rights reserved.}}
+\DoxyCodeLine{7 \textcolor{comment}{}}
+\DoxyCodeLine{8 \textcolor{comment}{Redistribution and use in source and binary forms, with or without}}
+\DoxyCodeLine{9 \textcolor{comment}{modification, are permitted provided that the following conditions are met:}}
+\DoxyCodeLine{10 \textcolor{comment}{    * Redistributions of source code must retain the above copyright}}
+\DoxyCodeLine{11 \textcolor{comment}{      notice, this list of conditions and the following disclaimer.}}
+\DoxyCodeLine{12 \textcolor{comment}{    * Redistributions in binary form must reproduce the above copyright}}
+\DoxyCodeLine{13 \textcolor{comment}{      notice, this list of conditions and the following disclaimer in the}}
+\DoxyCodeLine{14 \textcolor{comment}{      documentation and/or other materials provided with the distribution.}}
+\DoxyCodeLine{15 \textcolor{comment}{    * Neither the name of the <organization> nor the}}
+\DoxyCodeLine{16 \textcolor{comment}{      names of its contributors may be used to endorse or promote products}}
+\DoxyCodeLine{17 \textcolor{comment}{      derived from this software without specific prior written permission.}}
+\DoxyCodeLine{18 \textcolor{comment}{}}
+\DoxyCodeLine{19 \textcolor{comment}{THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "{}AS IS"{} AND}}
+\DoxyCodeLine{20 \textcolor{comment}{ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED}}
+\DoxyCodeLine{21 \textcolor{comment}{WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE}}
+\DoxyCodeLine{22 \textcolor{comment}{DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY}}
+\DoxyCodeLine{23 \textcolor{comment}{DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES}}
+\DoxyCodeLine{24 \textcolor{comment}{(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;}}
+\DoxyCodeLine{25 \textcolor{comment}{LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND}}
+\DoxyCodeLine{26 \textcolor{comment}{ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT}}
+\DoxyCodeLine{27 \textcolor{comment}{(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS}}
+\DoxyCodeLine{28 \textcolor{comment}{SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.}}
+\DoxyCodeLine{29 \textcolor{comment}{}}
+\DoxyCodeLine{30 \textcolor{comment}{******************************************************************************/}}
+\DoxyCodeLine{31 }
+\DoxyCodeLine{32 \textcolor{preprocessor}{\#ifndef SIMPLE\_SVG\_HPP}}
+\DoxyCodeLine{33 \textcolor{preprocessor}{\#define SIMPLE\_SVG\_HPP}}
+\DoxyCodeLine{34 }
+\DoxyCodeLine{35 \textcolor{preprocessor}{\#include <vector>}}
+\DoxyCodeLine{36 \textcolor{preprocessor}{\#include <string>}}
+\DoxyCodeLine{37 \textcolor{preprocessor}{\#include <sstream>}}
+\DoxyCodeLine{38 \textcolor{preprocessor}{\#include <fstream>}}
+\DoxyCodeLine{39 }
+\DoxyCodeLine{40 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{41 }
+\DoxyCodeLine{42 \textcolor{keyword}{namespace }svg}
+\DoxyCodeLine{43 \{}
+\DoxyCodeLine{44     \textcolor{comment}{// Utility XML/String Functions.}}
+\DoxyCodeLine{45     \textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{46     \textcolor{keyword}{inline} std::string attribute(std::string \textcolor{keyword}{const} \& attribute\_name,}
+\DoxyCodeLine{47         T \textcolor{keyword}{const} \& value, std::string \textcolor{keyword}{const} \& unit = \textcolor{stringliteral}{"{}"{}})}
+\DoxyCodeLine{48     \{}
+\DoxyCodeLine{49         std::stringstream ss;}
+\DoxyCodeLine{50         ss << attribute\_name << \textcolor{stringliteral}{"{}=\(\backslash\)"{}"{}} << value << unit << \textcolor{stringliteral}{"{}\(\backslash\)"{} "{}};}
+\DoxyCodeLine{51         \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{52     \}}
+\DoxyCodeLine{53     \textcolor{keyword}{inline} std::string elemStart(std::string \textcolor{keyword}{const} \& element\_name)}
+\DoxyCodeLine{54     \{}
+\DoxyCodeLine{55         \textcolor{keywordflow}{return} \textcolor{stringliteral}{"{}\(\backslash\)t<"{}} + element\_name + \textcolor{stringliteral}{"{} "{}};}
+\DoxyCodeLine{56     \}}
+\DoxyCodeLine{57     \textcolor{keyword}{inline} std::string elemEnd(std::string \textcolor{keyword}{const} \& element\_name)}
+\DoxyCodeLine{58     \{}
+\DoxyCodeLine{59         \textcolor{keywordflow}{return} \textcolor{stringliteral}{"{}</"{}} + element\_name + \textcolor{stringliteral}{"{}>\(\backslash\)n"{}};}
+\DoxyCodeLine{60     \}}
+\DoxyCodeLine{61     \textcolor{keyword}{inline} std::string emptyElemEnd()}
+\DoxyCodeLine{62     \{}
+\DoxyCodeLine{63         \textcolor{keywordflow}{return} \textcolor{stringliteral}{"{}/>\(\backslash\)n"{}};}
+\DoxyCodeLine{64     \}}
+\DoxyCodeLine{65 }
+\DoxyCodeLine{66     \textcolor{comment}{// Quick optional return type.  This allows functions to return an invalid}}
+\DoxyCodeLine{67     \textcolor{comment}{//  value if no good return is possible.  The user checks for validity}}
+\DoxyCodeLine{68     \textcolor{comment}{//  before using the returned value.}}
+\DoxyCodeLine{69     \textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{70     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1optional}{optional}}}
+\DoxyCodeLine{71     \{}
+\DoxyCodeLine{72     \textcolor{keyword}{public}:}
+\DoxyCodeLine{73         \mbox{\hyperlink{classsvg_1_1optional}{optional<T>}}(T \textcolor{keyword}{const} \& type)}
+\DoxyCodeLine{74             : valid(\textcolor{keyword}{true}), type(type) \{ \}}
+\DoxyCodeLine{75         \mbox{\hyperlink{classsvg_1_1optional}{optional<T>}}() : valid(\textcolor{keyword}{false}), type(T()) \{ \}}
+\DoxyCodeLine{76         T * operator-\/>()}
+\DoxyCodeLine{77         \{}
+\DoxyCodeLine{78             \textcolor{comment}{// If we try to access an invalid value, an exception is thrown.}}
+\DoxyCodeLine{79             \textcolor{keywordflow}{if} (!valid)}
+\DoxyCodeLine{80                 \textcolor{keywordflow}{throw} std::exception();}
+\DoxyCodeLine{81 }
+\DoxyCodeLine{82             \textcolor{keywordflow}{return} \&type;}
+\DoxyCodeLine{83         \}}
+\DoxyCodeLine{84         \textcolor{comment}{// Test for validity.}}
+\DoxyCodeLine{85         \textcolor{keywordtype}{bool} operator!()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} !valid; \}}
+\DoxyCodeLine{86     \textcolor{keyword}{private}:}
+\DoxyCodeLine{87         \textcolor{keywordtype}{bool} valid;}
+\DoxyCodeLine{88         T type;}
+\DoxyCodeLine{89     \};}
+\DoxyCodeLine{90 }
+\DoxyCodeLine{91     \textcolor{keyword}{struct }\mbox{\hyperlink{structsvg_1_1_dimensions}{Dimensions}}}
+\DoxyCodeLine{92     \{}
+\DoxyCodeLine{93         \mbox{\hyperlink{structsvg_1_1_dimensions}{Dimensions}}(\textcolor{keywordtype}{double} width, \textcolor{keywordtype}{double} height) : width(width), height(height) \{ \}}
+\DoxyCodeLine{94         \mbox{\hyperlink{structsvg_1_1_dimensions}{Dimensions}}(\textcolor{keywordtype}{double} combined = 0) : width(combined), height(combined) \{ \}}
+\DoxyCodeLine{95         \textcolor{keywordtype}{double} width;}
+\DoxyCodeLine{96         \textcolor{keywordtype}{double} height;}
+\DoxyCodeLine{97     \};}
+\DoxyCodeLine{98 }
+\DoxyCodeLine{99     \textcolor{keyword}{struct }\mbox{\hyperlink{structsvg_1_1_point}{Point}}}
+\DoxyCodeLine{100     \{}
+\DoxyCodeLine{101         \mbox{\hyperlink{structsvg_1_1_point}{Point}}(\textcolor{keywordtype}{double} x = 0, \textcolor{keywordtype}{double} y = 0) : x(x), y(y) \{ \}}
+\DoxyCodeLine{102         \textcolor{keywordtype}{double} x;}
+\DoxyCodeLine{103         \textcolor{keywordtype}{double} y;}
+\DoxyCodeLine{104     \};}
+\DoxyCodeLine{105     \textcolor{keyword}{inline} \mbox{\hyperlink{classsvg_1_1optional}{optional<Point>}} getMinPoint(std::vector<Point> \textcolor{keyword}{const} \& points)}
+\DoxyCodeLine{106     \{}
+\DoxyCodeLine{107         \textcolor{keywordflow}{if} (points.empty())}
+\DoxyCodeLine{108             \textcolor{keywordflow}{return} \mbox{\hyperlink{classsvg_1_1optional}{optional<Point>}}();}
+\DoxyCodeLine{109 }
+\DoxyCodeLine{110         \mbox{\hyperlink{structsvg_1_1_point}{Point}} min = points[0];}
+\DoxyCodeLine{111         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} i = 0; i < points.size(); ++i) \{}
+\DoxyCodeLine{112             \textcolor{keywordflow}{if} (points[i].x < min.x)}
+\DoxyCodeLine{113                 min.x = points[i].x;}
+\DoxyCodeLine{114             \textcolor{keywordflow}{if} (points[i].y < min.y)}
+\DoxyCodeLine{115                 min.y = points[i].y;}
+\DoxyCodeLine{116         \}}
+\DoxyCodeLine{117         \textcolor{keywordflow}{return} optional<Point>(min);}
+\DoxyCodeLine{118     \}}
+\DoxyCodeLine{119     \textcolor{keyword}{inline} optional<Point> getMaxPoint(std::vector<Point> \textcolor{keyword}{const} \& points)}
+\DoxyCodeLine{120     \{}
+\DoxyCodeLine{121         \textcolor{keywordflow}{if} (points.empty())}
+\DoxyCodeLine{122             \textcolor{keywordflow}{return} optional<Point>();}
+\DoxyCodeLine{123 }
+\DoxyCodeLine{124         Point max = points[0];}
+\DoxyCodeLine{125         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} i = 0; i < points.size(); ++i) \{}
+\DoxyCodeLine{126             \textcolor{keywordflow}{if} (points[i].x > max.x)}
+\DoxyCodeLine{127                 max.x = points[i].x;}
+\DoxyCodeLine{128             \textcolor{keywordflow}{if} (points[i].y > max.y)}
+\DoxyCodeLine{129                 max.y = points[i].y;}
+\DoxyCodeLine{130         \}}
+\DoxyCodeLine{131         \textcolor{keywordflow}{return} optional<Point>(max);}
+\DoxyCodeLine{132     \}}
+\DoxyCodeLine{133 }
+\DoxyCodeLine{134     \textcolor{comment}{// Defines the dimensions, scale, origin, and origin offset of the document.}}
+\DoxyCodeLine{135     \textcolor{keyword}{struct }\mbox{\hyperlink{structsvg_1_1_layout}{Layout}}}
+\DoxyCodeLine{136     \{}
+\DoxyCodeLine{137         \textcolor{keyword}{enum} Origin \{ TopLeft, BottomLeft, TopRight, BottomRight \};}
+\DoxyCodeLine{138 }
+\DoxyCodeLine{139         \mbox{\hyperlink{structsvg_1_1_layout}{Layout}}(\mbox{\hyperlink{structsvg_1_1_dimensions}{Dimensions}} \textcolor{keyword}{const} \& dimensions = \mbox{\hyperlink{structsvg_1_1_dimensions}{Dimensions}}(400, 300), Origin origin = BottomLeft,}
+\DoxyCodeLine{140             \textcolor{keywordtype}{double} scale = 1, \mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& origin\_offset = \mbox{\hyperlink{structsvg_1_1_point}{Point}}(0, 0))}
+\DoxyCodeLine{141             : dimensions(dimensions), scale(scale), origin(origin), origin\_offset(origin\_offset) \{ \}}
+\DoxyCodeLine{142         \mbox{\hyperlink{structsvg_1_1_dimensions}{Dimensions}} dimensions;}
+\DoxyCodeLine{143         \textcolor{keywordtype}{double} scale;}
+\DoxyCodeLine{144         Origin origin;}
+\DoxyCodeLine{145         \mbox{\hyperlink{structsvg_1_1_point}{Point}} origin\_offset;}
+\DoxyCodeLine{146     \};}
+\DoxyCodeLine{147 }
+\DoxyCodeLine{148     \textcolor{comment}{// Convert coordinates in user space to SVG native space.}}
+\DoxyCodeLine{149     \textcolor{keyword}{inline} \textcolor{keywordtype}{double} translateX(\textcolor{keywordtype}{double} x, \mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout)}
+\DoxyCodeLine{150     \{}
+\DoxyCodeLine{151         \textcolor{keywordflow}{if} (layout.origin == Layout::BottomRight || layout.origin == Layout::TopRight)}
+\DoxyCodeLine{152             \textcolor{keywordflow}{return} layout.dimensions.width -\/ ((x + layout.origin\_offset.x) * layout.scale);}
+\DoxyCodeLine{153         \textcolor{keywordflow}{else}}
+\DoxyCodeLine{154             \textcolor{keywordflow}{return} (layout.origin\_offset.x + x) * layout.scale;}
+\DoxyCodeLine{155     \}}
+\DoxyCodeLine{156 }
+\DoxyCodeLine{157     \textcolor{keyword}{inline} \textcolor{keywordtype}{double} translateY(\textcolor{keywordtype}{double} y, Layout \textcolor{keyword}{const} \& layout)}
+\DoxyCodeLine{158     \{}
+\DoxyCodeLine{159         \textcolor{keywordflow}{if} (layout.origin == Layout::BottomLeft || layout.origin == Layout::BottomRight)}
+\DoxyCodeLine{160             \textcolor{keywordflow}{return} layout.dimensions.height -\/ ((y + layout.origin\_offset.y) * layout.scale);}
+\DoxyCodeLine{161         \textcolor{keywordflow}{else}}
+\DoxyCodeLine{162             \textcolor{keywordflow}{return} (layout.origin\_offset.y + y) * layout.scale;}
+\DoxyCodeLine{163     \}}
+\DoxyCodeLine{164     \textcolor{keyword}{inline} \textcolor{keywordtype}{double} translateScale(\textcolor{keywordtype}{double} dimension, Layout \textcolor{keyword}{const} \& layout)}
+\DoxyCodeLine{165     \{}
+\DoxyCodeLine{166         \textcolor{keywordflow}{return} dimension * layout.scale;}
+\DoxyCodeLine{167     \}}
+\DoxyCodeLine{168 }
+\DoxyCodeLine{169     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1_serializeable}{Serializeable}}}
+\DoxyCodeLine{170     \{}
+\DoxyCodeLine{171     \textcolor{keyword}{public}:}
+\DoxyCodeLine{172         \mbox{\hyperlink{classsvg_1_1_serializeable}{Serializeable}}() \{ \}}
+\DoxyCodeLine{173         \textcolor{keyword}{virtual} \mbox{\hyperlink{classsvg_1_1_serializeable}{\string~Serializeable}}() \{ \};}
+\DoxyCodeLine{174         \textcolor{keyword}{virtual} std::string toString(\mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout) \textcolor{keyword}{const} = 0;}
+\DoxyCodeLine{175     \};}
+\DoxyCodeLine{176 }
+\DoxyCodeLine{177     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1_color}{Color}} : \textcolor{keyword}{public} \mbox{\hyperlink{classsvg_1_1_serializeable}{Serializeable}}}
+\DoxyCodeLine{178     \{}
+\DoxyCodeLine{179     \textcolor{keyword}{public}:}
+\DoxyCodeLine{180         \textcolor{keyword}{enum} Defaults \{ Transparent = -\/1, Aqua, Black, Blue, Brown, Cyan, Fuchsia,}
+\DoxyCodeLine{181             Green, Lime, Magenta, Orange, Purple, Red, Silver, White, Yellow \};}
+\DoxyCodeLine{182 }
+\DoxyCodeLine{183         \mbox{\hyperlink{classsvg_1_1_color}{Color}}(std::string hexCode) : transparent(\textcolor{keyword}{false})}
+\DoxyCodeLine{184         \{}
+\DoxyCodeLine{185             \textcolor{keywordtype}{int} r, g, b;}
+\DoxyCodeLine{186             \textcolor{keywordflow}{if} (hexCode.at(0) == \textcolor{charliteral}{'\#'}) \{}
+\DoxyCodeLine{187                 hexCode = hexCode.erase(0, 1);}
+\DoxyCodeLine{188             \}}
+\DoxyCodeLine{189 }
+\DoxyCodeLine{190             std::istringstream(hexCode.substr(0, 2)) >> std::hex >> r;}
+\DoxyCodeLine{191             std::istringstream(hexCode.substr(2, 2)) >> std::hex >> g;}
+\DoxyCodeLine{192             std::istringstream(hexCode.substr(4, 2)) >> std::hex >> b;}
+\DoxyCodeLine{193 }
+\DoxyCodeLine{194             assign(r, g, b);}
+\DoxyCodeLine{195         \}}
+\DoxyCodeLine{196 }
+\DoxyCodeLine{197 }
+\DoxyCodeLine{198         \mbox{\hyperlink{classsvg_1_1_color}{Color}}(\textcolor{keywordtype}{int} r, \textcolor{keywordtype}{int} g, \textcolor{keywordtype}{int} b) : transparent(\textcolor{keyword}{false}), red(r), green(g), blue(b) \{ \}}
+\DoxyCodeLine{199         }
+\DoxyCodeLine{200         \mbox{\hyperlink{classsvg_1_1_color}{Color}}(Defaults color)}
+\DoxyCodeLine{201             : transparent(\textcolor{keyword}{false}), red(0), green(0), blue(0)}
+\DoxyCodeLine{202         \{}
+\DoxyCodeLine{203             \textcolor{keywordflow}{switch} (color)}
+\DoxyCodeLine{204             \{}
+\DoxyCodeLine{205                 \textcolor{keywordflow}{case} Aqua: assign(0, 255, 255); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{206                 \textcolor{keywordflow}{case} Black: assign(0, 0, 0); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{207                 \textcolor{keywordflow}{case} Blue: assign(0, 0, 255); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{208                 \textcolor{keywordflow}{case} Brown: assign(165, 42, 42); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{209                 \textcolor{keywordflow}{case} Cyan: assign(0, 255, 255); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{210                 \textcolor{keywordflow}{case} Fuchsia: assign(255, 0, 255); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{211                 \textcolor{keywordflow}{case} Green: assign(0, 128, 0); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{212                 \textcolor{keywordflow}{case} Lime: assign(0, 255, 0); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{213                 \textcolor{keywordflow}{case} Magenta: assign(255, 0, 255); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{214                 \textcolor{keywordflow}{case} Orange: assign(255, 165, 0); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{215                 \textcolor{keywordflow}{case} Purple: assign(128, 0, 128); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{216                 \textcolor{keywordflow}{case} Red: assign(255, 0, 0); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{217                 \textcolor{keywordflow}{case} Silver: assign(192, 192, 192); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{218                 \textcolor{keywordflow}{case} White: assign(255, 255, 255); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{219                 \textcolor{keywordflow}{case} Yellow: assign(255, 255, 0); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{220                 \textcolor{keywordflow}{default}: transparent = \textcolor{keyword}{true}; \textcolor{keywordflow}{break};}
+\DoxyCodeLine{221             \}}
+\DoxyCodeLine{222         \}}
+\DoxyCodeLine{223         \textcolor{keyword}{virtual} \mbox{\hyperlink{classsvg_1_1_color}{\string~Color}}() \{ \}}
+\DoxyCodeLine{224         std::string toString(\mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \&)\textcolor{keyword}{ const}}
+\DoxyCodeLine{225 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{226             std::stringstream ss;}
+\DoxyCodeLine{227             \textcolor{keywordflow}{if} (transparent)}
+\DoxyCodeLine{228                 ss << \textcolor{stringliteral}{"{}none"{}};}
+\DoxyCodeLine{229             \textcolor{keywordflow}{else}}
+\DoxyCodeLine{230                 ss << \textcolor{stringliteral}{"{}rgb("{}} << red << \textcolor{stringliteral}{"{},"{}} << green << \textcolor{stringliteral}{"{},"{}} << blue << \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{231             \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{232         \}}
+\DoxyCodeLine{233 }
+\DoxyCodeLine{234     \textcolor{keyword}{private}:}
+\DoxyCodeLine{235             \textcolor{keywordtype}{bool} transparent;}
+\DoxyCodeLine{236             \textcolor{keywordtype}{int} red;}
+\DoxyCodeLine{237             \textcolor{keywordtype}{int} green;}
+\DoxyCodeLine{238             \textcolor{keywordtype}{int} blue;}
+\DoxyCodeLine{239 }
+\DoxyCodeLine{240             \textcolor{keywordtype}{void} assign(\textcolor{keywordtype}{int} r, \textcolor{keywordtype}{int} g, \textcolor{keywordtype}{int} b)}
+\DoxyCodeLine{241             \{}
+\DoxyCodeLine{242                 red = r;}
+\DoxyCodeLine{243                 green = g;}
+\DoxyCodeLine{244                 blue = b;}
+\DoxyCodeLine{245             \}}
+\DoxyCodeLine{246     \};}
+\DoxyCodeLine{247 }
+\DoxyCodeLine{248     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1_fill}{Fill}} : \textcolor{keyword}{public} \mbox{\hyperlink{classsvg_1_1_serializeable}{Serializeable}}}
+\DoxyCodeLine{249     \{}
+\DoxyCodeLine{250     \textcolor{keyword}{public}:}
+\DoxyCodeLine{251         \mbox{\hyperlink{classsvg_1_1_fill}{Fill}}(Color::Defaults color) : color(color) \{ \}}
+\DoxyCodeLine{252         \mbox{\hyperlink{classsvg_1_1_fill}{Fill}}(\mbox{\hyperlink{classsvg_1_1_color}{Color}} color = Color::Transparent, \textcolor{keywordtype}{float} opacity = 1.f)}
+\DoxyCodeLine{253             : color(color), opacity(opacity) \{ \}}
+\DoxyCodeLine{254 }
+\DoxyCodeLine{255         std::string toString(\mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout)\textcolor{keyword}{ const}}
+\DoxyCodeLine{256 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{257             std::stringstream ss;}
+\DoxyCodeLine{258             ss << attribute(\textcolor{stringliteral}{"{}fill"{}}, color.toString(layout)) << attribute(\textcolor{stringliteral}{"{}fill-\/opacity"{}}, opacity);}
+\DoxyCodeLine{259             \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{260         \}}
+\DoxyCodeLine{261     \textcolor{keyword}{private}:}
+\DoxyCodeLine{262         \mbox{\hyperlink{classsvg_1_1_color}{Color}} color;}
+\DoxyCodeLine{263         \textcolor{keywordtype}{float} opacity;}
+\DoxyCodeLine{264     \};}
+\DoxyCodeLine{265 }
+\DoxyCodeLine{266     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} : \textcolor{keyword}{public} \mbox{\hyperlink{classsvg_1_1_serializeable}{Serializeable}}}
+\DoxyCodeLine{267     \{}
+\DoxyCodeLine{268     \textcolor{keyword}{public}:}
+\DoxyCodeLine{269         \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}}(\textcolor{keywordtype}{double} width = -\/1, \mbox{\hyperlink{classsvg_1_1_color}{Color}} color = Color::Transparent, \textcolor{keywordtype}{float} opacity = 1.f, \textcolor{keywordtype}{bool} nonScalingStroke = \textcolor{keyword}{false})}
+\DoxyCodeLine{270             : width(width), color(color), nonScaling(nonScalingStroke), opacity(opacity) \{ \}}
+\DoxyCodeLine{271 }
+\DoxyCodeLine{272         std::string toString(\mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout)\textcolor{keyword}{ const}}
+\DoxyCodeLine{273 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{274             \textcolor{comment}{// If stroke width is invalid.}}
+\DoxyCodeLine{275             \textcolor{keywordflow}{if} (width < 0)}
+\DoxyCodeLine{276                 \textcolor{keywordflow}{return} std::string();}
+\DoxyCodeLine{277 }
+\DoxyCodeLine{278             std::stringstream ss;}
+\DoxyCodeLine{279             ss << attribute(\textcolor{stringliteral}{"{}stroke-\/width"{}}, translateScale(width, layout)) << attribute(\textcolor{stringliteral}{"{}stroke"{}}, color.toString(layout)) << attribute(\textcolor{stringliteral}{"{}stroke-\/opacity"{}}, opacity);}
+\DoxyCodeLine{280             \textcolor{keywordflow}{if} (nonScaling)}
+\DoxyCodeLine{281                ss << attribute(\textcolor{stringliteral}{"{}vector-\/effect"{}}, \textcolor{stringliteral}{"{}non-\/scaling-\/stroke"{}});}
+\DoxyCodeLine{282             \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{283         \}}
+\DoxyCodeLine{284     \textcolor{keyword}{private}:}
+\DoxyCodeLine{285         \textcolor{keywordtype}{double} width;}
+\DoxyCodeLine{286         \mbox{\hyperlink{classsvg_1_1_color}{Color}} color;}
+\DoxyCodeLine{287         \textcolor{keywordtype}{float} opacity = 1.f;}
+\DoxyCodeLine{288         \textcolor{keywordtype}{bool} nonScaling;}
+\DoxyCodeLine{289     \};}
+\DoxyCodeLine{290 }
+\DoxyCodeLine{291     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1_font}{Font}} : \textcolor{keyword}{public} \mbox{\hyperlink{classsvg_1_1_serializeable}{Serializeable}}}
+\DoxyCodeLine{292     \{}
+\DoxyCodeLine{293     \textcolor{keyword}{public}:}
+\DoxyCodeLine{294         \mbox{\hyperlink{classsvg_1_1_font}{Font}}(\textcolor{keywordtype}{double} size = 12, std::string \textcolor{keyword}{const} \& family = \textcolor{stringliteral}{"{}Verdana"{}}) : size(size), family(family) \{ \}}
+\DoxyCodeLine{295         std::string toString(\mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout)\textcolor{keyword}{ const}}
+\DoxyCodeLine{296 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{297             std::stringstream ss;}
+\DoxyCodeLine{298             ss << attribute(\textcolor{stringliteral}{"{}font-\/size"{}}, translateScale(size, layout)) << attribute(\textcolor{stringliteral}{"{}font-\/family"{}}, family);}
+\DoxyCodeLine{299             \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{300         \}}
+\DoxyCodeLine{301     \textcolor{keyword}{private}:}
+\DoxyCodeLine{302         \textcolor{keywordtype}{double} size;}
+\DoxyCodeLine{303         std::string family;}
+\DoxyCodeLine{304     \};}
+\DoxyCodeLine{305 }
+\DoxyCodeLine{306     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1_shape}{Shape}} : \textcolor{keyword}{public} \mbox{\hyperlink{classsvg_1_1_serializeable}{Serializeable}}}
+\DoxyCodeLine{307     \{}
+\DoxyCodeLine{308     \textcolor{keyword}{public}:}
+\DoxyCodeLine{309         \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}(\mbox{\hyperlink{classsvg_1_1_fill}{Fill}} \textcolor{keyword}{const} \& fill = \mbox{\hyperlink{classsvg_1_1_fill}{Fill}}(), \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} \textcolor{keyword}{const} \& stroke = \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}}())}
+\DoxyCodeLine{310             : fill(fill), stroke(stroke)\{ \}}
+\DoxyCodeLine{311         \textcolor{keyword}{virtual} \mbox{\hyperlink{classsvg_1_1_shape}{\string~Shape}}() \{ \}}
+\DoxyCodeLine{312         \textcolor{keyword}{virtual} std::string toString(\mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout) \textcolor{keyword}{const} = 0;}
+\DoxyCodeLine{313         \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} offset(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& offset) = 0;}
+\DoxyCodeLine{314     \textcolor{keyword}{protected}:}
+\DoxyCodeLine{315         \mbox{\hyperlink{classsvg_1_1_fill}{Fill}} fill;}
+\DoxyCodeLine{316         \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} stroke;}
+\DoxyCodeLine{317     \};}
+\DoxyCodeLine{318 }
+\DoxyCodeLine{319     \textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{320     \textcolor{keyword}{inline} std::string vectorToString(std::vector<T> collection, \mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout)}
+\DoxyCodeLine{321     \{}
+\DoxyCodeLine{322         std::string combination\_str;}
+\DoxyCodeLine{323         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} i = 0; i < collection.size(); ++i)}
+\DoxyCodeLine{324             combination\_str += collection[i].toString(layout);}
+\DoxyCodeLine{325 }
+\DoxyCodeLine{326         \textcolor{keywordflow}{return} combination\_str;}
+\DoxyCodeLine{327     \}}
+\DoxyCodeLine{328 }
+\DoxyCodeLine{329     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1_circle}{Circle}} : \textcolor{keyword}{public} \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}}
+\DoxyCodeLine{330     \{}
+\DoxyCodeLine{331     \textcolor{keyword}{public}:}
+\DoxyCodeLine{332         \mbox{\hyperlink{classsvg_1_1_circle}{Circle}}(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& center, \textcolor{keywordtype}{double} diameter, \mbox{\hyperlink{classsvg_1_1_fill}{Fill}} \textcolor{keyword}{const} \& fill,}
+\DoxyCodeLine{333             \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} \textcolor{keyword}{const} \& stroke = \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}}())}
+\DoxyCodeLine{334             : \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}(fill, stroke), center(center), radius(diameter / 2) \{ \}}
+\DoxyCodeLine{335         std::string toString(\mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout)\textcolor{keyword}{ const}}
+\DoxyCodeLine{336 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{337             std::stringstream ss;}
+\DoxyCodeLine{338             ss << elemStart(\textcolor{stringliteral}{"{}circle"{}}) << attribute(\textcolor{stringliteral}{"{}cx"{}}, translateX(center.x, layout))}
+\DoxyCodeLine{339                 << attribute(\textcolor{stringliteral}{"{}cy"{}}, translateY(center.y, layout))}
+\DoxyCodeLine{340                 << attribute(\textcolor{stringliteral}{"{}r"{}}, translateScale(radius, layout)) << fill.toString(layout)}
+\DoxyCodeLine{341                 << stroke.toString(layout) << emptyElemEnd();}
+\DoxyCodeLine{342             \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{343         \}}
+\DoxyCodeLine{344         \textcolor{keywordtype}{void} offset(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& offset)}
+\DoxyCodeLine{345         \{}
+\DoxyCodeLine{346             center.x += offset.x;}
+\DoxyCodeLine{347             center.y += offset.y;}
+\DoxyCodeLine{348         \}}
+\DoxyCodeLine{349     \textcolor{keyword}{private}:}
+\DoxyCodeLine{350         \mbox{\hyperlink{structsvg_1_1_point}{Point}} center;}
+\DoxyCodeLine{351         \textcolor{keywordtype}{double} radius;}
+\DoxyCodeLine{352     \};}
+\DoxyCodeLine{353 }
+\DoxyCodeLine{354     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1_elipse}{Elipse}} : \textcolor{keyword}{public} \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}}
+\DoxyCodeLine{355     \{}
+\DoxyCodeLine{356     \textcolor{keyword}{public}:}
+\DoxyCodeLine{357         \mbox{\hyperlink{classsvg_1_1_elipse}{Elipse}}(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& center, \textcolor{keywordtype}{double} width, \textcolor{keywordtype}{double} height,}
+\DoxyCodeLine{358             \mbox{\hyperlink{classsvg_1_1_fill}{Fill}} \textcolor{keyword}{const} \& fill = \mbox{\hyperlink{classsvg_1_1_fill}{Fill}}(), \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} \textcolor{keyword}{const} \& stroke = \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}}())}
+\DoxyCodeLine{359             : \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}(fill, stroke), center(center), radius\_width(width / 2),}
+\DoxyCodeLine{360             radius\_height(height / 2) \{ \}}
+\DoxyCodeLine{361         std::string toString(\mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout)\textcolor{keyword}{ const}}
+\DoxyCodeLine{362 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{363             std::stringstream ss;}
+\DoxyCodeLine{364             ss << elemStart(\textcolor{stringliteral}{"{}ellipse"{}}) << attribute(\textcolor{stringliteral}{"{}cx"{}}, translateX(center.x, layout))}
+\DoxyCodeLine{365                 << attribute(\textcolor{stringliteral}{"{}cy"{}}, translateY(center.y, layout))}
+\DoxyCodeLine{366                 << attribute(\textcolor{stringliteral}{"{}rx"{}}, translateScale(radius\_width, layout))}
+\DoxyCodeLine{367                 << attribute(\textcolor{stringliteral}{"{}ry"{}}, translateScale(radius\_height, layout))}
+\DoxyCodeLine{368                 << fill.toString(layout) << stroke.toString(layout) << emptyElemEnd();}
+\DoxyCodeLine{369             \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{370         \}}
+\DoxyCodeLine{371         \textcolor{keywordtype}{void} offset(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& offset)}
+\DoxyCodeLine{372         \{}
+\DoxyCodeLine{373             center.x += offset.x;}
+\DoxyCodeLine{374             center.y += offset.y;}
+\DoxyCodeLine{375         \}}
+\DoxyCodeLine{376     \textcolor{keyword}{private}:}
+\DoxyCodeLine{377         \mbox{\hyperlink{structsvg_1_1_point}{Point}} center;}
+\DoxyCodeLine{378         \textcolor{keywordtype}{double} radius\_width;}
+\DoxyCodeLine{379         \textcolor{keywordtype}{double} radius\_height;}
+\DoxyCodeLine{380     \};}
+\DoxyCodeLine{381 }
+\DoxyCodeLine{382     \textcolor{comment}{//====================================================================}}
+\DoxyCodeLine{383     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1_rounded_rectangle}{RoundedRectangle}} : \textcolor{keyword}{public} \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}}
+\DoxyCodeLine{384     \{}
+\DoxyCodeLine{385     \textcolor{keyword}{public}:}
+\DoxyCodeLine{386         \mbox{\hyperlink{classsvg_1_1_rounded_rectangle}{RoundedRectangle}}(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const}\& edge, \textcolor{keywordtype}{double} width, \textcolor{keywordtype}{double} height, \textcolor{keywordtype}{double} corners,}
+\DoxyCodeLine{387             \mbox{\hyperlink{classsvg_1_1_fill}{Fill}} \textcolor{keyword}{const}\& fill = \mbox{\hyperlink{classsvg_1_1_fill}{Fill}}(), \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} \textcolor{keyword}{const}\& stroke = \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}}())}
+\DoxyCodeLine{388             : \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}(fill, stroke), edge(edge), width(width), corners(corners),}
+\DoxyCodeLine{389             height(height) \{ \}}
+\DoxyCodeLine{390 }
+\DoxyCodeLine{391         std::string toString(\mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const}\& layout)\textcolor{keyword}{ const}}
+\DoxyCodeLine{392 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{393             std::stringstream ss;}
+\DoxyCodeLine{394             ss << elemStart(\textcolor{stringliteral}{"{}rect"{}}) << attribute(\textcolor{stringliteral}{"{}x"{}}, translateX(edge.x, layout))}
+\DoxyCodeLine{395                 << attribute(\textcolor{stringliteral}{"{}y"{}}, translateY(edge.y, layout))}
+\DoxyCodeLine{396                 << attribute(\textcolor{stringliteral}{"{}width"{}}, translateScale(width, layout))}
+\DoxyCodeLine{397                 << attribute(\textcolor{stringliteral}{"{}height"{}}, translateScale(height, layout))}
+\DoxyCodeLine{398                 << attribute(\textcolor{stringliteral}{"{}rx"{}}, translateScale(corners, layout))}
+\DoxyCodeLine{399                 << fill.toString(layout) << stroke.toString(layout) << emptyElemEnd();}
+\DoxyCodeLine{400             \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{401         \}}
+\DoxyCodeLine{402         \textcolor{keywordtype}{void} offset(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const}\& offset)}
+\DoxyCodeLine{403         \{}
+\DoxyCodeLine{404             edge.x += offset.x;}
+\DoxyCodeLine{405             edge.y += offset.y;}
+\DoxyCodeLine{406         \}}
+\DoxyCodeLine{407     \textcolor{keyword}{private}:}
+\DoxyCodeLine{408         \mbox{\hyperlink{structsvg_1_1_point}{Point}} edge;}
+\DoxyCodeLine{409         \textcolor{keywordtype}{double} width;}
+\DoxyCodeLine{410         \textcolor{keywordtype}{double} height;}
+\DoxyCodeLine{411         \textcolor{keywordtype}{double} corners = 0;}
+\DoxyCodeLine{412     \};}
+\DoxyCodeLine{413 }
+\DoxyCodeLine{414     \textcolor{comment}{//===================================================}}
+\DoxyCodeLine{415 }
+\DoxyCodeLine{416     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1_rectangle}{Rectangle}} : \textcolor{keyword}{public} \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}}
+\DoxyCodeLine{417     \{}
+\DoxyCodeLine{418     \textcolor{keyword}{public}:}
+\DoxyCodeLine{419         \mbox{\hyperlink{classsvg_1_1_rectangle}{Rectangle}}(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& edge, \textcolor{keywordtype}{double} width, \textcolor{keywordtype}{double} height,}
+\DoxyCodeLine{420             \mbox{\hyperlink{classsvg_1_1_fill}{Fill}} \textcolor{keyword}{const} \& fill = \mbox{\hyperlink{classsvg_1_1_fill}{Fill}}(), \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} \textcolor{keyword}{const} \& stroke = \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}}())}
+\DoxyCodeLine{421             : \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}(fill, stroke), edge(edge), width(width),}
+\DoxyCodeLine{422             height(height) \{ \}}
+\DoxyCodeLine{423 }
+\DoxyCodeLine{424         std::string toString(\mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout)\textcolor{keyword}{ const}}
+\DoxyCodeLine{425 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{426             std::stringstream ss;}
+\DoxyCodeLine{427             ss << elemStart(\textcolor{stringliteral}{"{}rect"{}}) << attribute(\textcolor{stringliteral}{"{}x"{}}, translateX(edge.x, layout))}
+\DoxyCodeLine{428                 << attribute(\textcolor{stringliteral}{"{}y"{}}, translateY(edge.y, layout))}
+\DoxyCodeLine{429                 << attribute(\textcolor{stringliteral}{"{}width"{}}, translateScale(width, layout))}
+\DoxyCodeLine{430                 << attribute(\textcolor{stringliteral}{"{}height"{}}, translateScale(height, layout))}
+\DoxyCodeLine{431                 << fill.toString(layout) << stroke.toString(layout) << emptyElemEnd();}
+\DoxyCodeLine{432             \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{433         \}}
+\DoxyCodeLine{434         \textcolor{keywordtype}{void} offset(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& offset)}
+\DoxyCodeLine{435         \{}
+\DoxyCodeLine{436             edge.x += offset.x;}
+\DoxyCodeLine{437             edge.y += offset.y;}
+\DoxyCodeLine{438         \}}
+\DoxyCodeLine{439     \textcolor{keyword}{private}:}
+\DoxyCodeLine{440         \mbox{\hyperlink{structsvg_1_1_point}{Point}} edge;}
+\DoxyCodeLine{441         \textcolor{keywordtype}{double} width;}
+\DoxyCodeLine{442         \textcolor{keywordtype}{double} height;}
+\DoxyCodeLine{443     \};}
+\DoxyCodeLine{444 }
+\DoxyCodeLine{445     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1_line}{Line}} : \textcolor{keyword}{public} \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}}
+\DoxyCodeLine{446     \{}
+\DoxyCodeLine{447     \textcolor{keyword}{public}:}
+\DoxyCodeLine{448         \mbox{\hyperlink{classsvg_1_1_line}{Line}}(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& start\_point, \mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& end\_point,}
+\DoxyCodeLine{449             \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} \textcolor{keyword}{const} \& stroke = \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}}())}
+\DoxyCodeLine{450             : \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}(\mbox{\hyperlink{classsvg_1_1_fill}{Fill}}(), stroke), start\_point(start\_point),}
+\DoxyCodeLine{451             end\_point(end\_point) \{ \}}
+\DoxyCodeLine{452         std::string toString(\mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout)\textcolor{keyword}{ const}}
+\DoxyCodeLine{453 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{454             std::stringstream ss;}
+\DoxyCodeLine{455             ss << elemStart(\textcolor{stringliteral}{"{}line"{}}) << attribute(\textcolor{stringliteral}{"{}x1"{}}, translateX(start\_point.x, layout))}
+\DoxyCodeLine{456                 << attribute(\textcolor{stringliteral}{"{}y1"{}}, translateY(start\_point.y, layout))}
+\DoxyCodeLine{457                 << attribute(\textcolor{stringliteral}{"{}x2"{}}, translateX(end\_point.x, layout))}
+\DoxyCodeLine{458                 << attribute(\textcolor{stringliteral}{"{}y2"{}}, translateY(end\_point.y, layout))}
+\DoxyCodeLine{459                 << stroke.toString(layout) << emptyElemEnd();}
+\DoxyCodeLine{460             \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{461         \}}
+\DoxyCodeLine{462         \textcolor{keywordtype}{void} offset(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& offset)}
+\DoxyCodeLine{463         \{}
+\DoxyCodeLine{464             start\_point.x += offset.x;}
+\DoxyCodeLine{465             start\_point.y += offset.y;}
+\DoxyCodeLine{466 }
+\DoxyCodeLine{467             end\_point.x += offset.x;}
+\DoxyCodeLine{468             end\_point.y += offset.y;}
+\DoxyCodeLine{469         \}}
+\DoxyCodeLine{470     \textcolor{keyword}{private}:}
+\DoxyCodeLine{471         \mbox{\hyperlink{structsvg_1_1_point}{Point}} start\_point;}
+\DoxyCodeLine{472         \mbox{\hyperlink{structsvg_1_1_point}{Point}} end\_point;}
+\DoxyCodeLine{473     \};}
+\DoxyCodeLine{474 }
+\DoxyCodeLine{475     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1_polygon}{Polygon}} : \textcolor{keyword}{public} \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}}
+\DoxyCodeLine{476     \{}
+\DoxyCodeLine{477     \textcolor{keyword}{public}:}
+\DoxyCodeLine{478         \mbox{\hyperlink{classsvg_1_1_polygon}{Polygon}}(\mbox{\hyperlink{classsvg_1_1_fill}{Fill}} \textcolor{keyword}{const} \& fill = \mbox{\hyperlink{classsvg_1_1_fill}{Fill}}(), \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} \textcolor{keyword}{const} \& stroke = \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}}())}
+\DoxyCodeLine{479             : \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}(fill, stroke) \{ \}}
+\DoxyCodeLine{480         \mbox{\hyperlink{classsvg_1_1_polygon}{Polygon}}(\mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} \textcolor{keyword}{const} \& stroke = \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}}()) : \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}(Color::Transparent, stroke) \{ \}}
+\DoxyCodeLine{481         \mbox{\hyperlink{classsvg_1_1_polygon}{Polygon}} \& operator<<(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& point)}
+\DoxyCodeLine{482         \{}
+\DoxyCodeLine{483             points.push\_back(point);}
+\DoxyCodeLine{484             \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{485         \}}
+\DoxyCodeLine{486         std::string toString(\mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout)\textcolor{keyword}{ const}}
+\DoxyCodeLine{487 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{488             std::stringstream ss;}
+\DoxyCodeLine{489             ss << elemStart(\textcolor{stringliteral}{"{}polygon"{}});}
+\DoxyCodeLine{490 }
+\DoxyCodeLine{491             ss << \textcolor{stringliteral}{"{}points=\(\backslash\)"{}"{}};}
+\DoxyCodeLine{492             \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} i = 0; i < points.size(); ++i)}
+\DoxyCodeLine{493                 ss << translateX(points[i].x, layout) << \textcolor{stringliteral}{"{},"{}} << translateY(points[i].y, layout) << \textcolor{stringliteral}{"{} "{}};}
+\DoxyCodeLine{494             ss << \textcolor{stringliteral}{"{}\(\backslash\)"{} "{}};}
+\DoxyCodeLine{495 }
+\DoxyCodeLine{496             ss << fill.toString(layout) << stroke.toString(layout) << emptyElemEnd();}
+\DoxyCodeLine{497             \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{498         \}}
+\DoxyCodeLine{499         \textcolor{keywordtype}{void} offset(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& offset)}
+\DoxyCodeLine{500         \{}
+\DoxyCodeLine{501             \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} i = 0; i < points.size(); ++i) \{}
+\DoxyCodeLine{502                 points[i].x += offset.x;}
+\DoxyCodeLine{503                 points[i].y += offset.y;}
+\DoxyCodeLine{504             \}}
+\DoxyCodeLine{505         \}}
+\DoxyCodeLine{506     \textcolor{keyword}{private}:}
+\DoxyCodeLine{507         std::vector<Point> points;}
+\DoxyCodeLine{508     \};}
+\DoxyCodeLine{509 }
+\DoxyCodeLine{510     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1_path}{Path}} : \textcolor{keyword}{public} \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}}
+\DoxyCodeLine{511     \{}
+\DoxyCodeLine{512     \textcolor{keyword}{public}:}
+\DoxyCodeLine{513        \mbox{\hyperlink{classsvg_1_1_path}{Path}}(\mbox{\hyperlink{classsvg_1_1_fill}{Fill}} \textcolor{keyword}{const} \& fill = \mbox{\hyperlink{classsvg_1_1_fill}{Fill}}(), \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} \textcolor{keyword}{const} \& stroke = \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}}())}
+\DoxyCodeLine{514           : \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}(fill, stroke) }
+\DoxyCodeLine{515        \{  startNewSubPath(); \}}
+\DoxyCodeLine{516        \mbox{\hyperlink{classsvg_1_1_path}{Path}}(\mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} \textcolor{keyword}{const} \& stroke = \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}}()) : \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}(Color::Transparent, stroke) }
+\DoxyCodeLine{517        \{  startNewSubPath(); \}}
+\DoxyCodeLine{518        \mbox{\hyperlink{classsvg_1_1_path}{Path}} \& operator<<(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& point)}
+\DoxyCodeLine{519        \{}
+\DoxyCodeLine{520           paths.back().push\_back(point);}
+\DoxyCodeLine{521           \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{522        \}}
+\DoxyCodeLine{523 }
+\DoxyCodeLine{524        \textcolor{keywordtype}{void} startNewSubPath()}
+\DoxyCodeLine{525        \{}
+\DoxyCodeLine{526           \textcolor{keywordflow}{if} (paths.empty() || 0 < paths.back().size())}
+\DoxyCodeLine{527             paths.emplace\_back();}
+\DoxyCodeLine{528        \}}
+\DoxyCodeLine{529 }
+\DoxyCodeLine{530        std::string toString(\mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout)\textcolor{keyword}{ const}}
+\DoxyCodeLine{531 \textcolor{keyword}{       }\{}
+\DoxyCodeLine{532           std::stringstream ss;}
+\DoxyCodeLine{533           ss << elemStart(\textcolor{stringliteral}{"{}path"{}});}
+\DoxyCodeLine{534 }
+\DoxyCodeLine{535           ss << \textcolor{stringliteral}{"{}d=\(\backslash\)"{}"{}};}
+\DoxyCodeLine{536           \textcolor{keywordflow}{for} (\textcolor{keyword}{auto} \textcolor{keyword}{const}\& subpath: paths)}
+\DoxyCodeLine{537           \{}
+\DoxyCodeLine{538              \textcolor{keywordflow}{if} (subpath.empty())}
+\DoxyCodeLine{539                 \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{540 }
+\DoxyCodeLine{541              ss << \textcolor{stringliteral}{"{}M"{}};}
+\DoxyCodeLine{542              \textcolor{keywordflow}{for} (\textcolor{keyword}{auto} \textcolor{keyword}{const}\& point: subpath)}
+\DoxyCodeLine{543                 ss << translateX(point.x, layout) << \textcolor{stringliteral}{"{},"{}} << translateY(point.y, layout) << \textcolor{stringliteral}{"{} "{}};}
+\DoxyCodeLine{544              ss << \textcolor{stringliteral}{"{}z "{}};}
+\DoxyCodeLine{545           \}}
+\DoxyCodeLine{546           ss << \textcolor{stringliteral}{"{}\(\backslash\)"{} "{}};}
+\DoxyCodeLine{547           ss << \textcolor{stringliteral}{"{}fill-\/rule=\(\backslash\)"{}evenodd\(\backslash\)"{} "{}};}
+\DoxyCodeLine{548 }
+\DoxyCodeLine{549           ss << fill.toString(layout) << stroke.toString(layout) << emptyElemEnd();}
+\DoxyCodeLine{550           \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{551        \}}
+\DoxyCodeLine{552 }
+\DoxyCodeLine{553        \textcolor{keywordtype}{void} offset(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& offset)}
+\DoxyCodeLine{554        \{}
+\DoxyCodeLine{555           \textcolor{keywordflow}{for} (\textcolor{keyword}{auto}\& subpath : paths)}
+\DoxyCodeLine{556              \textcolor{keywordflow}{for} (\textcolor{keyword}{auto}\& point : subpath)}
+\DoxyCodeLine{557              \{}
+\DoxyCodeLine{558                 point.x += offset.x;}
+\DoxyCodeLine{559                 point.y += offset.y;}
+\DoxyCodeLine{560              \}}
+\DoxyCodeLine{561        \}}
+\DoxyCodeLine{562     \textcolor{keyword}{private}:}
+\DoxyCodeLine{563        std::vector<std::vector<Point>> paths;}
+\DoxyCodeLine{564     \};}
+\DoxyCodeLine{565 }
+\DoxyCodeLine{566     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1_polyline}{Polyline}} : \textcolor{keyword}{public} \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}}
+\DoxyCodeLine{567     \{}
+\DoxyCodeLine{568     \textcolor{keyword}{public}:}
+\DoxyCodeLine{569         \mbox{\hyperlink{classsvg_1_1_polyline}{Polyline}}(\mbox{\hyperlink{classsvg_1_1_fill}{Fill}} \textcolor{keyword}{const} \& fill = \mbox{\hyperlink{classsvg_1_1_fill}{Fill}}(), \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} \textcolor{keyword}{const} \& stroke = \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}}())}
+\DoxyCodeLine{570             : \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}(fill, stroke) \{ \}}
+\DoxyCodeLine{571         \mbox{\hyperlink{classsvg_1_1_polyline}{Polyline}}(\mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} \textcolor{keyword}{const} \& stroke = \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}}()) : \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}(Color::Transparent, stroke) \{ \}}
+\DoxyCodeLine{572         \mbox{\hyperlink{classsvg_1_1_polyline}{Polyline}}(std::vector<Point> \textcolor{keyword}{const} \& points,}
+\DoxyCodeLine{573             \mbox{\hyperlink{classsvg_1_1_fill}{Fill}} \textcolor{keyword}{const} \& fill = \mbox{\hyperlink{classsvg_1_1_fill}{Fill}}(), \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} \textcolor{keyword}{const} \& stroke = \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}}())}
+\DoxyCodeLine{574             : \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}(fill, stroke), points(points) \{ \}}
+\DoxyCodeLine{575         \mbox{\hyperlink{classsvg_1_1_polyline}{Polyline}} \& operator<<(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& point)}
+\DoxyCodeLine{576         \{}
+\DoxyCodeLine{577             points.push\_back(point);}
+\DoxyCodeLine{578             \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{579         \}}
+\DoxyCodeLine{580         std::string toString(\mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout)\textcolor{keyword}{ const}}
+\DoxyCodeLine{581 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{582             std::stringstream ss;}
+\DoxyCodeLine{583             ss << elemStart(\textcolor{stringliteral}{"{}polyline"{}});}
+\DoxyCodeLine{584 }
+\DoxyCodeLine{585             ss << \textcolor{stringliteral}{"{}points=\(\backslash\)"{}"{}};}
+\DoxyCodeLine{586             \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} i = 0; i < points.size(); ++i)}
+\DoxyCodeLine{587                 ss << translateX(points[i].x, layout) << \textcolor{stringliteral}{"{},"{}} << translateY(points[i].y, layout) << \textcolor{stringliteral}{"{} "{}};}
+\DoxyCodeLine{588             ss << \textcolor{stringliteral}{"{}\(\backslash\)"{} "{}};}
+\DoxyCodeLine{589 }
+\DoxyCodeLine{590             ss << fill.toString(layout) << stroke.toString(layout) << emptyElemEnd();}
+\DoxyCodeLine{591             \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{592         \}}
+\DoxyCodeLine{593         \textcolor{keywordtype}{void} offset(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& offset)}
+\DoxyCodeLine{594         \{}
+\DoxyCodeLine{595             \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} i = 0; i < points.size(); ++i) \{}
+\DoxyCodeLine{596                 points[i].x += offset.x;}
+\DoxyCodeLine{597                 points[i].y += offset.y;}
+\DoxyCodeLine{598             \}}
+\DoxyCodeLine{599         \}}
+\DoxyCodeLine{600         std::vector<Point> points;}
+\DoxyCodeLine{601     \};}
+\DoxyCodeLine{602 }
+\DoxyCodeLine{603     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1_text}{Text}} : \textcolor{keyword}{public} \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}}
+\DoxyCodeLine{604     \{}
+\DoxyCodeLine{605     \textcolor{keyword}{public}:}
+\DoxyCodeLine{606         \mbox{\hyperlink{classsvg_1_1_text}{Text}}(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& origin, std::string \textcolor{keyword}{const} \& content, \mbox{\hyperlink{classsvg_1_1_fill}{Fill}} \textcolor{keyword}{const} \& fill = \mbox{\hyperlink{classsvg_1_1_fill}{Fill}}(),}
+\DoxyCodeLine{607              \mbox{\hyperlink{classsvg_1_1_font}{Font}} \textcolor{keyword}{const} \& font = \mbox{\hyperlink{classsvg_1_1_font}{Font}}(), \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} \textcolor{keyword}{const} \& stroke = \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}}())}
+\DoxyCodeLine{608             : \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}(fill, stroke), origin(origin), content(content), font(font) \{ \}}
+\DoxyCodeLine{609         std::string toString(\mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout)\textcolor{keyword}{ const}}
+\DoxyCodeLine{610 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{611             std::stringstream ss;}
+\DoxyCodeLine{612             ss << elemStart(\textcolor{stringliteral}{"{}text"{}}) << attribute(\textcolor{stringliteral}{"{}x"{}}, translateX(origin.x, layout))}
+\DoxyCodeLine{613                 << attribute(\textcolor{stringliteral}{"{}y"{}}, translateY(origin.y, layout))}
+\DoxyCodeLine{614                 << fill.toString(layout) << stroke.toString(layout) << font.toString(layout)}
+\DoxyCodeLine{615                 << \textcolor{stringliteral}{"{}>"{}} << content << elemEnd(\textcolor{stringliteral}{"{}text"{}});}
+\DoxyCodeLine{616             \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{617         \}}
+\DoxyCodeLine{618         \textcolor{keywordtype}{void} offset(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& offset)}
+\DoxyCodeLine{619         \{}
+\DoxyCodeLine{620             origin.x += offset.x;}
+\DoxyCodeLine{621             origin.y += offset.y;}
+\DoxyCodeLine{622         \}}
+\DoxyCodeLine{623     \textcolor{keyword}{private}:}
+\DoxyCodeLine{624         \mbox{\hyperlink{structsvg_1_1_point}{Point}} origin;}
+\DoxyCodeLine{625         std::string content;}
+\DoxyCodeLine{626         \mbox{\hyperlink{classsvg_1_1_font}{Font}} font;}
+\DoxyCodeLine{627     \};}
+\DoxyCodeLine{628 }
+\DoxyCodeLine{629     \textcolor{comment}{// Sample charting class.}}
+\DoxyCodeLine{630     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1_line_chart}{LineChart}} : \textcolor{keyword}{public} \mbox{\hyperlink{classsvg_1_1_shape}{Shape}}}
+\DoxyCodeLine{631     \{}
+\DoxyCodeLine{632     \textcolor{keyword}{public}:}
+\DoxyCodeLine{633         \mbox{\hyperlink{classsvg_1_1_line_chart}{LineChart}}(\mbox{\hyperlink{structsvg_1_1_dimensions}{Dimensions}} margin = \mbox{\hyperlink{structsvg_1_1_dimensions}{Dimensions}}(), \textcolor{keywordtype}{double} scale = 1,}
+\DoxyCodeLine{634                   \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} \textcolor{keyword}{const} \& axis\_stroke = \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}}(.5, Color::Purple))}
+\DoxyCodeLine{635             : axis\_stroke(axis\_stroke), margin(margin), scale(scale) \{ \}}
+\DoxyCodeLine{636         \mbox{\hyperlink{classsvg_1_1_line_chart}{LineChart}} \& operator<<(\mbox{\hyperlink{classsvg_1_1_polyline}{Polyline}} \textcolor{keyword}{const} \& polyline)}
+\DoxyCodeLine{637         \{}
+\DoxyCodeLine{638             \textcolor{keywordflow}{if} (polyline.points.empty())}
+\DoxyCodeLine{639                 \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{640 }
+\DoxyCodeLine{641             polylines.push\_back(polyline);}
+\DoxyCodeLine{642             \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{643         \}}
+\DoxyCodeLine{644         std::string toString(\mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout)\textcolor{keyword}{ const}}
+\DoxyCodeLine{645 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{646             \textcolor{keywordflow}{if} (polylines.empty())}
+\DoxyCodeLine{647                 \textcolor{keywordflow}{return} \textcolor{stringliteral}{"{}"{}};}
+\DoxyCodeLine{648 }
+\DoxyCodeLine{649             std::string ret;}
+\DoxyCodeLine{650             \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} i = 0; i < polylines.size(); ++i)}
+\DoxyCodeLine{651                 ret += polylineToString(polylines[i], layout);}
+\DoxyCodeLine{652 }
+\DoxyCodeLine{653             \textcolor{keywordflow}{return} ret + axisString(layout);}
+\DoxyCodeLine{654         \}}
+\DoxyCodeLine{655         \textcolor{keywordtype}{void} offset(\mbox{\hyperlink{structsvg_1_1_point}{Point}} \textcolor{keyword}{const} \& offset)}
+\DoxyCodeLine{656         \{}
+\DoxyCodeLine{657             \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} i = 0; i < polylines.size(); ++i)}
+\DoxyCodeLine{658                 polylines[i].offset(offset);}
+\DoxyCodeLine{659         \}}
+\DoxyCodeLine{660     \textcolor{keyword}{private}:}
+\DoxyCodeLine{661         \mbox{\hyperlink{classsvg_1_1_stroke}{Stroke}} axis\_stroke;}
+\DoxyCodeLine{662         \mbox{\hyperlink{structsvg_1_1_dimensions}{Dimensions}} margin;}
+\DoxyCodeLine{663         \textcolor{keywordtype}{double} scale;}
+\DoxyCodeLine{664         std::vector<Polyline> polylines;}
+\DoxyCodeLine{665 }
+\DoxyCodeLine{666         \mbox{\hyperlink{classsvg_1_1optional}{optional<Dimensions>}} getDimensions()\textcolor{keyword}{ const}}
+\DoxyCodeLine{667 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{668             \textcolor{keywordflow}{if} (polylines.empty())}
+\DoxyCodeLine{669                 \textcolor{keywordflow}{return} \mbox{\hyperlink{classsvg_1_1optional}{optional<Dimensions>}}();}
+\DoxyCodeLine{670 }
+\DoxyCodeLine{671             \mbox{\hyperlink{classsvg_1_1optional}{optional<Point>}} min = getMinPoint(polylines[0].points);}
+\DoxyCodeLine{672             \mbox{\hyperlink{classsvg_1_1optional}{optional<Point>}} max = getMaxPoint(polylines[0].points);}
+\DoxyCodeLine{673             \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} i = 0; i < polylines.size(); ++i) \{}
+\DoxyCodeLine{674                 \textcolor{keywordflow}{if} (getMinPoint(polylines[i].points)-\/>x < min-\/>x)}
+\DoxyCodeLine{675                     min-\/>x = getMinPoint(polylines[i].points)-\/>x;}
+\DoxyCodeLine{676                 \textcolor{keywordflow}{if} (getMinPoint(polylines[i].points)-\/>y < min-\/>y)}
+\DoxyCodeLine{677                     min-\/>y = getMinPoint(polylines[i].points)-\/>y;}
+\DoxyCodeLine{678                 \textcolor{keywordflow}{if} (getMaxPoint(polylines[i].points)-\/>x > max-\/>x)}
+\DoxyCodeLine{679                     max-\/>x = getMaxPoint(polylines[i].points)-\/>x;}
+\DoxyCodeLine{680                 \textcolor{keywordflow}{if} (getMaxPoint(polylines[i].points)-\/>y > max-\/>y)}
+\DoxyCodeLine{681                     max-\/>y = getMaxPoint(polylines[i].points)-\/>y;}
+\DoxyCodeLine{682             \}}
+\DoxyCodeLine{683 }
+\DoxyCodeLine{684             \textcolor{keywordflow}{return} \mbox{\hyperlink{classsvg_1_1optional}{optional<Dimensions>}}(\mbox{\hyperlink{structsvg_1_1_dimensions}{Dimensions}}(max-\/>x -\/ min-\/>x, max-\/>y -\/ min-\/>y));}
+\DoxyCodeLine{685         \}}
+\DoxyCodeLine{686         std::string axisString(\mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout)\textcolor{keyword}{ const}}
+\DoxyCodeLine{687 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{688             \mbox{\hyperlink{classsvg_1_1optional}{optional<Dimensions>}} dimensions = getDimensions();}
+\DoxyCodeLine{689             \textcolor{keywordflow}{if} (!dimensions)}
+\DoxyCodeLine{690                 \textcolor{keywordflow}{return} \textcolor{stringliteral}{"{}"{}};}
+\DoxyCodeLine{691 }
+\DoxyCodeLine{692             \textcolor{comment}{// Make the axis 10\% wider and higher than the data points.}}
+\DoxyCodeLine{693             \textcolor{keywordtype}{double} width = dimensions-\/>width * 1.1;}
+\DoxyCodeLine{694             \textcolor{keywordtype}{double} height = dimensions-\/>height * 1.1;}
+\DoxyCodeLine{695 }
+\DoxyCodeLine{696             \textcolor{comment}{// Draw the axis.}}
+\DoxyCodeLine{697             \mbox{\hyperlink{classsvg_1_1_polyline}{Polyline}} axis(Color::Transparent, axis\_stroke);}
+\DoxyCodeLine{698             axis << \mbox{\hyperlink{structsvg_1_1_point}{Point}}(margin.width, margin.height + height) << \mbox{\hyperlink{structsvg_1_1_point}{Point}}(margin.width, margin.height)}
+\DoxyCodeLine{699                 << \mbox{\hyperlink{structsvg_1_1_point}{Point}}(margin.width + width, margin.height);}
+\DoxyCodeLine{700 }
+\DoxyCodeLine{701             \textcolor{keywordflow}{return} axis.toString(layout);}
+\DoxyCodeLine{702         \}}
+\DoxyCodeLine{703         std::string polylineToString(\mbox{\hyperlink{classsvg_1_1_polyline}{Polyline}} \textcolor{keyword}{const} \& polyline, \mbox{\hyperlink{structsvg_1_1_layout}{Layout}} \textcolor{keyword}{const} \& layout)\textcolor{keyword}{ const}}
+\DoxyCodeLine{704 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{705             \mbox{\hyperlink{classsvg_1_1_polyline}{Polyline}} shifted\_polyline = polyline;}
+\DoxyCodeLine{706             shifted\_polyline.offset(\mbox{\hyperlink{structsvg_1_1_point}{Point}}(margin.width, margin.height));}
+\DoxyCodeLine{707 }
+\DoxyCodeLine{708             std::vector<Circle> vertices;}
+\DoxyCodeLine{709             \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} i = 0; i < shifted\_polyline.points.size(); ++i)}
+\DoxyCodeLine{710                 vertices.push\_back(\mbox{\hyperlink{classsvg_1_1_circle}{Circle}}(shifted\_polyline.points[i], getDimensions()-\/>height / 30.0, Color::Black));}
+\DoxyCodeLine{711 }
+\DoxyCodeLine{712             \textcolor{keywordflow}{return} shifted\_polyline.toString(layout) + vectorToString(vertices, layout);}
+\DoxyCodeLine{713         \}}
+\DoxyCodeLine{714     \};}
+\DoxyCodeLine{715 }
+\DoxyCodeLine{716     \textcolor{keyword}{class }\mbox{\hyperlink{classsvg_1_1_document}{Document}}}
+\DoxyCodeLine{717     \{}
+\DoxyCodeLine{718     \textcolor{keyword}{public}:}
+\DoxyCodeLine{719         \mbox{\hyperlink{classsvg_1_1_document}{Document}}() \{\};}
+\DoxyCodeLine{720         \mbox{\hyperlink{classsvg_1_1_document}{Document}}(std::string \textcolor{keyword}{const} \& file\_name, \mbox{\hyperlink{structsvg_1_1_layout}{Layout}} layout = \mbox{\hyperlink{structsvg_1_1_layout}{Layout}}())}
+\DoxyCodeLine{721             : file\_name(file\_name), layout(layout) \{ \}}
+\DoxyCodeLine{722 }
+\DoxyCodeLine{723         \mbox{\hyperlink{classsvg_1_1_document}{Document}} \& operator<<(\mbox{\hyperlink{classsvg_1_1_shape}{Shape}} \textcolor{keyword}{const} \& shape)}
+\DoxyCodeLine{724         \{}
+\DoxyCodeLine{725             body\_nodes\_str\_list.push\_back(shape.toString(layout));}
+\DoxyCodeLine{726             \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{727         \}}
+\DoxyCodeLine{728         std::string toString()\textcolor{keyword}{ const}}
+\DoxyCodeLine{729 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{730             std::stringstream ss;}
+\DoxyCodeLine{731             writeToStream(ss);}
+\DoxyCodeLine{732             \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{733         \}}
+\DoxyCodeLine{734         \textcolor{keywordtype}{bool} save()\textcolor{keyword}{ const}}
+\DoxyCodeLine{735 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{736             std::ofstream ofs(file\_name.c\_str());}
+\DoxyCodeLine{737             \textcolor{keywordflow}{if} (!ofs.good())}
+\DoxyCodeLine{738                 \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{739 }
+\DoxyCodeLine{740             writeToStream(ofs);}
+\DoxyCodeLine{741             ofs.close();}
+\DoxyCodeLine{742             \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{743         \}}
+\DoxyCodeLine{744     \textcolor{keyword}{private}:}
+\DoxyCodeLine{745         \textcolor{keywordtype}{void} writeToStream(std::ostream\& str)\textcolor{keyword}{ const}}
+\DoxyCodeLine{746 \textcolor{keyword}{        }\{}
+\DoxyCodeLine{747             str << \textcolor{stringliteral}{"{}<?xml "{}} << attribute(\textcolor{stringliteral}{"{}version"{}}, \textcolor{stringliteral}{"{}1.0"{}}) << attribute(\textcolor{stringliteral}{"{}standalone"{}}, \textcolor{stringliteral}{"{}no"{}})}
+\DoxyCodeLine{748                 << \textcolor{stringliteral}{"{}?>\(\backslash\)n<!DOCTYPE svg PUBLIC \(\backslash\)"{}-\///W3C//DTD SVG 1.1//EN\(\backslash\)"{} "{}}}
+\DoxyCodeLine{749                 << \textcolor{stringliteral}{"{}\(\backslash\)"{}http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\(\backslash\)"{}>\(\backslash\)n<svg "{}}}
+\DoxyCodeLine{750                 << attribute(\textcolor{stringliteral}{"{}width"{}}, layout.dimensions.width, \textcolor{stringliteral}{"{}px"{}})}
+\DoxyCodeLine{751                 << attribute(\textcolor{stringliteral}{"{}height"{}}, layout.dimensions.height, \textcolor{stringliteral}{"{}px"{}})}
+\DoxyCodeLine{752                 << attribute(\textcolor{stringliteral}{"{}xmlns"{}}, \textcolor{stringliteral}{"{}http://www.w3.org/2000/svg"{}})}
+\DoxyCodeLine{753                 << attribute(\textcolor{stringliteral}{"{}version"{}}, \textcolor{stringliteral}{"{}1.1"{}}) << \textcolor{stringliteral}{"{}>\(\backslash\)n"{}};}
+\DoxyCodeLine{754             \textcolor{keywordflow}{for} (\textcolor{keyword}{const} \textcolor{keyword}{auto}\& body\_node\_str : body\_nodes\_str\_list) \{}
+\DoxyCodeLine{755                 str << body\_node\_str;}
+\DoxyCodeLine{756             \}}
+\DoxyCodeLine{757             str << elemEnd(\textcolor{stringliteral}{"{}svg"{}});}
+\DoxyCodeLine{758         \}}
+\DoxyCodeLine{759 }
+\DoxyCodeLine{760     \textcolor{keyword}{private}:}
+\DoxyCodeLine{761         std::string file\_name;}
+\DoxyCodeLine{762         \mbox{\hyperlink{structsvg_1_1_layout}{Layout}} layout;}
+\DoxyCodeLine{763 }
+\DoxyCodeLine{764         std::vector<std::string> body\_nodes\_str\_list;}
+\DoxyCodeLine{765     \};}
+\DoxyCodeLine{766 \}}
+\DoxyCodeLine{767 }
+\DoxyCodeLine{768 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}
