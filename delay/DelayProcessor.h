@@ -1,12 +1,12 @@
 #pragma once
 #include "LatticeProcessorModule.h"
+#include "Del.h"
 #include <iterator>
-#include "simple_svg_1.0.0.hpp"
 
-class GainProcessor : public LatticeProcessorModule
+class DelayProcessor : public LatticeProcessorModule
 {
 public:
-    GainProcessor();
+    DelayProcessor();
     
     void createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs) override;
     
@@ -28,39 +28,15 @@ public:
     
     void createDescription(std::string& description)
     {
-        description = "";
+        description = "(with variable delay time and feedback)";
     }
 
-    /* override this method if you want to draw to the Lattice generic editor viewport */
-    std::string getSVGXml() override;
-
-    /* override this method and return true if you wish to enable drawing on the generic editor viewport */
-    bool canDraw() override { return true; }
+    std::string getModuleName() override {    return "Delay";     }
     
-    std::string getModuleName() override {    return "Gain";     }
-    
-	static int remap(float value, float rangeMin, float rangeMax, float newRangeMin, float newRangeMax)
-	{
-		return static_cast<int>(newRangeMin + (value - rangeMin) * (newRangeMax - newRangeMin) / (rangeMax - rangeMin));
-	}
-
-	double getRMS(std::vector<float> const& v)
-	{
-		double sum = 0;
-		auto const count = static_cast<float>(v.size());
-
-		for (int i = 0; i < count; i++)
-			sum += pow(v[i], 2);
-
-		return sqrt(sum / count);
-	}
-
-
 private:
-	float amp = .5f;
+    Aurora::Del<float> delayL;
+    Aurora::Del<float> delayR;
     std::vector<float> inL;
     std::vector<float> inR;
-	std::vector<float> samples;
-	bool okToDraw = true;
 };
 
