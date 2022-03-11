@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['slider_0',['Slider',['../struct_module_parameter.html#aa047668d1ff5e0fd90161be113a4d9f4a7e6b90225c6648c3f00d8d4a2ebdbadb',1,'ModuleParameter']]],
-  ['switch_1',['Switch',['../struct_module_parameter.html#aa047668d1ff5e0fd90161be113a4d9f4a574edbd7cddec8e0878cbfbc54014ab6',1,'ModuleParameter']]]
+  ['noteoff_0',['noteOff',['../struct_lattice_midi_message.html#abec72c3468f95f55926301807de366e0a01c361473c470ba2b36bd17ed85c093a',1,'LatticeMidiMessage']]]
 ];

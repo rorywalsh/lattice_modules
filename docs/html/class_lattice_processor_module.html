@@ -81,21 +81,20 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8b54c714447ab72ee93593d1c415796b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69686ef945daf7265fc37f367b5bb21d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#a69686ef945daf7265fc37f367b5bb21d">createParameters</a> (std::vector&lt; <a class="el" href="struct_module_parameter.html">ModuleParameter</a> &gt; &amp;parameters)</td></tr>
 <tr class="separator:a69686ef945daf7265fc37f367b5bb21d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aedcd3339e348da28ecfdd23f45f0d876"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#aedcd3339e348da28ecfdd23f45f0d876">prepareProcessor</a> (int sr, int blockSize)</td></tr>
-<tr class="separator:aedcd3339e348da28ecfdd23f45f0d876"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6c96f6e54267c9ec62c6c6b1abe38d8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#ab6c96f6e54267c9ec62c6c6b1abe38d8">process</a> (float **buffer, int numChannels, int blockSize, const <a class="el" href="struct_host_data.html">HostData</a> info)</td></tr>
-<tr class="separator:ab6c96f6e54267c9ec62c6c6b1abe38d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada6b353ab139203d6b10d331a4c5dbb2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#ada6b353ab139203d6b10d331a4c5dbb2">process</a> (float **buffer, int numChannels, int blockSize, std::vector&lt; <a class="el" href="struct_lattice_midi_message.html">LatticeMidiMessage</a> &gt; &amp;midiMessages)</td></tr>
-<tr class="separator:ada6b353ab139203d6b10d331a4c5dbb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6912f9af33a24ea4a527f4e57a9241fa"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#a6912f9af33a24ea4a527f4e57a9241fa">processSynthVoice</a> (float **buffer, int numChannels, int blockSize)</td></tr>
-<tr class="separator:a6912f9af33a24ea4a527f4e57a9241fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab1ec40c2f5cb6c7a7b8c3edf729c4573"><td class="memItemLeft" align="right" valign="top"><a id="ab1ec40c2f5cb6c7a7b8c3edf729c4573" name="ab1ec40c2f5cb6c7a7b8c3edf729c4573"></a>
-virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoices</b> ()</td></tr>
+<tr class="memitem:ae4d347534b6cd02a24a93e442383aa1f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#ae4d347534b6cd02a24a93e442383aa1f">prepareProcessor</a> (int sr, std::size_t blockSize)</td></tr>
+<tr class="separator:ae4d347534b6cd02a24a93e442383aa1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6c881508a4469c69c499bf3c2aeb286"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#ab6c881508a4469c69c499bf3c2aeb286">process</a> (float **buffer, int numChannels, std::size_t blockSize, const <a class="el" href="struct_host_data.html">HostData</a> info)</td></tr>
+<tr class="separator:ab6c881508a4469c69c499bf3c2aeb286"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fc0db74037758ec315145a171352f89"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#a0fc0db74037758ec315145a171352f89">processMidi</a> (float **buffer, int numChannels, std::size_t blockSize, const <a class="el" href="struct_host_data.html">HostData</a> info, std::vector&lt; <a class="el" href="struct_lattice_midi_message.html">LatticeMidiMessage</a> &gt; &amp;midiMessages)</td></tr>
+<tr class="separator:a0fc0db74037758ec315145a171352f89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a070d800c32e02d74865ae889c23a9c5e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#a070d800c32e02d74865ae889c23a9c5e">processSynthVoice</a> (float **buffer, int numChannels, std::size_t blockSize)</td></tr>
+<tr class="separator:a070d800c32e02d74865ae889c23a9c5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1ec40c2f5cb6c7a7b8c3edf729c4573"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#ab1ec40c2f5cb6c7a7b8c3edf729c4573">getNumberOfVoices</a> ()</td></tr>
 <tr class="separator:ab1ec40c2f5cb6c7a7b8c3edf729c4573"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a252e786c3fb1fd22c8746456f7e4027f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#a252e786c3fb1fd22c8746456f7e4027f">hostParameterChanged</a> (const std::string &amp;parameterID, float newValue)</td></tr>
 <tr class="separator:a252e786c3fb1fd22c8746456f7e4027f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adae4fccd2a77bd83f2237edbc3213194"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#adae4fccd2a77bd83f2237edbc3213194">startNote</a> (int midiNoteNumber, float velocity)</td></tr>
-<tr class="separator:adae4fccd2a77bd83f2237edbc3213194"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14631f02b31cc19bdc8a1e0ef1ec6711"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#a14631f02b31cc19bdc8a1e0ef1ec6711">startNote</a> (int noteNumber, float velocity)</td></tr>
+<tr class="separator:a14631f02b31cc19bdc8a1e0ef1ec6711"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a532dc4fe6404fc695a74d9560cbb7124"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#a532dc4fe6404fc695a74d9560cbb7124">getModuleName</a> ()</td></tr>
 <tr class="separator:a532dc4fe6404fc695a74d9560cbb7124"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb441d893752df1e8340fe1ef6b59450"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#adb441d893752df1e8340fe1ef6b59450">stopNote</a> (float velocity)</td></tr>
@@ -104,6 +103,8 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
 <tr class="separator:a9430f142bc9d91ffd3a742e83d8b97ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5bf11de5c45f9c85252b30c6b9d3c6d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#ac5bf11de5c45f9c85252b30c6b9d3c6d">getMidiNoteNumber</a> ()</td></tr>
 <tr class="separator:ac5bf11de5c45f9c85252b30c6b9d3c6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3831345936b91ddc030585daab57f5c6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#a3831345936b91ddc030585daab57f5c6">isSynth</a> ()</td></tr>
+<tr class="separator:a3831345936b91ddc030585daab57f5c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82d80a24abc608eeedf1335b16c37c16"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#a82d80a24abc608eeedf1335b16c37c16">updateParameter</a> (const std::string &amp;parameterID, float newValue)</td></tr>
 <tr class="separator:a82d80a24abc608eeedf1335b16c37c16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb1721316018048f6ece026a621d42bc"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#abb1721316018048f6ece026a621d42bc">getParameter</a> (std::string name)</td></tr>
@@ -114,8 +115,8 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
 <tr class="separator:ab3731bae92d30fc083660959170b4f23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad95ba85178dbbd77b66eeb0635822c6"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#aad95ba85178dbbd77b66eeb0635822c6">canDraw</a> ()</td></tr>
 <tr class="separator:aad95ba85178dbbd77b66eeb0635822c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8fca4d60cd5c9fac01898b8dfb8846a2"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#a8fca4d60cd5c9fac01898b8dfb8846a2">createDescription</a> ()</td></tr>
-<tr class="separator:a8fca4d60cd5c9fac01898b8dfb8846a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c5082d9679b10e3b7b88877196d8084"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#a3c5082d9679b10e3b7b88877196d8084">getDescription</a> ()</td></tr>
+<tr class="separator:a3c5082d9679b10e3b7b88877196d8084"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Base class for all modules. </p>
@@ -143,12 +144,7 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
   </tr>
 </table>
 </div><div class="memdoc">
-<p >override this method and return true if you wish to enable drawing on the generic editor viewport. Note that you should only return true when you need the graphics updated. Leaving this permanently set to true will have a negative effect on performance. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">canDrawFlag</td><td>Set to true to notify drawing can take place, otherwise set to false. </td></tr>
-  </table>
-  </dd>
-</dl>
+<p >override this method and return true if you wish to enable drawing on the generic editor viewport. Note that you should only return true when you need the graphics updated. Leaving this permanently set to true will have a negative effect on performance. </p>
 
 </div>
 </div>
@@ -195,37 +191,6 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
 
 </div>
 </div>
-<a id="a8fca4d60cd5c9fac01898b8dfb8846a2" name="a8fca4d60cd5c9fac01898b8dfb8846a2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8fca4d60cd5c9fac01898b8dfb8846a2">&#9670;&nbsp;</a></span>createDescription()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual std::string LatticeProcessorModule::createDescription </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >Called by Lattice when a user right-clicks and module and select 'Show Info' </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">description</td><td>Text that will appear in a module's info window. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="a69686ef945daf7265fc37f367b5bb21d" name="a69686ef945daf7265fc37f367b5bb21d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a69686ef945daf7265fc37f367b5bb21d">&#9670;&nbsp;</a></span>createParameters()</h2>
 
@@ -252,6 +217,37 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
 <p >This method is called by the host to create the plugin parameters. Override and fill the <code><a class="el" href="struct_module_parameter.html" title="Module parameters.">ModuleParameter</a></code> vector </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">parameters</td><td>Fill this with your modules parameters. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3c5082d9679b10e3b7b88877196d8084" name="a3c5082d9679b10e3b7b88877196d8084"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c5082d9679b10e3b7b88877196d8084">&#9670;&nbsp;</a></span>getDescription()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::string LatticeProcessorModule::getDescription </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Called by Lattice when a user right-clicks and module and select 'Show Info' </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">description</td><td>Text that will appear in a module's info window. </td></tr>
   </table>
   </dd>
 </dl>
@@ -293,7 +289,8 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
 </div><div class="memdoc">
 <p >returns the MIDI note number in Hertz, according to A tuning </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">noteInHertz</td><td>the current midi note number in Hz. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">noteNumber</td><td>The MIDI note number. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">aTuning</td><td>The selected frequency for middle A. </td></tr>
   </table>
   </dd>
 </dl>
@@ -324,7 +321,7 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
 </div><div class="memdoc">
 <p >retrieves the current MIDI note number </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">noteNumber</td><td>the current MIDI note number </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">midiNoteNumber</td><td>the current MIDI note number </td></tr>
   </table>
   </dd>
 </dl>
@@ -356,6 +353,37 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
 <p >Override this method to provide a unique name for the module </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">moduleName</td><td>The name of the module as shown in Lattice </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab1ec40c2f5cb6c7a7b8c3edf729c4573" name="ab1ec40c2f5cb6c7a7b8c3edf729c4573"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1ec40c2f5cb6c7a7b8c3edf729c4573">&#9670;&nbsp;</a></span>getNumberOfVoices()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual int LatticeProcessorModule::getNumberOfVoices </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Called by Lattice to set the number of voices </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">numberOfVoice</td><td>The maximum number of voices that can be played simultaneously. </td></tr>
   </table>
   </dd>
 </dl>
@@ -415,7 +443,6 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
 <p >this method will extract the parameter name, as defined in &lt;<a class="el" href="class_lattice_processor_module.html#a69686ef945daf7265fc37f367b5bb21d">createParameters()</a>&gt;, from the unique paramaterId assigned to each parameter by the host </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">parameterId</td><td>The long version of the parameter typically in the form of 'module parameter[ModuleName (NodeNum)]' </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">parameterName</td><td>The parameter name defined when &lt;createParameter()&gt; was called by the host. </td></tr>
   </table>
   </dd>
 </dl>
@@ -444,12 +471,7 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
   </tr>
 </table>
 </div><div class="memdoc">
-<p >override this method if you want to draw to the Lattice generic editor viewport </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">svgString</td><td>A valid SVG XML file. </td></tr>
-  </table>
-  </dd>
-</dl>
+<p >override this method if you want to draw to the Lattice generic editor viewport </p>
 
 </div>
 </div>
@@ -496,8 +518,34 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
 
 </div>
 </div>
-<a id="aedcd3339e348da28ecfdd23f45f0d876" name="aedcd3339e348da28ecfdd23f45f0d876"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aedcd3339e348da28ecfdd23f45f0d876">&#9670;&nbsp;</a></span>prepareProcessor()</h2>
+<a id="a3831345936b91ddc030585daab57f5c6" name="a3831345936b91ddc030585daab57f5c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3831345936b91ddc030585daab57f5c6">&#9670;&nbsp;</a></span>isSynth()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LatticeProcessorModule::isSynth </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Call by Lattice to determine if the module is a synth of an effects (audio/MIDI) processor. Set to true if module is a synth. </p>
+
+</div>
+</div>
+<a id="ae4d347534b6cd02a24a93e442383aa1f" name="ae4d347534b6cd02a24a93e442383aa1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4d347534b6cd02a24a93e442383aa1f">&#9670;&nbsp;</a></span>prepareProcessor()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -514,7 +562,7 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">std::size_t&#160;</td>
           <td class="paramname"><em>blockSize</em>&#160;</td>
         </tr>
         <tr>
@@ -539,8 +587,8 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
 
 </div>
 </div>
-<a id="ab6c96f6e54267c9ec62c6c6b1abe38d8" name="ab6c96f6e54267c9ec62c6c6b1abe38d8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab6c96f6e54267c9ec62c6c6b1abe38d8">&#9670;&nbsp;</a></span>process() <span class="overload">[1/2]</span></h2>
+<a id="ab6c881508a4469c69c499bf3c2aeb286" name="ab6c881508a4469c69c499bf3c2aeb286"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6c881508a4469c69c499bf3c2aeb286">&#9670;&nbsp;</a></span>process()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -563,7 +611,7 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">std::size_t&#160;</td>
           <td class="paramname"><em>blockSize</em>, </td>
         </tr>
         <tr>
@@ -584,12 +632,12 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
   </tr>
 </table>
 </div><div class="memdoc">
-<pre class="fragment">One of three overloaded process() functions available. Buffer is an array of audio channels. Each channel array will be blockSize samples longer. You can access and modify the sample data like this:
+<pre class="fragment">Buffer is an array of audio channels. Each channel array will be blockSize samples longer. You can access and modify the sample data like this:
 </pre> <div class="fragment"><div class="line"><span class="keywordflow">for</span> ( <span class="keywordtype">int</span> i = 0 ; i &lt; blockSize ; i++)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">for</span> ( <span class="keywordtype">int</span> chan = 0 ; chan &lt; numChannels; chan++)</div>
 <div class="line">    {</div>
-<div class="line">        <span class="comment">//buffer[chan][i] = buffer[chan][i] * getParameter(&quot;Gain&quot;);                </span></div>
+<div class="line">        <span class="comment">//buffer[chan][i] = buffer[chan][i] * getParameter(&quot;Gain&quot;);</span></div>
 <div class="line">    }</div>
 <div class="line">}</div>
 </div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
@@ -597,15 +645,15 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
     <tr><td class="paramdir">[in]</td><td class="paramname">buffer</td><td>An array of audio channels. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">numChannels</td><td>The number of channels in the buffer array </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">blockSize</td><td>The number of samples in each channel </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">HostInfo</td><td>A struct filled with host information </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">info</td><td>A struct filled with host information </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="ada6b353ab139203d6b10d331a4c5dbb2" name="ada6b353ab139203d6b10d331a4c5dbb2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ada6b353ab139203d6b10d331a4c5dbb2">&#9670;&nbsp;</a></span>process() <span class="overload">[2/2]</span></h2>
+<a id="a0fc0db74037758ec315145a171352f89" name="a0fc0db74037758ec315145a171352f89"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0fc0db74037758ec315145a171352f89">&#9670;&nbsp;</a></span>processMidi()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -614,7 +662,7 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void LatticeProcessorModule::process </td>
+          <td class="memname">virtual void LatticeProcessorModule::processMidi </td>
           <td>(</td>
           <td class="paramtype">float **&#160;</td>
           <td class="paramname"><em>buffer</em>, </td>
@@ -628,8 +676,14 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">std::size_t&#160;</td>
           <td class="paramname"><em>blockSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="struct_host_data.html">HostData</a>&#160;</td>
+          <td class="paramname"><em>info</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -649,20 +703,21 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
   </tr>
 </table>
 </div><div class="memdoc">
-<p >One of two overloaded <a class="el" href="class_lattice_processor_module.html#ab6c96f6e54267c9ec62c6c6b1abe38d8">process()</a> functions available. Buffer is an array of audio channels. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages. </p><dl class="params"><dt>Parameters</dt><dd>
+<p >Use this for MIDI based effects. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">buffer</td><td>An array of audio channels. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">numChannels</td><td>The number of channels in the buffer array </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">blockSize</td><td>The number of samples in each channel </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">midiMessages</td><td>A <a class="el" href="struct_lattice_midi_message.html" title="MIDI message class.">LatticeMidiMessage</a> vector. Read from this to access incoming MIDI data, and write to it to output MIDI data. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">info</td><td>A struct filled with host information </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a6912f9af33a24ea4a527f4e57a9241fa" name="a6912f9af33a24ea4a527f4e57a9241fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6912f9af33a24ea4a527f4e57a9241fa">&#9670;&nbsp;</a></span>processSynthVoice()</h2>
+<a id="a070d800c32e02d74865ae889c23a9c5e" name="a070d800c32e02d74865ae889c23a9c5e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a070d800c32e02d74865ae889c23a9c5e">&#9670;&nbsp;</a></span>processSynthVoice()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -685,7 +740,7 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">std::size_t&#160;</td>
           <td class="paramname"><em>blockSize</em>&#160;</td>
         </tr>
         <tr>
@@ -700,7 +755,7 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
   </tr>
 </table>
 </div><div class="memdoc">
-<p >This processing method is called by synth modules. No MIDI messages are passed directly to this function. Instead, the start and stop notes methods will be called. Lattice will allocating an instance of the module to each voice. Lattice will set the number of voices when it calls &lt;getNumberOfVoices()&gt;. Buffer is an array of audio channels. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages. </p><dl class="params"><dt>Parameters</dt><dd>
+<p >This processing method is called by synth modules. No MIDI messages are passed directly to this function. Instead, the start and stop notes methods will be called. Lattice will allocating an instance of the module to each voice. Lattice will set the number of voices when it calls &lt;<a class="el" href="class_lattice_processor_module.html#ab1ec40c2f5cb6c7a7b8c3edf729c4573">getNumberOfVoices()</a>&gt;. Buffer is an array of audio channels. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">buffer</td><td>An array of audio channels. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">numChannels</td><td>The number of channels in the buffer array </td></tr>
@@ -711,8 +766,8 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
 
 </div>
 </div>
-<a id="adae4fccd2a77bd83f2237edbc3213194" name="adae4fccd2a77bd83f2237edbc3213194"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adae4fccd2a77bd83f2237edbc3213194">&#9670;&nbsp;</a></span>startNote()</h2>
+<a id="a14631f02b31cc19bdc8a1e0ef1ec6711" name="a14631f02b31cc19bdc8a1e0ef1ec6711"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a14631f02b31cc19bdc8a1e0ef1ec6711">&#9670;&nbsp;</a></span>startNote()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -724,7 +779,7 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
           <td class="memname">virtual void LatticeProcessorModule::startNote </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>midiNoteNumber</em>, </td>
+          <td class="paramname"><em>noteNumber</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -746,8 +801,8 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfVoi
 </div><div class="memdoc">
 <p >called by the host when a note is started </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">midiNoteNumber</td><td>Midi note number sent from host </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">midiNoteNumber</td><td>Midi velocity in the range of 0 to 1 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">noteNumber</td><td>Midi note number sent from host </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">velocity</td><td>Midi velocity in the range of 0 to 1 </td></tr>
   </table>
   </dd>
 </dl>

@@ -79,19 +79,19 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:abec72c3468f95f55926301807de366e0"><td class="memItemLeft" align="right" valign="top"><a id="abec72c3468f95f55926301807de366e0" name="abec72c3468f95f55926301807de366e0"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>Type</b> { <b>noteOn</b> =1
-, <b>noteOff</b>
+<tr class="memitem:abec72c3468f95f55926301807de366e0"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_lattice_midi_message.html#abec72c3468f95f55926301807de366e0">Type</a> { <b>noteOn</b> =1
+, <a class="el" href="struct_lattice_midi_message.html#abec72c3468f95f55926301807de366e0a01c361473c470ba2b36bd17ed85c093a">noteOff</a>
  }</td></tr>
 <tr class="separator:abec72c3468f95f55926301807de366e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2340d2cadb05101632726ad3020c9bf8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_lattice_midi_message.html#a2340d2cadb05101632726ad3020c9bf8">LatticeMidiMessage</a> (LatticeMidiMessage::Type type, int chan, int noteNum, float vel)</td></tr>
+<tr class="memitem:a2340d2cadb05101632726ad3020c9bf8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_lattice_midi_message.html#a2340d2cadb05101632726ad3020c9bf8">LatticeMidiMessage</a> (<a class="el" href="struct_lattice_midi_message.html#abec72c3468f95f55926301807de366e0">LatticeMidiMessage::Type</a> type, int chan, int noteNum, float vel)</td></tr>
 <tr class="separator:a2340d2cadb05101632726ad3020c9bf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:af8e85e2eeab8de04fdacd3f1c36528a1"><td class="memItemLeft" align="right" valign="top">Type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_lattice_midi_message.html#af8e85e2eeab8de04fdacd3f1c36528a1">msgType</a> = Type::noteOff</td></tr>
+<tr class="memitem:af8e85e2eeab8de04fdacd3f1c36528a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_lattice_midi_message.html#abec72c3468f95f55926301807de366e0">Type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_lattice_midi_message.html#af8e85e2eeab8de04fdacd3f1c36528a1">msgType</a> = Type::noteOff</td></tr>
 <tr class="separator:af8e85e2eeab8de04fdacd3f1c36528a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7cc0e8983bfc010be4564a1fa6ede42d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_lattice_midi_message.html#a7cc0e8983bfc010be4564a1fa6ede42d">note</a> = 60</td></tr>
 <tr class="separator:a7cc0e8983bfc010be4564a1fa6ede42d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -102,8 +102,28 @@ Public Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >MIDI message class. </p>
-<p >A simple MIDI message struct. <code><a class="el" href="struct_lattice_midi_message.html" title="MIDI message class.">LatticeMidiMessage</a></code> vectors of can be accessed in the <code>&lt;<a class="el" href="class_lattice_processor_module.html#ab6c96f6e54267c9ec62c6c6b1abe38d8">LatticeProcessorModule::process()</a>&gt;</code> </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<p >A simple MIDI message struct. <code><a class="el" href="struct_lattice_midi_message.html" title="MIDI message class.">LatticeMidiMessage</a></code> vectors of can be accessed in the <code>&lt;<a class="el" href="class_lattice_processor_module.html#ab6c881508a4469c69c499bf3c2aeb286">LatticeProcessorModule::process()</a>&gt;</code> </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="abec72c3468f95f55926301807de366e0" name="abec72c3468f95f55926301807de366e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abec72c3468f95f55926301807de366e0">&#9670;&nbsp;</a></span>Type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="struct_lattice_midi_message.html#abec72c3468f95f55926301807de366e0">LatticeMidiMessage::Type</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Midi Message Type enum </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="abec72c3468f95f55926301807de366e0a01c361473c470ba2b36bd17ed85c093a" name="abec72c3468f95f55926301807de366e0a01c361473c470ba2b36bd17ed85c093a"></a>noteOff&#160;</td><td class="fielddoc"><p >noteOn message noteOff message </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a2340d2cadb05101632726ad3020c9bf8" name="a2340d2cadb05101632726ad3020c9bf8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2340d2cadb05101632726ad3020c9bf8">&#9670;&nbsp;</a></span>LatticeMidiMessage()</h2>
 
@@ -116,7 +136,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">LatticeMidiMessage::LatticeMidiMessage </td>
           <td>(</td>
-          <td class="paramtype">LatticeMidiMessage::Type&#160;</td>
+          <td class="paramtype"><a class="el" href="struct_lattice_midi_message.html#abec72c3468f95f55926301807de366e0">LatticeMidiMessage::Type</a>&#160;</td>
           <td class="paramname"><em>type</em>, </td>
         </tr>
         <tr>
@@ -149,7 +169,7 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Creates a simple MIDI message that can be added to a incoming MIDI vector in &lt;<a class="el" href="class_lattice_processor_module.html#ab6c96f6e54267c9ec62c6c6b1abe38d8">LatticeProcessorModule::process()</a>&gt; </p>
+<p >Creates a simple MIDI message that can be added to a incoming MIDI vector in &lt;<a class="el" href="class_lattice_processor_module.html#ab6c881508a4469c69c499bf3c2aeb286">LatticeProcessorModule::process()</a>&gt; </p>
 
 </div>
 </div>
@@ -176,7 +196,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Type LatticeMidiMessage::msgType = Type::noteOff</td>
+          <td class="memname"><a class="el" href="struct_lattice_midi_message.html#abec72c3468f95f55926301807de366e0">Type</a> LatticeMidiMessage::msgType = Type::noteOff</td>
         </tr>
       </table>
 </div><div class="memdoc">
