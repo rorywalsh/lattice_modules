@@ -1,4 +1,4 @@
 [submodule "aurora"]
 	path = aurora
 	url = https://github.com/vlazzarini/aurora.git
-	update = merge # <-- this is what you need to add
+	branch = master
