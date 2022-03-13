@@ -2,18 +2,15 @@ cmake_minimum_required(VERSION 3.15)
 project (LatticeModules)
 
 if(NOT DEFINED BUILD_VERSION)
-	set(BUILD_VERSION 0.0.59)
+	set(BUILD_VERSION 0.0.60)
 endif()
 
-# set(SOURCE include/LatticeProcessorModule.h)
 
 if(MSVC)
     set(PLATFORM "Windows")
 else()
     set(PLATFORM "MacOS")
 endif()
-
-source_group(TREE ${CMAKE_SOURCE_DIR}/include PREFIX "Source" FILES ${SOURCE})
 
 add_compile_options ( -fdeclspec -fms-extensions)
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)

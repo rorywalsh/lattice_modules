@@ -93,6 +93,12 @@ public:
         return true;
     }
 
+    /* Set number of voices */
+    int getNumberOfVoices()
+    {
+        return 10;
+    }
+
 	/* override this method if you want to draw to the Lattice generic editor viewport */
 	std::string getSVGXml() override;
 

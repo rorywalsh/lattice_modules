@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.15)
 project (bl_synth)
 
-include_directories("../src/")
+include_directories("../include/")
 
 set(SOURCE BlSynthProcessor.cpp BlSynthProcessor.h)
+
+MESSAGE(${CMAKE_CURRENT_SOURCE_DIR})
 
 if(MSVC)
     set(PLATFORM "Windows")

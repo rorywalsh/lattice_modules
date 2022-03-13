@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.15)
 project (DriveSynth)
 
-include_directories("../src/")
+
+include_directories("../include/")
 
 set(SOURCE DriveSynthProcessor.cpp DriveSynthProcessor.h)
 

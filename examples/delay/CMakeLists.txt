@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 project (Delay)
 
-include_directories("../src/")
+include_directories("../include/")
 
 set(SOURCE DelayProcessor.cpp DelayProcessor.h)
 

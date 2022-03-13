@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.15)
 project (Gain)
 
-include_directories("../src/")
+include_directories("../include/")
+include_directories("${CMAKE_SOURCE_DIR}/aurora/include")
 
 set(SOURCE GainProcessor.cpp GainProcessor.h)
 
