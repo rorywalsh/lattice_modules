@@ -29,7 +29,7 @@ public:
     
     void createDescription(std::string& description)
     {
-        description = "Two pole state variable filter";
+        description = "Two Pole State Variable Filter";
     }
     
     std::string getModuleName() override {    return "State Variable Filter";     }

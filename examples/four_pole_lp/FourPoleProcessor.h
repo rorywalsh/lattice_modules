@@ -33,7 +33,10 @@ public:
     }
 
 
-    std::string getModuleName() override {    return "Four Pole Lowpass";     }
+    std::string getModuleName() override 
+    {    
+        return "Four Pole Resonant Lowpass";     
+    }
     
 
 

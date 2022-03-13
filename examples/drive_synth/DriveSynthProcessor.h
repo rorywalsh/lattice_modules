@@ -117,6 +117,11 @@ public:
         return true;
     }
     
+    std::string getModuleName() override
+    {
+        return "Waveshaping Synth";
+    }
+
 	static int remap(float value, float rangeMin, float rangeMax, float newRangeMin, float newRangeMax)
 	{
 		return static_cast<int>(newRangeMin + (value - rangeMin) * (newRangeMax - newRangeMin) / (rangeMax - rangeMin));

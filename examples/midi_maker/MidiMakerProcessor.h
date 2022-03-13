@@ -42,7 +42,7 @@ public:
 			"Note that the pattern will only be updated once 'Generate new pattern' is triggered. ";
 	}
 
-    std::string getModuleName() override {    return "Midi Maker";     }
+    std::string getModuleName() override {    return "Midi Pattern Generator";     }
     
     int getRandomNote(int lowestNote, int range)
     {

@@ -92,134 +92,134 @@
 \DoxyCodeLine{160     \}}
 \DoxyCodeLine{161 }
 \DoxyCodeLine{162 }
-\DoxyCodeLine{179     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_lattice_processor_module_ab6c881508a4469c69c499bf3c2aeb286}{process}}(\textcolor{keywordtype}{float}** buffer, \textcolor{keywordtype}{int} numChannels, std::size\_t blockSize, \textcolor{keyword}{const} \mbox{\hyperlink{struct_host_data}{HostData}} info)}
-\DoxyCodeLine{180     \{}
-\DoxyCodeLine{181         unused(buffer, numChannels, blockSize, info);}
-\DoxyCodeLine{182     \}}
-\DoxyCodeLine{183 }
-\DoxyCodeLine{192     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_lattice_processor_module_a0fc0db74037758ec315145a171352f89}{processMidi}}(\textcolor{keywordtype}{float}** buffer, \textcolor{keywordtype}{int} numChannels, std::size\_t blockSize, \textcolor{keyword}{const} \mbox{\hyperlink{struct_host_data}{HostData}} info, std::vector<LatticeMidiMessage>\& midiMessages)}
-\DoxyCodeLine{193     \{}
-\DoxyCodeLine{194         unused(buffer, numChannels, blockSize, midiMessages, info);}
-\DoxyCodeLine{195     \}}
-\DoxyCodeLine{202     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_lattice_processor_module_a070d800c32e02d74865ae889c23a9c5e}{processSynthVoice}}(\textcolor{keywordtype}{float}** buffer, \textcolor{keywordtype}{int} numChannels, std::size\_t blockSize)}
-\DoxyCodeLine{203     \{}
-\DoxyCodeLine{204         unused(buffer, numChannels, blockSize);}
-\DoxyCodeLine{205     \}}
-\DoxyCodeLine{206 }
-\DoxyCodeLine{210     \textcolor{keyword}{virtual} \textcolor{keywordtype}{int} \mbox{\hyperlink{class_lattice_processor_module_ab1ec40c2f5cb6c7a7b8c3edf729c4573}{getNumberOfVoices}}()}
-\DoxyCodeLine{211     \{}
-\DoxyCodeLine{212         \textcolor{keywordflow}{return} 10;}
-\DoxyCodeLine{213     \}}
-\DoxyCodeLine{214 }
-\DoxyCodeLine{219     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_lattice_processor_module_a252e786c3fb1fd22c8746456f7e4027f}{hostParameterChanged}}(\textcolor{keyword}{const} std::string\& parameterID, \textcolor{keywordtype}{float} newValue)}
-\DoxyCodeLine{220     \{}
-\DoxyCodeLine{221         unused(parameterID, newValue);}
-\DoxyCodeLine{222     \}}
-\DoxyCodeLine{223 }
-\DoxyCodeLine{228     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_lattice_processor_module_a14631f02b31cc19bdc8a1e0ef1ec6711}{startNote}}(\textcolor{keywordtype}{int} noteNumber, \textcolor{keywordtype}{float} velocity)}
-\DoxyCodeLine{229     \{}
-\DoxyCodeLine{230         unused(noteNumber, velocity);}
-\DoxyCodeLine{231     \}}
-\DoxyCodeLine{232 }
-\DoxyCodeLine{236     \textcolor{keyword}{virtual} std::string \mbox{\hyperlink{class_lattice_processor_module_a532dc4fe6404fc695a74d9560cbb7124}{getModuleName}}()}
-\DoxyCodeLine{237     \{}
-\DoxyCodeLine{238         \textcolor{keywordflow}{return} \textcolor{stringliteral}{"{}ModuleName"{}};}
-\DoxyCodeLine{239     \}}
-\DoxyCodeLine{240 }
-\DoxyCodeLine{244     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_lattice_processor_module_adb441d893752df1e8340fe1ef6b59450}{stopNote}}(\textcolor{keywordtype}{float} velocity)}
-\DoxyCodeLine{245     \{}
-\DoxyCodeLine{246         unused(velocity);}
-\DoxyCodeLine{247     \}}
-\DoxyCodeLine{248 }
-\DoxyCodeLine{249 }
-\DoxyCodeLine{250     \textcolor{comment}{/* Called by the host to register parameters and assign callback function for parameter updates}}
-\DoxyCodeLine{251 \textcolor{comment}{    */}}
-\DoxyCodeLine{253     \textcolor{keywordtype}{void} registerParameters(std::vector<std::atomic<float>*> paramVals,}
-\DoxyCodeLine{254         std::vector<std::string> names,}
-\DoxyCodeLine{255         \textcolor{keyword}{const} std::function<\textcolor{keywordtype}{void}(\textcolor{keyword}{const} std::string\&, \textcolor{keywordtype}{float})>\& func)}
-\DoxyCodeLine{256     \{}
-\DoxyCodeLine{257         std::size\_t i = 0;}
-\DoxyCodeLine{258         \textcolor{keywordflow}{for} (\textcolor{keyword}{auto}\& p : paramVals)}
-\DoxyCodeLine{259         \{}
-\DoxyCodeLine{260             paramValues.push\_back(p);}
-\DoxyCodeLine{261             parameterNames.push\_back(\mbox{\hyperlink{class_lattice_processor_module_a0099b7640f4af0994db2392431a74759}{getParameterNameFromId}}(names[i]));}
-\DoxyCodeLine{262             i++;}
-\DoxyCodeLine{263         \}}
-\DoxyCodeLine{264 }
-\DoxyCodeLine{265         paramCallback = func;}
-\DoxyCodeLine{266     \}}
-\DoxyCodeLine{267 }
-\DoxyCodeLine{272     \textcolor{keywordtype}{double} \mbox{\hyperlink{class_lattice_processor_module_a9430f142bc9d91ffd3a742e83d8b97ec}{getMidiNoteInHertz}}(\textcolor{keyword}{const} \textcolor{keywordtype}{int} noteNumber, \textcolor{keyword}{const} \textcolor{keywordtype}{double} aTuning = 440)}
-\DoxyCodeLine{273     \{}
-\DoxyCodeLine{274         \textcolor{keywordflow}{return} aTuning * std::pow(2.0, (noteNumber -\/ 69) / 12.0);}
-\DoxyCodeLine{275     \}}
-\DoxyCodeLine{276 }
-\DoxyCodeLine{278 }
-\DoxyCodeLine{279     \textcolor{keywordtype}{void} setMidiNoteNumber(\textcolor{keywordtype}{int} noteNumber)}
-\DoxyCodeLine{280     \{}
-\DoxyCodeLine{281         midiNoteNumber = noteNumber;}
-\DoxyCodeLine{282     \}}
-\DoxyCodeLine{283 }
-\DoxyCodeLine{287     \textcolor{keywordtype}{int} \mbox{\hyperlink{class_lattice_processor_module_ac5bf11de5c45f9c85252b30c6b9d3c6d}{getMidiNoteNumber}}()}
-\DoxyCodeLine{288     \{}
-\DoxyCodeLine{289         \textcolor{keywordflow}{return} midiNoteNumber;}
-\DoxyCodeLine{290     \}}
-\DoxyCodeLine{291 }
-\DoxyCodeLine{295     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_lattice_processor_module_acc1e1b44d6c439772240e8085176a74d}{isSynth}}()}
-\DoxyCodeLine{296     \{}
-\DoxyCodeLine{297         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{298     \}}
-\DoxyCodeLine{299 }
-\DoxyCodeLine{305     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_lattice_processor_module_a82d80a24abc608eeedf1335b16c37c16}{updateParameter}}(\textcolor{keyword}{const} std::string\& parameterID, \textcolor{keywordtype}{float} newValue)}
-\DoxyCodeLine{306     \{}
-\DoxyCodeLine{307         \textcolor{keywordflow}{if} (paramCallback != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{308             paramCallback(parameterID, newValue);}
-\DoxyCodeLine{309     \}}
-\DoxyCodeLine{310 }
-\DoxyCodeLine{313     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_lattice_processor_module_abb1721316018048f6ece026a621d42bc}{getParameter}}(std::string name)}
-\DoxyCodeLine{314     \{}
-\DoxyCodeLine{315         \textcolor{comment}{//these are not picking up teh correct anme...}}
-\DoxyCodeLine{316         std::size\_t index = 0;}
-\DoxyCodeLine{317         \textcolor{keywordflow}{for}(\textcolor{keyword}{const} \textcolor{keyword}{auto}\& m : parameterNames)}
-\DoxyCodeLine{318         \{}
-\DoxyCodeLine{319             \textcolor{keywordflow}{if}(m == name)}
-\DoxyCodeLine{320                 \textcolor{keywordflow}{break};}
-\DoxyCodeLine{321             index++;}
-\DoxyCodeLine{322         \}}
-\DoxyCodeLine{323         \textcolor{keywordflow}{return} paramValues[index]-\/>load();}
-\DoxyCodeLine{324     \}}
-\DoxyCodeLine{325 }
-\DoxyCodeLine{330     std::string \mbox{\hyperlink{class_lattice_processor_module_a0099b7640f4af0994db2392431a74759}{getParameterNameFromId}}(std::string parameterId)}
-\DoxyCodeLine{331     \{}
-\DoxyCodeLine{332         \textcolor{keywordflow}{return} parameterId.substr(parameterId.find(\textcolor{stringliteral}{"{}-\/"{}}) + 2);}
-\DoxyCodeLine{333     \}}
-\DoxyCodeLine{334 }
-\DoxyCodeLine{337     \textcolor{keyword}{virtual} std::string \mbox{\hyperlink{class_lattice_processor_module_ab3731bae92d30fc083660959170b4f23}{getSVGXml}}() \{ \textcolor{keywordflow}{return} \textcolor{stringliteral}{"{}"{}}; \}}
-\DoxyCodeLine{338 }
-\DoxyCodeLine{341     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_lattice_processor_module_aad95ba85178dbbd77b66eeb0635822c6}{canDraw}}()}
-\DoxyCodeLine{342     \{}
-\DoxyCodeLine{343         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{344     \}}
-\DoxyCodeLine{345 }
-\DoxyCodeLine{349     \textcolor{keyword}{virtual} std::string \mbox{\hyperlink{class_lattice_processor_module_a3c5082d9679b10e3b7b88877196d8084}{getDescription}}()}
-\DoxyCodeLine{350     \{}
-\DoxyCodeLine{351         \textcolor{keywordflow}{return} \textcolor{stringliteral}{"{}"{}};}
-\DoxyCodeLine{352     \}}
-\DoxyCodeLine{353 }
-\DoxyCodeLine{354 \textcolor{keyword}{private}:}
-\DoxyCodeLine{355     \textcolor{keywordtype}{int} midiNoteNumber = 0;}
-\DoxyCodeLine{356     std::string nodeName;}
-\DoxyCodeLine{357     std::function<void(\textcolor{keyword}{const} std::string\&, \textcolor{keywordtype}{float})> paramCallback;}
-\DoxyCodeLine{358     std::vector<std::string> parameterNames;}
-\DoxyCodeLine{359     std::vector<std::atomic<float>*> paramValues;}
-\DoxyCodeLine{360 \};}
-\DoxyCodeLine{361 }
-\DoxyCodeLine{362 \textcolor{preprocessor}{\#ifdef JUCE\_MAC}}
-\DoxyCodeLine{363 \textcolor{keyword}{typedef} \mbox{\hyperlink{class_lattice_processor_module}{LatticeProcessorModule}}* create\_t();}
-\DoxyCodeLine{364 \textcolor{keyword}{typedef} \textcolor{keywordtype}{void} destroy\_t(\mbox{\hyperlink{class_lattice_processor_module}{LatticeProcessorModule}}*);}
-\DoxyCodeLine{365 \textcolor{preprocessor}{\#else}}
-\DoxyCodeLine{366 \textcolor{keyword}{typedef} \mbox{\hyperlink{class_lattice_processor_module}{LatticeProcessorModule}}* create\_t();}
-\DoxyCodeLine{367 \textcolor{keyword}{typedef} \textcolor{keywordtype}{void} destroy\_t(\mbox{\hyperlink{class_lattice_processor_module}{LatticeProcessorModule}}*);}
-\DoxyCodeLine{368 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{181     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_lattice_processor_module_ab6c881508a4469c69c499bf3c2aeb286}{process}}(\textcolor{keywordtype}{float}** buffer, \textcolor{keywordtype}{int} numChannels, std::size\_t blockSize, \textcolor{keyword}{const} \mbox{\hyperlink{struct_host_data}{HostData}} info)}
+\DoxyCodeLine{182     \{}
+\DoxyCodeLine{183         unused(buffer, numChannels, blockSize, info);}
+\DoxyCodeLine{184     \}}
+\DoxyCodeLine{185 }
+\DoxyCodeLine{194     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_lattice_processor_module_a0fc0db74037758ec315145a171352f89}{processMidi}}(\textcolor{keywordtype}{float}** buffer, \textcolor{keywordtype}{int} numChannels, std::size\_t blockSize, \textcolor{keyword}{const} \mbox{\hyperlink{struct_host_data}{HostData}} info, std::vector<LatticeMidiMessage>\& midiMessages)}
+\DoxyCodeLine{195     \{}
+\DoxyCodeLine{196         unused(buffer, numChannels, blockSize, midiMessages, info);}
+\DoxyCodeLine{197     \}}
+\DoxyCodeLine{204     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_lattice_processor_module_a070d800c32e02d74865ae889c23a9c5e}{processSynthVoice}}(\textcolor{keywordtype}{float}** buffer, \textcolor{keywordtype}{int} numChannels, std::size\_t blockSize)}
+\DoxyCodeLine{205     \{}
+\DoxyCodeLine{206         unused(buffer, numChannels, blockSize);}
+\DoxyCodeLine{207     \}}
+\DoxyCodeLine{208 }
+\DoxyCodeLine{212     \textcolor{keyword}{virtual} \textcolor{keywordtype}{int} \mbox{\hyperlink{class_lattice_processor_module_ab1ec40c2f5cb6c7a7b8c3edf729c4573}{getNumberOfVoices}}()}
+\DoxyCodeLine{213     \{}
+\DoxyCodeLine{214         \textcolor{keywordflow}{return} 10;}
+\DoxyCodeLine{215     \}}
+\DoxyCodeLine{216 }
+\DoxyCodeLine{221     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_lattice_processor_module_a252e786c3fb1fd22c8746456f7e4027f}{hostParameterChanged}}(\textcolor{keyword}{const} std::string\& parameterID, \textcolor{keywordtype}{float} newValue)}
+\DoxyCodeLine{222     \{}
+\DoxyCodeLine{223         unused(parameterID, newValue);}
+\DoxyCodeLine{224     \}}
+\DoxyCodeLine{225 }
+\DoxyCodeLine{230     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_lattice_processor_module_a14631f02b31cc19bdc8a1e0ef1ec6711}{startNote}}(\textcolor{keywordtype}{int} noteNumber, \textcolor{keywordtype}{float} velocity)}
+\DoxyCodeLine{231     \{}
+\DoxyCodeLine{232         unused(noteNumber, velocity);}
+\DoxyCodeLine{233     \}}
+\DoxyCodeLine{234 }
+\DoxyCodeLine{238     \textcolor{keyword}{virtual} std::string \mbox{\hyperlink{class_lattice_processor_module_a532dc4fe6404fc695a74d9560cbb7124}{getModuleName}}()}
+\DoxyCodeLine{239     \{}
+\DoxyCodeLine{240         \textcolor{keywordflow}{return} \textcolor{stringliteral}{"{}ModuleName"{}};}
+\DoxyCodeLine{241     \}}
+\DoxyCodeLine{242 }
+\DoxyCodeLine{246     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_lattice_processor_module_adb441d893752df1e8340fe1ef6b59450}{stopNote}}(\textcolor{keywordtype}{float} velocity)}
+\DoxyCodeLine{247     \{}
+\DoxyCodeLine{248         unused(velocity);}
+\DoxyCodeLine{249     \}}
+\DoxyCodeLine{250 }
+\DoxyCodeLine{251 }
+\DoxyCodeLine{252     \textcolor{comment}{/* Called by the host to register parameters and assign callback function for parameter updates}}
+\DoxyCodeLine{253 \textcolor{comment}{    */}}
+\DoxyCodeLine{255     \textcolor{keywordtype}{void} registerParameters(std::vector<std::atomic<float>*> paramVals,}
+\DoxyCodeLine{256         std::vector<std::string> names,}
+\DoxyCodeLine{257         \textcolor{keyword}{const} std::function<\textcolor{keywordtype}{void}(\textcolor{keyword}{const} std::string\&, \textcolor{keywordtype}{float})>\& func)}
+\DoxyCodeLine{258     \{}
+\DoxyCodeLine{259         std::size\_t i = 0;}
+\DoxyCodeLine{260         \textcolor{keywordflow}{for} (\textcolor{keyword}{auto}\& p : paramVals)}
+\DoxyCodeLine{261         \{}
+\DoxyCodeLine{262             paramValues.push\_back(p);}
+\DoxyCodeLine{263             parameterNames.push\_back(\mbox{\hyperlink{class_lattice_processor_module_a0099b7640f4af0994db2392431a74759}{getParameterNameFromId}}(names[i]));}
+\DoxyCodeLine{264             i++;}
+\DoxyCodeLine{265         \}}
+\DoxyCodeLine{266 }
+\DoxyCodeLine{267         paramCallback = func;}
+\DoxyCodeLine{268     \}}
+\DoxyCodeLine{269 }
+\DoxyCodeLine{275     \textcolor{keywordtype}{double} \mbox{\hyperlink{class_lattice_processor_module_a9430f142bc9d91ffd3a742e83d8b97ec}{getMidiNoteInHertz}}(\textcolor{keyword}{const} \textcolor{keywordtype}{int} noteNumber, \textcolor{keyword}{const} \textcolor{keywordtype}{double} aTuning = 440)}
+\DoxyCodeLine{276     \{}
+\DoxyCodeLine{277         \textcolor{keywordflow}{return} aTuning * std::pow(2.0, (noteNumber -\/ 69) / 12.0);}
+\DoxyCodeLine{278     \}}
+\DoxyCodeLine{279 }
+\DoxyCodeLine{281 }
+\DoxyCodeLine{282     \textcolor{keywordtype}{void} setMidiNoteNumber(\textcolor{keywordtype}{int} noteNumber)}
+\DoxyCodeLine{283     \{}
+\DoxyCodeLine{284         midiNoteNumber = noteNumber;}
+\DoxyCodeLine{285     \}}
+\DoxyCodeLine{286 }
+\DoxyCodeLine{290     \textcolor{keywordtype}{int} \mbox{\hyperlink{class_lattice_processor_module_ac5bf11de5c45f9c85252b30c6b9d3c6d}{getMidiNoteNumber}}()}
+\DoxyCodeLine{291     \{}
+\DoxyCodeLine{292         \textcolor{keywordflow}{return} midiNoteNumber;}
+\DoxyCodeLine{293     \}}
+\DoxyCodeLine{294 }
+\DoxyCodeLine{299     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_lattice_processor_module_acc1e1b44d6c439772240e8085176a74d}{isSynth}}()}
+\DoxyCodeLine{300     \{}
+\DoxyCodeLine{301         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{302     \}}
+\DoxyCodeLine{303 }
+\DoxyCodeLine{309     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_lattice_processor_module_a82d80a24abc608eeedf1335b16c37c16}{updateParameter}}(\textcolor{keyword}{const} std::string\& parameterID, \textcolor{keywordtype}{float} newValue)}
+\DoxyCodeLine{310     \{}
+\DoxyCodeLine{311         \textcolor{keywordflow}{if} (paramCallback != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{312             paramCallback(parameterID, newValue);}
+\DoxyCodeLine{313     \}}
+\DoxyCodeLine{314 }
+\DoxyCodeLine{319     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_lattice_processor_module_abb1721316018048f6ece026a621d42bc}{getParameter}}(std::string name)}
+\DoxyCodeLine{320     \{}
+\DoxyCodeLine{321         \textcolor{comment}{//these are not picking up teh correct anme...}}
+\DoxyCodeLine{322         std::size\_t index = 0;}
+\DoxyCodeLine{323         \textcolor{keywordflow}{for}(\textcolor{keyword}{const} \textcolor{keyword}{auto}\& m : parameterNames)}
+\DoxyCodeLine{324         \{}
+\DoxyCodeLine{325             \textcolor{keywordflow}{if}(m == name)}
+\DoxyCodeLine{326                 \textcolor{keywordflow}{break};}
+\DoxyCodeLine{327             index++;}
+\DoxyCodeLine{328         \}}
+\DoxyCodeLine{329         \textcolor{keywordflow}{return} paramValues[index]-\/>load();}
+\DoxyCodeLine{330     \}}
+\DoxyCodeLine{331 }
+\DoxyCodeLine{337     std::string \mbox{\hyperlink{class_lattice_processor_module_a0099b7640f4af0994db2392431a74759}{getParameterNameFromId}}(std::string parameterId)}
+\DoxyCodeLine{338     \{}
+\DoxyCodeLine{339         \textcolor{keywordflow}{return} parameterId.substr(parameterId.find(\textcolor{stringliteral}{"{}-\/"{}}) + 2);}
+\DoxyCodeLine{340     \}}
+\DoxyCodeLine{341 }
+\DoxyCodeLine{345     \textcolor{keyword}{virtual} std::string \mbox{\hyperlink{class_lattice_processor_module_ab3731bae92d30fc083660959170b4f23}{getSVGXml}}() \{ \textcolor{keywordflow}{return} \textcolor{stringliteral}{"{}"{}}; \}}
+\DoxyCodeLine{346 }
+\DoxyCodeLine{350     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_lattice_processor_module_aad95ba85178dbbd77b66eeb0635822c6}{canDraw}}()}
+\DoxyCodeLine{351     \{}
+\DoxyCodeLine{352         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{353     \}}
+\DoxyCodeLine{354 }
+\DoxyCodeLine{358     \textcolor{keyword}{virtual} std::string \mbox{\hyperlink{class_lattice_processor_module_a3c5082d9679b10e3b7b88877196d8084}{getDescription}}()}
+\DoxyCodeLine{359     \{}
+\DoxyCodeLine{360         \textcolor{keywordflow}{return} \textcolor{stringliteral}{"{}"{}};}
+\DoxyCodeLine{361     \}}
+\DoxyCodeLine{362 }
+\DoxyCodeLine{363 \textcolor{keyword}{private}:}
+\DoxyCodeLine{364     \textcolor{keywordtype}{int} midiNoteNumber = 0;}
+\DoxyCodeLine{365     std::string nodeName;}
+\DoxyCodeLine{366     std::function<void(\textcolor{keyword}{const} std::string\&, \textcolor{keywordtype}{float})> paramCallback;}
+\DoxyCodeLine{367     std::vector<std::string> parameterNames;}
+\DoxyCodeLine{368     std::vector<std::atomic<float>*> paramValues;}
+\DoxyCodeLine{369 \};}
+\DoxyCodeLine{370 }
+\DoxyCodeLine{371 \textcolor{preprocessor}{\#ifdef JUCE\_MAC}}
+\DoxyCodeLine{372 \textcolor{keyword}{typedef} \mbox{\hyperlink{class_lattice_processor_module}{LatticeProcessorModule}}* create\_t();}
+\DoxyCodeLine{373 \textcolor{keyword}{typedef} \textcolor{keywordtype}{void} destroy\_t(\mbox{\hyperlink{class_lattice_processor_module}{LatticeProcessorModule}}*);}
+\DoxyCodeLine{374 \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{375 \textcolor{keyword}{typedef} \mbox{\hyperlink{class_lattice_processor_module}{LatticeProcessorModule}}* create\_t();}
+\DoxyCodeLine{376 \textcolor{keyword}{typedef} \textcolor{keywordtype}{void} destroy\_t(\mbox{\hyperlink{class_lattice_processor_module}{LatticeProcessorModule}}*);}
+\DoxyCodeLine{377 \textcolor{preprocessor}{\#endif}}
 
 \end{DoxyCode}

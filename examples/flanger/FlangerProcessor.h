@@ -55,6 +55,10 @@ public:
         paramValues is a list of parameter values passed from the host in order of their creation */
     void process(float** buffer, int numChannels, std::size_t blockSize, const HostData hostInfo) override;
     
+	std::string getModuleName() override
+    {
+        return "Flanger";
+    }
 private:
     Flanger flangerL, flangerR;
     std::vector<float> inL;

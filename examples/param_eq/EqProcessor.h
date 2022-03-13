@@ -32,7 +32,10 @@ public:
         description = "";
     }
 
-    std::string getModuleName() override {    return "Gain";     }
+    std::string getModuleName() override
+    {    
+        return "Single Band Parametric EQ";     
+    }
 
 private:
 	Aurora::Eq<float> eqL, eqR;

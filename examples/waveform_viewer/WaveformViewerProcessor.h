@@ -33,7 +33,7 @@ public:
 	/* override this method and return true if you wish to enable drawing on the generic editor viewport */
 	bool canDraw() override { return okToDraw; }
 
-	std::string getModuleName() override { return "Gain"; }
+	std::string getModuleName() override { return "SVG Waveform Viewer"; }
 
 	static int remap(float value, float rangeMin, float rangeMax, float newRangeMin, float newRangeMax)
 	{

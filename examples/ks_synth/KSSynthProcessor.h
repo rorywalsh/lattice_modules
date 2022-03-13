@@ -140,6 +140,11 @@ public:
         return true;
     }
 
+    std::string getModuleName() override
+    {
+        return "Karplus Strong Synth";
+    }
+
 private:
     Aurora::Karplus<double> pluckL;
     Aurora::Karplus<double> pluckR;

@@ -35,7 +35,7 @@ struct ModuleParameter
     /** A vector holding min, max, increment, defaultValue, and skew values for your parameter. A skew of 1 is linear, while a skew of less than one will result in non-linear behaviour. */
     std::vector<double> range;
 
-    /*! Creates a module parameter. You can add as many of these as you wish to your module by pushing to the `std::vector<ModuleParameter>& parameters` argument that gets passed to <LatticeProcessorModule::createParameters()>
+    /*! Creates a module parameter. You can add as many of these as you wish to your module by pushing to the `std::vector<ModuleParameter>& parameters` argument that gets passed to LatticeProcessorModule::createParameters()
 
 ```
 void ChorusProcessor::createParameters(std::vector<ModuleParameter> &parameters)
@@ -107,7 +107,7 @@ struct LatticeMidiMessage {
     /** MIDI velocity as a float between 0 and 1 */
     float velocity;
     
-    /** Creates a simple MIDI message that can be added to a incoming MIDI vector in <LatticeProcessorModule::process()>
+    /** Creates a simple MIDI message that can be added to a incoming MIDI vector in process()
      */
     LatticeMidiMessage(LatticeMidiMessage::Type type, int chan, int noteNum, float vel)
     : msgType(type), note(noteNum), channel(chan), velocity(vel)
@@ -161,8 +161,9 @@ public:
 
 
     /*!
-    Buffer is an array of audio channels. Each channel array will be blockSize samples longer. You can access and modify the sample data like this:
-```
+    Buffer is an array of audio channels. Each channel array will be blockSize samples longer. You can access and modify the sample data like this
+    
+    @code
     for ( int i = 0 ; i < blockSize ; i++)
     {
         for ( int chan = 0 ; chan < numChannels; chan++)
@@ -170,7 +171,8 @@ public:
             //buffer[chan][i] = buffer[chan][i] * getParameter("Gain");
         }
     }
-```
+    @endcode
+
     @param[in] buffer An array of audio channels.
     @param[in] numChannels  The number of channels in the buffer array
     @param[in] blockSize The number of samples in each channel
@@ -182,7 +184,7 @@ public:
     }
 
     /*!
-     Use this for MIDI based effects. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages.
+     Use this for MIDI based effects. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages. (See above for an example of how to access the channel data.)  
     * @param[in] buffer An array of audio channels.
     * @param[in] numChannels  The number of channels in the buffer array
     * @param[in] blockSize The number of samples in each channel
@@ -194,7 +196,7 @@ public:
         unused(buffer, numChannels, blockSize, midiMessages, info);
     }
      /*!
-     This processing method is called by synth modules. No MIDI messages are passed directly to this function. Instead, the start and stop notes methods will be called. Lattice will allocating an instance of the module to each voice. Lattice will set the number of voices when it calls  <getNumberOfVoices()>. Buffer is an array of audio channels. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages.
+     This processing method is called by synth modules. No MIDI messages are passed directly to this function. Instead, the start and stop notes methods will be called. Lattice will allocating an instance of the module to each voice. Lattice will set the number of voices when it calls  getNumberOfVoices(). Buffer is an array of audio channels. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages. (See above for an example of how to access the channel data.)
     * @param[in] buffer An array of audio channels.
     * @param[in] numChannels  The number of channels in the buffer array
     * @param[in] blockSize The number of samples in each channel
@@ -212,8 +214,8 @@ public:
         return 10;
     }
 
-    /** Called by the host when a paremeter changes. The parameterID in this instance is a combination of the unique name for the module, assigned by the host, and the parameter name itself, i.e, 'Super Synth 11 - Attack'. Use the <getParameterName()> method to extract the parameter name - note that in the case of audio FX, you can just called getParameter() from your process block.
-    * @param[in] parameterID The name of the parameter that has been update. This will also contain information about the module instance, so use <getParameterName()> to extract the actual module parameter name.
+    /** Called by the host when a paremeter changes. The parameterID in this instance is a combination of the unique name for the module, assigned by the host, and the parameter name itself, i.e, 'Super Synth 11 - Attack'. Use the getParameterName() method to extract the parameter name - note that in the case of audio FX, you can just called getParameter() from your process block.
+    * @param[in] parameterID The name of the parameter that has been update. This will also contain information about the module instance, so use getParameterName() to extract the actual module parameter name.
      * @param[in] newValue  The parameter value sent by the host.
     */
     virtual void hostParameterChanged(const std::string& parameterID, float newValue)
@@ -265,9 +267,10 @@ public:
         paramCallback = func;
     }
 
-    /** returns the MIDI note number in Hertz, according to A tuning
+    /** returns a MIDI note number in Hertz, according to A tuning
      * @param [in] noteNumber The MIDI note number.
      * @param [in] aTuning The selected frequency for middle A.
+     * @return the note number in Hz.
     */
     double getMidiNoteInHertz(const int noteNumber, const double aTuning = 440)
     {
@@ -291,6 +294,7 @@ public:
 
     /** Call by Lattice to determine if the module is a synth of an effects (audio/MIDI) processor.
     * Set to true if module is a synth.
+    * @return returns true is instrument is a synth, otherwise return false
     */
     virtual bool isSynth()
     {
@@ -309,7 +313,9 @@ public:
     }
 
     /** Used to query the current value of a parameter - the names correspond to the names used
-        in the createParameters() function */
+        in the createParameters() function 
+        * @return the current value of the parameter
+        */
     float getParameter(std::string name)
     {
         //these are not picking up teh correct anme...
@@ -323,9 +329,10 @@ public:
         return paramValues[index]->load();
     }
 
-    /** this method will extract the parameter name, as defined in <createParameters()>, from the unique
+    /** this method will extract the parameter name, as defined in createParameters(), from the unique
      paramaterId assigned to each parameter by the host
     * @param [in] parameterId The long version of the parameter typically in the form of 'module parameter[ModuleName (NodeNum)]'
+    * @return The parameter name as defined when creating the parameters 
     */
     std::string getParameterNameFromId(std::string parameterId)
     {
@@ -333,10 +340,12 @@ public:
     }
 
     /** override this method if you want to draw to the Lattice generic editor viewport
+     * @return This should return a Valid SVG Xml string
     */
     virtual std::string getSVGXml() { return ""; }
 
     /** override this method and return true if you wish to enable drawing on the generic editor viewport. Note that you should only return true when you need the graphics updated. Leaving this permanently set to true will have a negative effect on performance.
+     * @return This should return true is you wish the viewport to update
     */
     virtual bool canDraw()
     {

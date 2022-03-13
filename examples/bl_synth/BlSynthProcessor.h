@@ -87,6 +87,11 @@ public:
         paramValues is a list of parameter values passed from the host in order of their creation */
     void processSynthVoice(float** buffer, int numChannels, std::size_t blockSize) override;
     
+    std::string getModuleName() override
+    {
+        return "Bandlimited Synth";
+    }
+
     /* Is a synth */
     bool isSynth()
     {

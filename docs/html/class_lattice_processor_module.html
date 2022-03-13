@@ -144,7 +144,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >override this method and return true if you wish to enable drawing on the generic editor viewport. Note that you should only return true when you need the graphics updated. Leaving this permanently set to true will have a negative effect on performance. </p>
+<p >override this method and return true if you wish to enable drawing on the generic editor viewport. Note that you should only return true when you need the graphics updated. Leaving this permanently set to true will have a negative effect on performance. </p><dl class="section return"><dt>Returns</dt><dd>This should return true is you wish the viewport to update </dd></dl>
 
 </div>
 </div>
@@ -282,13 +282,14 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >returns the MIDI note number in Hertz, according to A tuning </p><dl class="params"><dt>Parameters</dt><dd>
+<p >returns a MIDI note number in Hertz, according to A tuning </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">noteNumber</td><td>The MIDI note number. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">aTuning</td><td>The selected frequency for middle A. </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>the note number in Hz. </dd></dl>
 
 </div>
 </div>
@@ -393,7 +394,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Used to query the current value of a parameter - the names correspond to the names used in the <a class="el" href="class_lattice_processor_module.html#a69686ef945daf7265fc37f367b5bb21d">createParameters()</a> function </p>
+<p >Used to query the current value of a parameter - the names correspond to the names used in the <a class="el" href="class_lattice_processor_module.html#a69686ef945daf7265fc37f367b5bb21d">createParameters()</a> function </p><dl class="section return"><dt>Returns</dt><dd>the current value of the parameter </dd></dl>
 
 </div>
 </div>
@@ -420,12 +421,13 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >this method will extract the parameter name, as defined in &lt;<a class="el" href="class_lattice_processor_module.html#a69686ef945daf7265fc37f367b5bb21d">createParameters()</a>&gt;, from the unique paramaterId assigned to each parameter by the host </p><dl class="params"><dt>Parameters</dt><dd>
+<p >this method will extract the parameter name, as defined in <a class="el" href="class_lattice_processor_module.html#a69686ef945daf7265fc37f367b5bb21d">createParameters()</a>, from the unique paramaterId assigned to each parameter by the host </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">parameterId</td><td>The long version of the parameter typically in the form of 'module parameter[ModuleName (NodeNum)]' </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>The parameter name as defined when creating the parameters </dd></dl>
 
 </div>
 </div>
@@ -451,7 +453,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >override this method if you want to draw to the Lattice generic editor viewport </p>
+<p >override this method if you want to draw to the Lattice generic editor viewport </p><dl class="section return"><dt>Returns</dt><dd>This should return a Valid SVG Xml string </dd></dl>
 
 </div>
 </div>
@@ -488,9 +490,9 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Called by the host when a paremeter changes. The parameterID in this instance is a combination of the unique name for the module, assigned by the host, and the parameter name itself, i.e, 'Super Synth 11 - Attack'. Use the &lt;getParameterName()&gt; method to extract the parameter name - note that in the case of audio FX, you can just called <a class="el" href="class_lattice_processor_module.html#abb1721316018048f6ece026a621d42bc">getParameter()</a> from your process block. </p><dl class="params"><dt>Parameters</dt><dd>
+<p >Called by the host when a paremeter changes. The parameterID in this instance is a combination of the unique name for the module, assigned by the host, and the parameter name itself, i.e, 'Super Synth 11 - Attack'. Use the getParameterName() method to extract the parameter name - note that in the case of audio FX, you can just called <a class="el" href="class_lattice_processor_module.html#abb1721316018048f6ece026a621d42bc">getParameter()</a> from your process block. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">parameterID</td><td>The name of the parameter that has been update. This will also contain information about the module instance, so use &lt;getParameterName()&gt; to extract the actual module parameter name. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">parameterID</td><td>The name of the parameter that has been update. This will also contain information about the module instance, so use getParameterName() to extract the actual module parameter name. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">newValue</td><td>The parameter value sent by the host. </td></tr>
   </table>
   </dd>
@@ -520,7 +522,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Call by Lattice to determine if the module is a synth of an effects (audio/MIDI) processor. Set to true if module is a synth. </p>
+<p >Call by Lattice to determine if the module is a synth of an effects (audio/MIDI) processor. Set to true if module is a synth. </p><dl class="section return"><dt>Returns</dt><dd>returns true is instrument is a synth, otherwise return false </dd></dl>
 
 </div>
 </div>
@@ -612,15 +614,15 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<pre class="fragment">Buffer is an array of audio channels. Each channel array will be blockSize samples longer. You can access and modify the sample data like this:
-</pre> <div class="fragment"><div class="line"><span class="keywordflow">for</span> ( <span class="keywordtype">int</span> i = 0 ; i &lt; blockSize ; i++)</div>
+<p >Buffer is an array of audio channels. Each channel array will be blockSize samples longer. You can access and modify the sample data like this</p>
+<div class="fragment"><div class="line"><span class="keywordflow">for</span> ( <span class="keywordtype">int</span> i = 0 ; i &lt; blockSize ; i++)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">for</span> ( <span class="keywordtype">int</span> chan = 0 ; chan &lt; numChannels; chan++)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="comment">//buffer[chan][i] = buffer[chan][i] * getParameter(&quot;Gain&quot;);</span></div>
 <div class="line">    }</div>
 <div class="line">}</div>
-</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">buffer</td><td>An array of audio channels. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">numChannels</td><td>The number of channels in the buffer array </td></tr>
@@ -683,7 +685,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Use this for MIDI based effects. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages. </p><dl class="params"><dt>Parameters</dt><dd>
+<p >Use this for MIDI based effects. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages. (See above for an example of how to access the channel data.) <br  />
+ </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">buffer</td><td>An array of audio channels. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">numChannels</td><td>The number of channels in the buffer array </td></tr>
@@ -735,7 +738,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >This processing method is called by synth modules. No MIDI messages are passed directly to this function. Instead, the start and stop notes methods will be called. Lattice will allocating an instance of the module to each voice. Lattice will set the number of voices when it calls &lt;<a class="el" href="class_lattice_processor_module.html#ab1ec40c2f5cb6c7a7b8c3edf729c4573">getNumberOfVoices()</a>&gt;. Buffer is an array of audio channels. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages. </p><dl class="params"><dt>Parameters</dt><dd>
+<p >This processing method is called by synth modules. No MIDI messages are passed directly to this function. Instead, the start and stop notes methods will be called. Lattice will allocating an instance of the module to each voice. Lattice will set the number of voices when it calls <a class="el" href="class_lattice_processor_module.html#ab1ec40c2f5cb6c7a7b8c3edf729c4573">getNumberOfVoices()</a>. Buffer is an array of audio channels. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages. (See above for an example of how to access the channel data.) </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">buffer</td><td>An array of audio channels. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">numChannels</td><td>The number of channels in the buffer array </td></tr>
