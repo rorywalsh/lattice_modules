@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.15)
 project (bl_synth)
 
-include_directories("../include/")
+include_directories("../../include/")
 
-set(SOURCE BlSynthProcessor.cpp BlSynthProcessor.h)
+set(SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/BlSynthProcessor.cpp ${CMAKE_CURRENT_SOURCE_DIR}/BlSynthProcessor.h)
 
 MESSAGE(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -14,7 +14,7 @@ else()
 endif()
 
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Source" FILES ${SOURCE})
+# source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Source" FILES ${SOURCE})
 
 add_compile_options ( -fdeclspec -fms-extensions)
 

@@ -38,7 +38,7 @@ double \mbox{\hyperlink{class_lattice_processor_module_a9430f142bc9d91ffd3a742e8
 \item 
 int \mbox{\hyperlink{class_lattice_processor_module_ac5bf11de5c45f9c85252b30c6b9d3c6d}{get\+Midi\+Note\+Number}} ()
 \item 
-bool \mbox{\hyperlink{class_lattice_processor_module_a3831345936b91ddc030585daab57f5c6}{is\+Synth}} ()
+virtual bool \mbox{\hyperlink{class_lattice_processor_module_acc1e1b44d6c439772240e8085176a74d}{is\+Synth}} ()
 \item 
 void \mbox{\hyperlink{class_lattice_processor_module_a82d80a24abc608eeedf1335b16c37c16}{update\+Parameter}} (const std\+::string \&parameter\+ID, float new\+Value)
 \item 
@@ -96,11 +96,9 @@ This method is called by the host to create the plugin parameters. Override and 
 \doxysubsubsection{\texorpdfstring{getDescription()}{getDescription()}}
 {\footnotesize\ttfamily virtual std\+::string Lattice\+Processor\+Module\+::get\+Description (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
 
-Called by Lattice when a user right-\/clicks and module and select \textquotesingle{}Show Info\textquotesingle{} 
-\begin{DoxyParams}[1]{Parameters}
-\mbox{\texttt{ out}}  & {\em description} & Text that will appear in a module\textquotesingle{}s info window. \\
-\hline
-\end{DoxyParams}
+Called by Lattice when a user right-\/clicks and module and select \textquotesingle{}Show Info\textquotesingle{} \begin{DoxyReturn}{Returns}
+Text that will appear in a module\textquotesingle{}s info window. 
+\end{DoxyReturn}
 \mbox{\Hypertarget{class_lattice_processor_module_a9430f142bc9d91ffd3a742e83d8b97ec}\label{class_lattice_processor_module_a9430f142bc9d91ffd3a742e83d8b97ec}} 
 \index{LatticeProcessorModule@{LatticeProcessorModule}!getMidiNoteInHertz@{getMidiNoteInHertz}}
 \index{getMidiNoteInHertz@{getMidiNoteInHertz}!LatticeProcessorModule@{LatticeProcessorModule}}
@@ -120,33 +118,27 @@ returns the MIDI note number in Hertz, according to A tuning
 \doxysubsubsection{\texorpdfstring{getMidiNoteNumber()}{getMidiNoteNumber()}}
 {\footnotesize\ttfamily int Lattice\+Processor\+Module\+::get\+Midi\+Note\+Number (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
-retrieves the current MIDI note number 
-\begin{DoxyParams}[1]{Parameters}
-\mbox{\texttt{ out}}  & {\em midi\+Note\+Number} & the current MIDI note number \\
-\hline
-\end{DoxyParams}
+retrieves the current MIDI note number \begin{DoxyReturn}{Returns}
+the current MIDI note number 
+\end{DoxyReturn}
 \mbox{\Hypertarget{class_lattice_processor_module_a532dc4fe6404fc695a74d9560cbb7124}\label{class_lattice_processor_module_a532dc4fe6404fc695a74d9560cbb7124}} 
 \index{LatticeProcessorModule@{LatticeProcessorModule}!getModuleName@{getModuleName}}
 \index{getModuleName@{getModuleName}!LatticeProcessorModule@{LatticeProcessorModule}}
 \doxysubsubsection{\texorpdfstring{getModuleName()}{getModuleName()}}
 {\footnotesize\ttfamily virtual std\+::string Lattice\+Processor\+Module\+::get\+Module\+Name (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
 
-Override this method to provide a unique name for the module 
-\begin{DoxyParams}[1]{Parameters}
-\mbox{\texttt{ out}}  & {\em module\+Name} & The name of the module as shown in Lattice \\
-\hline
-\end{DoxyParams}
+Override this method to provide a unique name for the module \begin{DoxyReturn}{Returns}
+The name of the module as shown in Lattice 
+\end{DoxyReturn}
 \mbox{\Hypertarget{class_lattice_processor_module_ab1ec40c2f5cb6c7a7b8c3edf729c4573}\label{class_lattice_processor_module_ab1ec40c2f5cb6c7a7b8c3edf729c4573}} 
 \index{LatticeProcessorModule@{LatticeProcessorModule}!getNumberOfVoices@{getNumberOfVoices}}
 \index{getNumberOfVoices@{getNumberOfVoices}!LatticeProcessorModule@{LatticeProcessorModule}}
 \doxysubsubsection{\texorpdfstring{getNumberOfVoices()}{getNumberOfVoices()}}
 {\footnotesize\ttfamily virtual int Lattice\+Processor\+Module\+::get\+Number\+Of\+Voices (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
 
-Called by Lattice to set the number of voices 
-\begin{DoxyParams}[1]{Parameters}
-\mbox{\texttt{ out}}  & {\em number\+Of\+Voice} & The maximum number of voices that can be played simultaneously. \\
-\hline
-\end{DoxyParams}
+Called by Lattice to set the number of voices \begin{DoxyReturn}{Returns}
+The maximum number of voices that can be played simultaneously. 
+\end{DoxyReturn}
 \mbox{\Hypertarget{class_lattice_processor_module_abb1721316018048f6ece026a621d42bc}\label{class_lattice_processor_module_abb1721316018048f6ece026a621d42bc}} 
 \index{LatticeProcessorModule@{LatticeProcessorModule}!getParameter@{getParameter}}
 \index{getParameter@{getParameter}!LatticeProcessorModule@{LatticeProcessorModule}}
@@ -183,11 +175,11 @@ Called by the host when a paremeter changes. The parameter\+ID in this instance 
 \mbox{\texttt{ in}}  & {\em new\+Value} & The parameter value sent by the host. \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{class_lattice_processor_module_a3831345936b91ddc030585daab57f5c6}\label{class_lattice_processor_module_a3831345936b91ddc030585daab57f5c6}} 
+\mbox{\Hypertarget{class_lattice_processor_module_acc1e1b44d6c439772240e8085176a74d}\label{class_lattice_processor_module_acc1e1b44d6c439772240e8085176a74d}} 
 \index{LatticeProcessorModule@{LatticeProcessorModule}!isSynth@{isSynth}}
 \index{isSynth@{isSynth}!LatticeProcessorModule@{LatticeProcessorModule}}
 \doxysubsubsection{\texorpdfstring{isSynth()}{isSynth()}}
-{\footnotesize\ttfamily bool Lattice\+Processor\+Module\+::is\+Synth (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+{\footnotesize\ttfamily virtual bool Lattice\+Processor\+Module\+::is\+Synth (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
 
 Call by Lattice to determine if the module is a synth of an effects (audio/\+MIDI) processor. Set to true if module is a synth. \mbox{\Hypertarget{class_lattice_processor_module_ae4d347534b6cd02a24a93e442383aa1f}\label{class_lattice_processor_module_ae4d347534b6cd02a24a93e442383aa1f}} 
 \index{LatticeProcessorModule@{LatticeProcessorModule}!prepareProcessor@{prepareProcessor}}

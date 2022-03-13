@@ -103,8 +103,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9430f142bc9d91ffd3a742e83d8b97ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5bf11de5c45f9c85252b30c6b9d3c6d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#ac5bf11de5c45f9c85252b30c6b9d3c6d">getMidiNoteNumber</a> ()</td></tr>
 <tr class="separator:ac5bf11de5c45f9c85252b30c6b9d3c6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3831345936b91ddc030585daab57f5c6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#a3831345936b91ddc030585daab57f5c6">isSynth</a> ()</td></tr>
-<tr class="separator:a3831345936b91ddc030585daab57f5c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc1e1b44d6c439772240e8085176a74d"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#acc1e1b44d6c439772240e8085176a74d">isSynth</a> ()</td></tr>
+<tr class="separator:acc1e1b44d6c439772240e8085176a74d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82d80a24abc608eeedf1335b16c37c16"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#a82d80a24abc608eeedf1335b16c37c16">updateParameter</a> (const std::string &amp;parameterID, float newValue)</td></tr>
 <tr class="separator:a82d80a24abc608eeedf1335b16c37c16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb1721316018048f6ece026a621d42bc"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lattice_processor_module.html#abb1721316018048f6ece026a621d42bc">getParameter</a> (std::string name)</td></tr>
@@ -245,12 +245,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Called by Lattice when a user right-clicks and module and select 'Show Info' </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">description</td><td>Text that will appear in a module's info window. </td></tr>
-  </table>
-  </dd>
-</dl>
+<p >Called by Lattice when a user right-clicks and module and select 'Show Info' </p><dl class="section return"><dt>Returns</dt><dd>Text that will appear in a module's info window. </dd></dl>
 
 </div>
 </div>
@@ -319,12 +314,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >retrieves the current MIDI note number </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">midiNoteNumber</td><td>the current MIDI note number </td></tr>
-  </table>
-  </dd>
-</dl>
+<p >retrieves the current MIDI note number </p><dl class="section return"><dt>Returns</dt><dd>the current MIDI note number </dd></dl>
 
 </div>
 </div>
@@ -350,12 +340,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Override this method to provide a unique name for the module </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">moduleName</td><td>The name of the module as shown in Lattice </td></tr>
-  </table>
-  </dd>
-</dl>
+<p >Override this method to provide a unique name for the module </p><dl class="section return"><dt>Returns</dt><dd>The name of the module as shown in Lattice </dd></dl>
 
 </div>
 </div>
@@ -381,12 +366,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Called by Lattice to set the number of voices </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">numberOfVoice</td><td>The maximum number of voices that can be played simultaneously. </td></tr>
-  </table>
-  </dd>
-</dl>
+<p >Called by Lattice to set the number of voices </p><dl class="section return"><dt>Returns</dt><dd>The maximum number of voices that can be played simultaneously. </dd></dl>
 
 </div>
 </div>
@@ -518,8 +498,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a3831345936b91ddc030585daab57f5c6" name="a3831345936b91ddc030585daab57f5c6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3831345936b91ddc030585daab57f5c6">&#9670;&nbsp;</a></span>isSynth()</h2>
+<a id="acc1e1b44d6c439772240e8085176a74d" name="acc1e1b44d6c439772240e8085176a74d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc1e1b44d6c439772240e8085176a74d">&#9670;&nbsp;</a></span>isSynth()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -528,7 +508,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool LatticeProcessorModule::isSynth </td>
+          <td class="memname">virtual bool LatticeProcessorModule::isSynth </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -536,7 +516,7 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

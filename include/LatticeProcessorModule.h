@@ -205,7 +205,7 @@ public:
     }
 
     /** Called by Lattice to set the number of voices
-     * @param [out] numberOfVoice The maximum number of voices that can be played simultaneously.
+     * @return The maximum number of voices that can be played simultaneously.
     */
     virtual int getNumberOfVoices()
     {
@@ -231,7 +231,7 @@ public:
     }
 
     /** Override this method to provide a unique name for the module
-     * @param[out] moduleName The name of the module as shown in Lattice
+     * @return The name of the module as shown in Lattice
     */
     virtual std::string getModuleName()
     {
@@ -282,7 +282,7 @@ public:
     }
 
     /** retrieves the current MIDI note number
-     * @param [out] midiNoteNumber the current MIDI note number
+     * @return the current MIDI note number
     */
     int getMidiNoteNumber()
     {
@@ -344,7 +344,7 @@ public:
     }
 
     /** Called by Lattice when a user right-clicks and module and select 'Show Info'
-     * @param [out] description Text that will appear in a module's info window.
+     * @return Text that will appear in a module's info window.
     */
     virtual std::string getDescription()
     {
