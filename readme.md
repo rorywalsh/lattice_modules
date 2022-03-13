@@ -40,6 +40,7 @@ To build:
 ```
 git clone https://github.com/rorywalsh/lattice_external
 cd lattice_external
+git submodule update --init --recursive
 git submodule foreach git pull origin main
 mkdir build && cd build
 cmake .. 
