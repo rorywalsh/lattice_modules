@@ -1,4 +1,4 @@
 [submodule "aurora"]
 	path = aurora
 	url = https://github.com/vlazzarini/aurora.git
-	branch = master
+	branch = main
