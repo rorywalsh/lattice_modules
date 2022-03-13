@@ -9,31 +9,32 @@ Modules can act as effects processors (audio/MIDI), or synths. When loaded as a 
 Although the API itself is free of any dependencies, most of the example here use the Aurora header only DSP library. Some of the example also use a forked version of the Simple-SVG library for generating SVG graphics.
 
 #### Examples:
-bl_synth: demonstrates a a simple band-limited polyphonic synth with selectable waveforms, an ADSR, and PWM.
 
-chorus: a stereo chorus effect
+**`bl_synth`**: demonstrates a a simple band-limited polyphonic synth with selectable waveforms, an ADSR, and PWM.
 
-delay: a simple delay line with feedback
+**`chorus`**: a stereo chorus effect
 
-drive_synth: a non band-limited polyphonic wave-shaper synth
+**`delay`**: a simple delay line with feedback
 
-flanger: a simple flanger
+**`drive_synth`**: a non band-limited polyphonic wave-shaper synth
 
-four_pole_lp: a resonant, four-pole low pass filter
+**`flanger`**: a simple flanger
 
-ks_synth: a simple Karplus Strong synth
+**`four_pole_lp`**: a resonant, four-pole low pass filter
 
-midi_maker: a basic MIDI pattern generator
+**`ks_synth`**: a simple Karplus Strong synth
 
-one_pole_lp: a one-pole low pass filter
+**`midi_maker`**: a basic MIDI pattern generator
 
-param_eq: a single band parametric EQ
+**`one_pole_lp`**: a one-pole low pass filter
 
-simple_synth: a bare-bone synth with ADSR and selectable waveforms
+**`param_eq`**: a single band parametric EQ
 
-two_pole_svf: a two-pole state variable filter
+**`simple_synth`**: a bare-bone synth with ADSR and selectable waveforms
 
-waveform_viewer: a bare-bones example of how to draw SVGs directly to a viewport on a Lattice module.
+**`two_pole_svf`**: a two-pole state variable filter
+
+**`waveform_viewer`**: a bare-bones example of how to draw SVGs directly to a viewport on a Lattice module.
 
 To build:
 ```
@@ -43,5 +44,4 @@ git submodule foreach git pull origin main
 mkdir build && cd build
 cmake .. 
 cmake --build .
-```
 ```
