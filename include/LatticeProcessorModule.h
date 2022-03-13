@@ -292,7 +292,7 @@ public:
     /** Call by Lattice to determine if the module is a synth of an effects (audio/MIDI) processor.
     * Set to true if module is a synth.
     */
-    bool isSynth()
+    virtual bool isSynth()
     {
         return false;
     }
