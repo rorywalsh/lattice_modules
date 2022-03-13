@@ -3,8 +3,7 @@ import xml.etree.ElementTree as ET
 import sys
 import os
 
-print("usage:")
-prints('python commit.py "commit message" [version number]')
+
 
 def increment_ver(version):
     version = version.split('.')
@@ -14,7 +13,8 @@ def increment_ver(version):
 newVersionNum = ""
 
 if len(sys.argv) < 2:
-    print("Please provide a commit message enclosed in quotation marks")
+    print("usage:")
+    print('python commit.py "commit message" [version number]')
     exit()
 
 if len(sys.argv) == 3:
