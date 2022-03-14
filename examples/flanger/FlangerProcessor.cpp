@@ -12,7 +12,7 @@ flangerR(10, 44100)
 
 void FlangerProcessor::createParameters(std::vector<ModuleParameter> &parameters)
 {
-	parameters.push_back({ "Max Delay", {0, 500, 10, 1.f, 1.f} });
+    parameters.push_back({ "Max Delay", {0, 5, 2.5f, 0.1f, 1.f} });
     parameters.push_back({ "LFO Frequency", {0, 20, .5f, .0001f, 1.f}});
     parameters.push_back({ "Feedback", {0, 1, .7f, .0001f, 1.f}});
     parameters.push_back({ "Gain", {0, 1, .5, .01f, 1.f}});

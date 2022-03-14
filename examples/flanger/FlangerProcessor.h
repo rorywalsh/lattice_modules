@@ -15,7 +15,7 @@ class FlangerProcessor : public LatticeProcessorModule
 {
 	static float scl(float a, float b) { return a * b; }
 	static float lfofun(double x, const std::vector<float>* nop) {
-		return std::cosf(x) * 0.46 + 0.54;
+		return Aurora::cos<float>(x) * 0.46 + 0.54;
 	}
 
 	struct Flanger {
