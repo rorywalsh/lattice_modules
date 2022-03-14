@@ -72,7 +72,7 @@ extern "C"
 	__declspec(dllexport) void destroy(FourPoleProcessor* p) { delete p; }
 };
 #else
-extern "C" LatticeProcessorModule* create(){             return new GainDebugProcessor;         }
+extern "C" LatticeProcessorModule* create(){             return new FourPoleProcessor;         }
 extern "C" void destroy(LatticeProcessorModule* p){      delete p;                     }
 #endif
 
