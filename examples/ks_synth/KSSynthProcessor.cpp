@@ -7,7 +7,7 @@
 //======================================================================================
 KSSynthProcessor::KSSynthProcessor()
 :pluckL(44100),
-pluckR(44100)
+ pluckR(44100), amp(1.)
 {
     
 }
@@ -22,7 +22,7 @@ void KSSynthProcessor::createChannelLayout(std::vector<std::string> &inputs, std
 
 void KSSynthProcessor::createParameters(std::vector<ModuleParameter> &parameters)
 {
-    parameters.push_back({"Attack", {0, 1, 0.001, 0.001, 1}});
+    parameters.push_back({"Decay Time", {0.1, 10, 3, 0.1, 1}});
 }
 
 void KSSynthProcessor::hostParameterChanged(const std::string& parameterID, float newValue)
@@ -35,9 +35,10 @@ void KSSynthProcessor::prepareProcessor(int /* sr */, std::size_t /* block */)
 
 }
 
-void KSSynthProcessor::startNote(int midiNoteNumber, float/* velocity */)
+void KSSynthProcessor::startNote(int midiNoteNumber, float velocity )
 {
     setMidiNoteNumber(midiNoteNumber);
+    amp = velocity;
     pluckL.note_on();
     pluckR.note_on();
 }
@@ -59,8 +60,8 @@ void KSSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
 	pluckL.vsize(blockSize);
 	pluckR.vsize(blockSize);
 
-        auto &outL = pluckL(1, freq, 2);
-	auto &outR = pluckR(1, freq, 2);
+        auto &outL = pluckL(amp, freq, getParameter("Decay Time"));
+	auto &outR = pluckR(amp, freq, getParameter("Decay Time"));
 
 	for (int i = 0; i < blockSize; i++)
 	{

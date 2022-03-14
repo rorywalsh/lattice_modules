@@ -148,5 +148,6 @@ public:
 private:
     Aurora::Karplus<double> pluckL;
     Aurora::Karplus<double> pluckR;
+    float amp;
     bool isNoteOn = false;
 };
