@@ -19,6 +19,7 @@ class BlSynthProcessor : public LatticeProcessorModule
         Synth(float rt, float sr);
         void setWaveform(int waveForm);
         void setBlockSize(std::size_t blockSize);
+        void setSampleRate(std::size_t sr);
         
         
         const std::vector<float> &operator()(float a, float f, bool gate);

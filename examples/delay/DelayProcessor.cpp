@@ -33,9 +33,10 @@ void DelayProcessor::hostParameterChanged(const std::string& /*parameterID*/, fl
 //    ignoreParameters(parameterID, newValue);
 }
 
-void DelayProcessor::prepareProcessor(int /*sr*/, std::size_t/*block*/)
+void DelayProcessor::prepareProcessor(int sr, std::size_t/*block*/)
 {
-//    ignoreParameters(sr, block);
+	delayL.reset(2, sr);
+	delayL.reset(2, sr);
 }
 
 

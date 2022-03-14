@@ -52,9 +52,10 @@ void DriveSynthProcessor::hostParameterChanged(const std::string& parameterID, f
     
 }
 
-void DriveSynthProcessor::prepareProcessor(int /* sr */, std::size_t /* block */)
+void DriveSynthProcessor::prepareProcessor(int sr, std::size_t blockSize)
 {
-
+	synth.setSampleRate(sr);
+	synth.setBlockSize(blockSize);
 }
 
 void DriveSynthProcessor::startNote(int noteNumber, float velocity)

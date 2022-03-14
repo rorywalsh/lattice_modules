@@ -25,7 +25,8 @@ void FlangerProcessor::hostParameterChanged(const std::string& parameterID, floa
 
 void FlangerProcessor::prepareProcessor(int sr, std::size_t block)
 {
-   // ignoreParameters(sr, block);
+	flangerL.reset(sr);
+	flangerR.reset(sr);
 }
 
 

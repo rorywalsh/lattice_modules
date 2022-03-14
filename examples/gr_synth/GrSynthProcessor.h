@@ -55,5 +55,6 @@ private:
     Aurora::GrainGen<float> grain;
     Aurora::Env<float> env;
     float amp;
+	float sr;
     bool isNoteOn = false;
 };

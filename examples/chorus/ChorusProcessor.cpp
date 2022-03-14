@@ -25,7 +25,10 @@ void ChorusProcessor::hostParameterChanged(const std::string& parameterID, float
 
 void ChorusProcessor::prepareProcessor(int sr, std::size_t block)
 {
-    unused(sr, block);
+	chorusL.reset(sr);
+	chorusR.reset(sr);
+	chorusL.vsize(block);
+	chorusR.vsize(block);
 }
 
 

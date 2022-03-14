@@ -32,6 +32,12 @@ class FlangerProcessor : public LatticeProcessorModule
 			lfo.vsize(in.size());
 			return gain(delay(in, lfo(maxDel, fr), fdb), g);
 		}
+
+		void reset(float sr) {
+			lfo.reset(sr);
+			delay.reset(mxdel, sr);
+		}
+
 	};
 
 public:

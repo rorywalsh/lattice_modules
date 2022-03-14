@@ -30,7 +30,13 @@ void SimpleSynthProcessor::Synth::setWaveform(int waveForm)
     }
 }
 
-void SimpleSynthProcessor::Synth::setBlockSize(int blockSize)
+void SimpleSynthProcessor::Synth::setSampleRate(int sr)
+{
+	osc.reset(sr);
+	env.reset(sr);
+}
+
+void SimpleSynthProcessor::Synth::setBlockSize(std::size_t blockSize)
 {
     osc.vsize(blockSize);
     env.vsize(blockSize);
@@ -85,9 +91,9 @@ void SimpleSynthProcessor::hostParameterChanged(const std::string& parameterID, 
     }    
 }
 
-void SimpleSynthProcessor::prepareProcessor(int /* sr */, std::size_t /* block */)
+void SimpleSynthProcessor::prepareProcessor(int sr, std::size_t blockSize)
 {
-
+	synth.setBlockSize(blockSize);
 }
 
 void SimpleSynthProcessor::startNote(int midiNoteNumber, float/* velocity */)

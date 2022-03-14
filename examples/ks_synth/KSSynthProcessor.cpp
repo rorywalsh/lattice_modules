@@ -30,9 +30,12 @@ void KSSynthProcessor::hostParameterChanged(const std::string& parameterID, floa
   
 }
 
-void KSSynthProcessor::prepareProcessor(int /* sr */, std::size_t /* block */)
+void KSSynthProcessor::prepareProcessor(int sr, std::size_t blockSize)
 {
-
+	pluckL.reset(sr);
+	pluckR.reset(sr);
+	pluckL.vsize(blockSize);
+	pluckR.vsize(blockSize);
 }
 
 void KSSynthProcessor::startNote(int midiNoteNumber, float velocity )
@@ -60,7 +63,7 @@ void KSSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
 	pluckL.vsize(blockSize);
 	pluckR.vsize(blockSize);
 
-        auto &outL = pluckL(amp, freq, getParameter("Decay Time"));
+    auto &outL = pluckL(amp, freq, getParameter("Decay Time"));
 	auto &outR = pluckR(amp, freq, getParameter("Decay Time"));
 
 	for (int i = 0; i < blockSize; i++)

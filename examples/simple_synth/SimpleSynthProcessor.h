@@ -14,7 +14,8 @@ class SimpleSynthProcessor : public LatticeProcessorModule
     public:
         Synth(float rt, float sr);
         void setWaveform(int waveForm);
-        void setBlockSize(int blockSize);
+        void setBlockSize(std::size_t blockSize);
+		void setSampleRate(int sr);
         
         
         const std::vector<float> &operator()(float a, float f, bool gate) {

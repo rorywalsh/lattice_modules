@@ -71,6 +71,11 @@ class DriveSynthProcessor : public LatticeProcessorModule
             env.vsize(blockSize);
         }
         
+		void setSampleRate(int sr)
+		{
+			osc.reset(sr);
+			env.reset(sr);
+		}
         void setAttack(float value)     {    att = value;           }
         void setDecay(float value)      {    dec = value;           }
         void setSustain(float value)    {    sus = value;           }

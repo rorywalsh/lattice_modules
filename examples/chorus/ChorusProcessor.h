@@ -26,7 +26,14 @@ class ChorusProcessor : public LatticeProcessorModule
                                         float d, int chn) {
         return delay[chn](in, offs(d, lfo[chn](d * 0.1, fr)), 0, 1);
     }
-        
+    
+	void reset(float sr) {
+		lfo[0].reset(sr);
+		lfo[1].reset(sr);
+		delay[0].reset(0.1, sr);
+		delay[1].reset(0.1, sr);
+	}
+
     void vsize(std::size_t vsize) {
         lfo[0].vsize(vsize);
         lfo[1].vsize(vsize);

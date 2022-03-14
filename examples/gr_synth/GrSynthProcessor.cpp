@@ -8,7 +8,8 @@ GrSynthProcessor::GrSynthProcessor()
   : wave(Aurora::def_ftlen), att(0.05f), dec(0.1f), sus(1.f), rel(0.1f),
  grain(wave, 30, 44100),
  env(att,dec,sus,rel,44100),
- amp(1.)
+ amp(1.),
+ sr(44100)
 {
     std::size_t n = 0;
     for (auto &s : wave)
@@ -34,9 +35,9 @@ void GrSynthProcessor::hostParameterChanged(const std::string& parameterID, floa
   
 }
 
-void GrSynthProcessor::prepareProcessor(int /* sr */, std::size_t /* block */)
+void GrSynthProcessor::prepareProcessor(int samplingRate, std::size_t /* block */)
 {
-
+	sr = samplingRate;
 }
 
 void GrSynthProcessor::startNote(int midiNoteNumber, float velocity )
@@ -61,8 +62,8 @@ static float rnd(float s) { return s * std::rand() / float(RAND_MAX); }
 
 void GrSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
 {
-        const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
-	float sr = 44100.f;
+    const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
+	
 	auto &out = env(grain(amp, freq * wave.size()/sr, getParameter("density"),
 			    getParameter("grain size"),
 				rnd(sr / wave.size()),blockSize), isNoteOn);	  

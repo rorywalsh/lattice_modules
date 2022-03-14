@@ -75,6 +75,16 @@ void BlSynthProcessor::Synth::setBlockSize(std::size_t blockSize)
     env.vsize(blockSize);
 }
 
+void BlSynthProcessor::Synth::setSampleRate(std::size_t blockSize)
+{
+    pwmTone.reset(blockSize);
+    sawOsc1.reset(blockSize);
+    sawOsc2.reset(blockSize);
+    sinOsc.reset(blockSize);
+    osc.reset(blockSize);
+    env.reset(blockSize);
+}
+
 //======================================================================================
 BlSynthProcessor::BlSynthProcessor()
 :synth(.1f, 44100)
@@ -139,9 +149,10 @@ void BlSynthProcessor::hostParameterChanged(const std::string& parameterID, floa
     
 }
 
-void BlSynthProcessor::prepareProcessor(int /* sr */, std::size_t /* block */)
+void BlSynthProcessor::prepareProcessor(int sr, std::size_t block)
 {
-
+	synth.setSampleRate(sr);
+	synth.setBlockSize(block);
 }
 
 void BlSynthProcessor::startNote(int noteNumber, float velocity)
