@@ -4,8 +4,7 @@
 
 
 ChorusProcessor::ChorusProcessor()
-: chorusL(44100),
-chorusR(44100)
+  : chorus(Aurora::def_sr), inL(Aurora::def_vsize), inR(Aurora::def_vsize)
 {
     
 }
@@ -25,10 +24,8 @@ void ChorusProcessor::hostParameterChanged(const std::string& parameterID, float
 
 void ChorusProcessor::prepareProcessor(int sr, std::size_t block)
 {
-	chorusL.reset(sr);
-	chorusR.reset(sr);
-	chorusL.vsize(block);
-	chorusR.vsize(block);
+	chorus.reset(sr);
+	chorus.vsize(block);
 }
 
 
@@ -50,15 +47,13 @@ void ChorusProcessor::process(float** buffer, int numChannels, std::size_t block
    
     inL.resize(blockSize);
     inR.resize(blockSize);
-    chorusL.vsize(blockSize);
-	chorusR.vsize(blockSize);
-
+    chorus.vsize(blockSize);
     std::copy(buffer[0], buffer[0] + blockSize, inL.begin());
     std::copy(buffer[1], buffer[1] + blockSize, inR.begin());
     
 
-    auto &l = chorusL(inL, getParameter("LFO Frequency (L)"), getParameter("Delay Time (L)"), 0);
-    auto &r = chorusR(inL, getParameter("LFO Frequency (R)"), getParameter("Delay Time (R)"), 1);
+    auto &l = chorus(inL, getParameter("LFO Frequency (L)"), getParameter("Delay Time (L)"), 0);
+    auto &r = chorus(inR, getParameter("LFO Frequency (R)"), getParameter("Delay Time (R)"), 1);
 
     for(int i = 0; i < blockSize ; i++)
     {

@@ -77,9 +77,11 @@ void GrSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
 {
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
   float thresh = amp*0.00001f;
+  float a = buffer[0][0] + amp;
+  float f = buffer[1][0] + freq;
   if(isNoteOn || siglevel > thresh) {
     float ss = 0.f;
-    auto &out = env(grain(amp * getParameter("volume"), freq * fac, getParameter("density"),
+    auto &out = env(grain(amp * getParameter("volume"), f * fac, getParameter("density"),
 			  getParameter("grain size"),
 			  rnd(1./fac),blockSize), isNoteOn);	  
     std::copy(out.begin(),out.end(),buffer[0]);
@@ -87,9 +89,10 @@ void GrSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
     for (auto &s : out) ss += s;
     siglevel = std::fabs(ss/blockSize);
   } else {
-    std::fill(buffer[0],buffer[0]+blockSize, 0);
-    std::fill(buffer[1],buffer[1]+blockSize, 0);
+    std::fill(buffer[0],buffer[0]+blockSize,0);
+    std::fill(buffer[1],buffer[1]+blockSize,0);
   }
+ 
 }
 
 
