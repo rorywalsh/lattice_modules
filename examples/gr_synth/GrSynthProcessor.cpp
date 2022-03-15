@@ -6,28 +6,35 @@
 //======================================================================================
 GrSynthProcessor::GrSynthProcessor()
   : wave(Aurora::def_ftlen), att(0.05f), dec(0.1f), sus(1.f), rel(0.1f),
- grain(wave, 30, 44100),
- env(att,dec,sus,rel,44100),
- amp(1.),
- sr(44100)
+    grain(wave, 30, 44100),
+    env(att,dec,sus,rel,44100),
+    amp(1.),
+    siglevel(0.f),
+    sr(Aurora::def_sr),
+    fac(wave.size()/sr)   
 {
-    std::size_t n = 0;
-    for (auto &s : wave)
-      s = Aurora::cos<float>(n++ / double(Aurora::def_ftlen));    
+  std::size_t n = 0;
+  for (auto &s : wave)
+    s = Aurora::cos<float>(n++ / double(Aurora::def_ftlen));    
 }
 
 void GrSynthProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
 {
-    inputs.push_back("Input 1");
-    inputs.push_back("Input 2");
-    outputs.push_back("Output 1");
-    outputs.push_back("Output 2");
+  inputs.push_back("Input 1");
+  inputs.push_back("Input 2");
+  outputs.push_back("Output 1");
+  outputs.push_back("Output 2");
 }
 
 void GrSynthProcessor::createParameters(std::vector<ModuleParameter> &parameters)
 {
-    parameters.push_back({"density", {1, 300, 20, 1, 1}});
-    parameters.push_back({"grain size", {0.01, 0.1, 0.05, 0.01, 1}});
+  parameters.push_back({"density", {1, 300, 40, 1, 1}});
+  parameters.push_back({"grain size", {0.01, 0.1, 0.05, 0.01, 1}});
+  parameters.push_back({"attack", {0.005f, 5.f, 0.005f, 0.005f, 1}});
+  parameters.push_back({"decay", {0.005f, 5.f, 0.005f, 0.005f, 1}});
+  parameters.push_back({"sustain", {0, 1.f, 1.f, 0.005f, 1}});
+  parameters.push_back({"release", {0.005f, 5.f, 0.1f, 0.005f, 1}});
+  parameters.push_back({"volume", {0.f, 1.f, 0.5f, 0.005f, 1}});
 }
 
 void GrSynthProcessor::hostParameterChanged(const std::string& parameterID, float newValue)
@@ -37,24 +44,30 @@ void GrSynthProcessor::hostParameterChanged(const std::string& parameterID, floa
 
 void GrSynthProcessor::prepareProcessor(int samplingRate, std::size_t /* block */)
 {
-	sr = samplingRate;
+  sr = samplingRate;
+  fac = wave.size()/sr;
 }
 
 void GrSynthProcessor::startNote(int midiNoteNumber, float velocity )
 {
-    setMidiNoteNumber(midiNoteNumber);
-    amp = velocity;
-    isNoteOn = true;
+  setMidiNoteNumber(midiNoteNumber);
+  amp = velocity;
+  isNoteOn = true;
+  att = getParameter("attack");
+  dec = getParameter("decay");
+  sus = getParameter("sustain");
+  rel = getParameter("release");
+  env.release(rel);
 }
 
 void GrSynthProcessor::stopNote (float /* velocity */)
 {
-   isNoteOn = false;
+  isNoteOn = false;
 }
 
 void GrSynthProcessor::triggerParameterUpdate(const std::string& parameterID, float newValue)
 {
-    updateParameter(parameterID, newValue);
+  updateParameter(parameterID, newValue);
 }
 
 
@@ -62,12 +75,21 @@ static float rnd(float s) { return s * std::rand() / float(RAND_MAX); }
 
 void GrSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
 {
-    const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
-	
-	auto &out = env(grain(amp, freq * wave.size()/sr, getParameter("density"),
-			    getParameter("grain size"),
-				rnd(sr / wave.size()),blockSize), isNoteOn);	  
-	for (int i = 0; i < blockSize; i++) buffer[0][i] = buffer[1][i] = out[i];	  
+  const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
+  float thresh = amp*0.00001f;
+  if(isNoteOn || siglevel > thresh) {
+    float ss = 0.f;
+    auto &out = env(grain(amp * getParameter("volume"), freq * fac, getParameter("density"),
+			  getParameter("grain size"),
+			  rnd(1./fac),blockSize), isNoteOn);	  
+    std::copy(out.begin(),out.end(),buffer[0]);
+    std::copy(out.begin(),out.end(),buffer[1]);
+    for (auto &s : out) ss += s;
+    siglevel = std::fabs(ss/blockSize);
+  } else {
+    std::fill(buffer[0],buffer[0]+blockSize, 0);
+    std::fill(buffer[1],buffer[1]+blockSize, 0);
+  }
 }
 
 
@@ -75,12 +97,12 @@ void GrSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
 #ifdef WIN32
 extern "C" 
 {
-	__declspec(dllexport) LatticeProcessorModule* create() { return new GrSynthProcessor; }
+  __declspec(dllexport) LatticeProcessorModule* create() { return new GrSynthProcessor; }
 };
 
 extern "C" 
 {
-	__declspec(dllexport) void destroy(LatticeProcessorModule* p) { delete p; }
+  __declspec(dllexport) void destroy(LatticeProcessorModule* p) { delete p; }
 };
 #else
 extern "C" LatticeProcessorModule* create(){             return new GrSynthProcessor;         }
