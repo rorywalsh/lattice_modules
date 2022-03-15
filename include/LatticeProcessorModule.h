@@ -184,7 +184,7 @@ public:
     }
 
     /*!
-     Use this for MIDI based effects. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages. (See above for an example of how to access the channel data.)  
+     Use this for MIDI based effects. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages. (See above for an example of how to access the channel data.)
     * @param[in] buffer An array of audio channels.
     * @param[in] numChannels  The number of channels in the buffer array
     * @param[in] blockSize The number of samples in each channel
@@ -232,20 +232,38 @@ public:
         unused(noteNumber, velocity);
     }
 
-    /** Override this method to provide a unique name for the module
-     * @return The name of the module as shown in Lattice
-    */
-    virtual std::string getModuleName()
-    {
-        return "ModuleName";
-    }
-
+    
     /** called by the host when a note is stoped
      * @param velocity Midi velocity in the range of 0 to 1
     */
     virtual void stopNote(float velocity)
     {
         unused(velocity);
+    }
+
+    /** called by the host when a the pitchbend wheel is moved
+     * @param newValue integer in the range of 0 to 128
+    */
+    virtual void pitchBendChange(int newValue)
+    {
+        unused(newValue);
+    }
+    
+    /** called by the host when a the pitchbend wheel is moved
+     * @param controllerNumber the controller number
+     * @param newValue integer in the range of 0 to 128
+    */
+    virtual void controllerChange(int controllerNumber, int newValue)
+    {
+        unused(controllerNumber, newValue);
+    }
+    
+    /** Override this method to provide a unique name for the module
+     * @return The name of the module as shown in Lattice
+    */
+    virtual std::string getModuleName()
+    {
+        return "ModuleName";
     }
 
 
@@ -313,7 +331,7 @@ public:
     }
 
     /** Used to query the current value of a parameter - the names correspond to the names used
-        in the createParameters() function 
+        in the createParameters() function
         * @return the current value of the parameter
         */
     float getParameter(std::string name)
@@ -332,7 +350,7 @@ public:
     /** this method will extract the parameter name, as defined in createParameters(), from the unique
      paramaterId assigned to each parameter by the host
     * @param [in] parameterId The long version of the parameter typically in the form of 'module parameter[ModuleName (NodeNum)]'
-    * @return The parameter name as defined when creating the parameters 
+    * @return The parameter name as defined when creating the parameters
     */
     std::string getParameterNameFromId(std::string parameterId)
     {
