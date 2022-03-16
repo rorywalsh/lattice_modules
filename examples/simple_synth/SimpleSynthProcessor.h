@@ -72,9 +72,14 @@ public:
     }
 
     /* Is a synth */
-    bool isSynth()
+    bool isSynth() override
     {
         return true;
+    }
+
+    ModuleType getModuleType() override
+    {
+        return ModuleType::synthProcessor;
     }
     
 private:

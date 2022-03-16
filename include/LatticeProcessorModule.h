@@ -115,6 +115,14 @@ struct LatticeMidiMessage {
 
 };
 
+/*! ModuleType enum */
+enum ModuleType
+{
+    synthProcessor = 0,/** a module that will form part of a polyphonic or monophonic synth. This type of module can not only generate audio, but can also process incoming. See LatticeProcessorModule::getNumberOfVoices() for details on how to limit the number of voices. */
+    audioProcessor,/** an audio processor. This can be used to process or generate audio */
+    midiProcessor /** a Midi based processor - can parse and modify incoming Midi data or generate new Midi streams on the fly*/
+};
+
 /** @class LatticeProcessorModule
  * @brief Base class for all modules
  *
@@ -319,6 +327,14 @@ public:
         return false;
     }
 
+
+    /** Called by Lattice to determine the type of module to load.
+    * @return returns the type of module
+    */
+    virtual ModuleType getModuleType()
+    {
+        return ModuleType::audioProcessor;
+    }
     /** Call this to inform the host that a parameter has been updated.
        Be careful that you don't call this too often!
     * @param [in] parameterID The parameter in the host you wish to update

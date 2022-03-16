@@ -30,15 +30,21 @@ virtual void \mbox{\hyperlink{class_lattice_processor_module_a252e786c3fb1fd22c8
 \item 
 virtual void \mbox{\hyperlink{class_lattice_processor_module_a14631f02b31cc19bdc8a1e0ef1ec6711}{start\+Note}} (int note\+Number, float velocity)
 \item 
-virtual std\+::string \mbox{\hyperlink{class_lattice_processor_module_a532dc4fe6404fc695a74d9560cbb7124}{get\+Module\+Name}} ()
-\item 
 virtual void \mbox{\hyperlink{class_lattice_processor_module_adb441d893752df1e8340fe1ef6b59450}{stop\+Note}} (float velocity)
+\item 
+virtual void \mbox{\hyperlink{class_lattice_processor_module_adec421f2e203e239ca490dce7d608d20}{pitch\+Bend\+Change}} (int new\+Value)
+\item 
+virtual void \mbox{\hyperlink{class_lattice_processor_module_afeb700c6abbfb1aea5406b4fad2fbffa}{controller\+Change}} (int controller\+Number, int new\+Value)
+\item 
+virtual std\+::string \mbox{\hyperlink{class_lattice_processor_module_a532dc4fe6404fc695a74d9560cbb7124}{get\+Module\+Name}} ()
 \item 
 double \mbox{\hyperlink{class_lattice_processor_module_a9430f142bc9d91ffd3a742e83d8b97ec}{get\+Midi\+Note\+In\+Hertz}} (const int note\+Number, const double a\+Tuning=440)
 \item 
 int \mbox{\hyperlink{class_lattice_processor_module_ac5bf11de5c45f9c85252b30c6b9d3c6d}{get\+Midi\+Note\+Number}} ()
 \item 
 virtual bool \mbox{\hyperlink{class_lattice_processor_module_acc1e1b44d6c439772240e8085176a74d}{is\+Synth}} ()
+\item 
+virtual Module\+Type \mbox{\hyperlink{class_lattice_processor_module_aa7ce47bad1267afb4d17a99058e5baf6}{get\+Module\+Type}} ()
 \item 
 void \mbox{\hyperlink{class_lattice_processor_module_a82d80a24abc608eeedf1335b16c37c16}{update\+Parameter}} (const std\+::string \&parameter\+ID, float new\+Value)
 \item 
@@ -69,6 +75,19 @@ This is the main base class for all Lattice modules. Every module must inherit f
 override this method and return true if you wish to enable drawing on the generic editor viewport. Note that you should only return true when you need the graphics updated. Leaving this permanently set to true will have a negative effect on performance. \begin{DoxyReturn}{Returns}
 This should return true is you wish the viewport to update 
 \end{DoxyReturn}
+\mbox{\Hypertarget{class_lattice_processor_module_afeb700c6abbfb1aea5406b4fad2fbffa}\label{class_lattice_processor_module_afeb700c6abbfb1aea5406b4fad2fbffa}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!controllerChange@{controllerChange}}
+\index{controllerChange@{controllerChange}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{controllerChange()}{controllerChange()}}
+{\footnotesize\ttfamily virtual void Lattice\+Processor\+Module\+::controller\+Change (\begin{DoxyParamCaption}\item[{int}]{controller\+Number,  }\item[{int}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+called by the host when a the pitchbend wheel is moved 
+\begin{DoxyParams}{Parameters}
+{\em controller\+Number} & the controller number \\
+\hline
+{\em new\+Value} & integer in the range of 0 to 128 \\
+\hline
+\end{DoxyParams}
 \mbox{\Hypertarget{class_lattice_processor_module_a8b54c714447ab72ee93593d1c415796b}\label{class_lattice_processor_module_a8b54c714447ab72ee93593d1c415796b}} 
 \index{LatticeProcessorModule@{LatticeProcessorModule}!createChannelLayout@{createChannelLayout}}
 \index{createChannelLayout@{createChannelLayout}!LatticeProcessorModule@{LatticeProcessorModule}}
@@ -136,6 +155,15 @@ the current MIDI note number
 Override this method to provide a unique name for the module \begin{DoxyReturn}{Returns}
 The name of the module as shown in Lattice 
 \end{DoxyReturn}
+\mbox{\Hypertarget{class_lattice_processor_module_aa7ce47bad1267afb4d17a99058e5baf6}\label{class_lattice_processor_module_aa7ce47bad1267afb4d17a99058e5baf6}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!getModuleType@{getModuleType}}
+\index{getModuleType@{getModuleType}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{getModuleType()}{getModuleType()}}
+{\footnotesize\ttfamily virtual Module\+Type Lattice\+Processor\+Module\+::get\+Module\+Type (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+Called by Lattice to determine the type of module to load. \begin{DoxyReturn}{Returns}
+returns the type of module 
+\end{DoxyReturn}
 \mbox{\Hypertarget{class_lattice_processor_module_ab1ec40c2f5cb6c7a7b8c3edf729c4573}\label{class_lattice_processor_module_ab1ec40c2f5cb6c7a7b8c3edf729c4573}} 
 \index{LatticeProcessorModule@{LatticeProcessorModule}!getNumberOfVoices@{getNumberOfVoices}}
 \index{getNumberOfVoices@{getNumberOfVoices}!LatticeProcessorModule@{LatticeProcessorModule}}
@@ -199,6 +227,17 @@ Called by the host when a paremeter changes. The parameter\+ID in this instance 
 Call by Lattice to determine if the module is a synth of an effects (audio/\+MIDI) processor. Set to true if module is a synth. \begin{DoxyReturn}{Returns}
 returns true is instrument is a synth, otherwise return false 
 \end{DoxyReturn}
+\mbox{\Hypertarget{class_lattice_processor_module_adec421f2e203e239ca490dce7d608d20}\label{class_lattice_processor_module_adec421f2e203e239ca490dce7d608d20}} 
+\index{LatticeProcessorModule@{LatticeProcessorModule}!pitchBendChange@{pitchBendChange}}
+\index{pitchBendChange@{pitchBendChange}!LatticeProcessorModule@{LatticeProcessorModule}}
+\doxysubsubsection{\texorpdfstring{pitchBendChange()}{pitchBendChange()}}
+{\footnotesize\ttfamily virtual void Lattice\+Processor\+Module\+::pitch\+Bend\+Change (\begin{DoxyParamCaption}\item[{int}]{new\+Value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+called by the host when a the pitchbend wheel is moved 
+\begin{DoxyParams}{Parameters}
+{\em new\+Value} & integer in the range of 0 to 128 \\
+\hline
+\end{DoxyParams}
 \mbox{\Hypertarget{class_lattice_processor_module_ae4d347534b6cd02a24a93e442383aa1f}\label{class_lattice_processor_module_ae4d347534b6cd02a24a93e442383aa1f}} 
 \index{LatticeProcessorModule@{LatticeProcessorModule}!prepareProcessor@{prepareProcessor}}
 \index{prepareProcessor@{prepareProcessor}!LatticeProcessorModule@{LatticeProcessorModule}}
@@ -250,8 +289,7 @@ Buffer is an array of audio channels. Each channel array will be block\+Size sam
 \doxysubsubsection{\texorpdfstring{processMidi()}{processMidi()}}
 {\footnotesize\ttfamily virtual void Lattice\+Processor\+Module\+::process\+Midi (\begin{DoxyParamCaption}\item[{float $\ast$$\ast$}]{buffer,  }\item[{int}]{num\+Channels,  }\item[{std\+::size\+\_\+t}]{block\+Size,  }\item[{const \mbox{\hyperlink{struct_host_data}{Host\+Data}}}]{info,  }\item[{std\+::vector$<$ \mbox{\hyperlink{struct_lattice_midi_message}{Lattice\+Midi\+Message}} $>$ \&}]{midi\+Messages }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
 
-Use this for MIDI based effects. Each channel array will be block\+Size samples longer. This process is passed a reference to a vector of Lattice\+Midi\+Messages. (See above for an example of how to access the channel data.) ~\newline
- 
+Use this for MIDI based effects. Each channel array will be block\+Size samples longer. This process is passed a reference to a vector of Lattice\+Midi\+Messages. (See above for an example of how to access the channel data.) 
 \begin{DoxyParams}[1]{Parameters}
 \mbox{\texttt{ in}}  & {\em buffer} & An array of audio channels. \\
 \hline

@@ -140,6 +140,11 @@ public:
         return true;
     }
 
+    ModuleType getModuleType() override
+    {
+        return ModuleType::synthProcessor;
+    }
+
     std::string getModuleName() override
     {
         return "Karplus Strong Synth";

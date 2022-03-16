@@ -116,6 +116,11 @@ public:
 		return draw;
 	}
 
+    ModuleType getModuleType() override
+    {
+        return ModuleType::synthProcessor;
+    }
+
 	static int remap(float value, float rangeMin, float rangeMax, float newRangeMin, float newRangeMax)
 	{
 		return static_cast<int>(newRangeMin + (value - rangeMin) * (newRangeMax - newRangeMin) / (rangeMax - rangeMin));
