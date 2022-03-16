@@ -27,7 +27,8 @@ struct ModuleParameter
     enum ParamType {
         Trigger = -99, /*!< A trigger button - shown only a single state button */
         Switch = -98,  /*!< A switch button - shown as an dual state button */
-        Slider = -97 /*!< A slider (default) - shown as a horizontal slider */
+        Slider = -97, /*!< A slider (default) - shown as a horizontal slider */
+        FileButton = -96 /*!< A non-automatable button that launches a file browser dialogue */
     };
 
     /** Name of your module parameter - this is the name that will appear in the module editor in Lattice */
@@ -222,7 +223,7 @@ public:
         return 10;
     }
 
-    /** Called by the host when a paremeter changes. The parameterID in this instance is a combination of the unique name for the module, assigned by the host, and the parameter name itself, i.e, 'Super Synth 11 - Attack'. Use the getParameterName() method to extract the parameter name - note that in the case of audio FX, you can just called getParameter() from your process block.
+    /** Called by the host when a float paremeter changes. The parameterID in this instance is a combination of the unique name for the module, assigned by the host, and the parameter name itself, i.e, 'Super Synth 11 - Attack'. Use the getParameterName() method to extract the parameter name - note that in the case of audio FX, you can just called getParameter() from your process block.
     * @param[in] parameterID The name of the parameter that has been update. This will also contain information about the module instance, so use getParameterName() to extract the actual module parameter name.
      * @param[in] newValue  The parameter value sent by the host.
     */
@@ -231,6 +232,15 @@ public:
         unused(parameterID, newValue);
     }
 
+    /** Called by the host when a string paremeter changes. The parameterID in this instance is a combination of the unique name for the module, assigned by the host, and the parameter name itself, i.e, 'Super Synth 11 - Attack'. Use the getParameterName() method to extract the parameter name - note that in the case of audio FX, you can just called getParameter() from your process block.
+    * @param[in] parameterID The name of the parameter that has been update. This will also contain information about the module instance, so use getParameterName() to extract the actual module parameter name.
+     * @param[in] newValue  The parameter value sent by the host.
+    */
+    virtual void hostParameterChanged(const std::string& parameterID, std::string newValue)
+    {
+        unused(parameterID, newValue);
+    }
+    
     /** called by the host when a note is started
      * @param[in] noteNumber Midi note number sent from host
      * @param[in] velocity Midi velocity in the range of 0 to 1
