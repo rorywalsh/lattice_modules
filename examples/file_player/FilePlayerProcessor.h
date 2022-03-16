@@ -16,6 +16,8 @@ public:
     /*  This function is called by the host whenever a parameter changes */
     void hostParameterChanged(const std::string& parameterID, float newValue);
     
+    void hostParameterChanged(const std::string& parameterID, std::string newValue);
+    
     /*  This function is called by the host before playback/performance */
     void prepareProcessor(int sr, std::size_t block) override;
     

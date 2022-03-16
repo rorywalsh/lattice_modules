@@ -27,6 +27,15 @@ void FilePlayerProcessor::hostParameterChanged(const std::string& /*parameterID*
 //    ignoreParameters(parameterID, newValue);
 }
 
+void FilePlayerProcessor::hostParameterChanged(const std::string& parameterID, std::string newValue)
+{
+    const std::string paramName = getParameterNameFromId(parameterID);
+    if(paramName == "Load Soundfile")
+        cout << "File to load" << newValue;
+    
+}
+
+
 void FilePlayerProcessor::prepareProcessor(int /*sr*/, std::size_t /*block*/)
 {
 
