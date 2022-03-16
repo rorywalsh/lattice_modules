@@ -44,7 +44,12 @@ class GrSynthProcessor : public LatticeProcessorModule
     return true;
   }
 
-  std::string getModuleName() override
+    ModuleType getModuleType() override
+    {
+        return ModuleType::synthProcessor;
+    }
+
+    std::string getModuleName() override
     {
       return "Grain Synth";
     }

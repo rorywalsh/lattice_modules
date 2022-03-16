@@ -1,0 +1,45 @@
+Lattice is an audio prototyping framework. This API provides a means of creating DSP modules that can be used in the Lattice audio prototyping environment. Anyone familiar with plugin standards such as VST, AU, ladspa, etc, should be able to find their way around quickly enough.
+
+All module parameters can be accessed in the Lattice graph through a generic editor window. They can also be exposed to the host by adding them to them directly to the Lattice plugin editor.
+
+Modules can act as effects processors (audio/\+MIDI), or synths. When loaded as a synth, Lattice allocating a unique instance of the module to each voice. You can set the number of voices, thus allowing both mono and polyphonic voicing.
+
+Although the API itself is free of any dependencies, most of the example here use the Aurora header only DSP library. Some of the example also use a forked version of the Simple-\/\+SVG library for generating SVG graphics.\hypertarget{md___volumes__s_s_d__drive__mac_lattice_external_readme_autotoc_md1}{}\doxysubsubsection{Examples\+:}\label{md___volumes__s_s_d__drive__mac_lattice_external_readme_autotoc_md1}
+$\ast$$\ast${\ttfamily bl\+\_\+synth}$\ast$$\ast$\+: demonstrates a a simple band-\/limited polyphonic synth with selectable waveforms, an ADSR, and PWM.
+
+$\ast$$\ast${\ttfamily chorus}$\ast$$\ast$\+: a stereo chorus effect
+
+$\ast$$\ast${\ttfamily delay}$\ast$$\ast$\+: a simple delay line with feedback
+
+$\ast$$\ast${\ttfamily drive\+\_\+synth}$\ast$$\ast$\+: a non band-\/limited polyphonic wave-\/shaper synth
+
+$\ast$$\ast${\ttfamily flanger}$\ast$$\ast$\+: a simple flanger
+
+$\ast$$\ast${\ttfamily four\+\_\+pole\+\_\+lp}$\ast$$\ast$\+: a resonant, four-\/pole low pass filter
+
+$\ast$$\ast${\ttfamily ks\+\_\+synth}$\ast$$\ast$\+: a simple Karplus Strong synth
+
+$\ast$$\ast${\ttfamily midi\+\_\+maker}$\ast$$\ast$\+: a basic MIDI pattern generator
+
+$\ast$$\ast${\ttfamily one\+\_\+pole\+\_\+lp}$\ast$$\ast$\+: a one-\/pole low pass filter
+
+$\ast$$\ast${\ttfamily param\+\_\+eq}$\ast$$\ast$\+: a single band parametric EQ
+
+$\ast$$\ast${\ttfamily simple\+\_\+synth}$\ast$$\ast$\+: a bare-\/bone synth with ADSR and selectable waveforms
+
+$\ast$$\ast${\ttfamily two\+\_\+pole\+\_\+svf}$\ast$$\ast$\+: a two-\/pole state variable filter
+
+$\ast$$\ast${\ttfamily waveform\+\_\+viewer}$\ast$$\ast$\+: a bare-\/bones example of how to draw SVGs directly to a viewport on a Lattice module.
+
+To build\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git clone https://github.com/rorywalsh/lattice\_external}
+\DoxyCodeLine{cd lattice\_external}
+\DoxyCodeLine{git submodule update -\/-\/init -\/-\/recursive}
+\DoxyCodeLine{git submodule foreach git pull origin main}
+\DoxyCodeLine{mkdir build \&\& cd build}
+\DoxyCodeLine{cmake .. }
+\DoxyCodeLine{cmake -\/-\/build .}
+
+\end{DoxyCode}
+ 
