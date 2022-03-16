@@ -34,6 +34,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/examples/simple_synth)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/two_pole_svf)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/waveform_viewer)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/gr_synth)
+add_subdirectory(${CMAKE_SOURCE_DIR}/examples/file_player)
 
 
 
