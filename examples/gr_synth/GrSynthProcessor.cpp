@@ -23,7 +23,7 @@ GrSynthProcessor::GrSynthProcessor()
 void GrSynthProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
 {
   inputs.push_back("amplitude");
-  inputs.push_back("frequency");
+  inputs.push_back("phase");
   outputs.push_back("left");
   outputs.push_back("right");
 }
@@ -79,11 +79,11 @@ void GrSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
 {
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
   float thresh = amp*0.00001f;
-  float a = amp*getParameter("volume");
+  float a = getParameter("volume");
   am.resize(blockSize);
   fm.resize(blockSize);
   for(std::size_t n = 0 ; n < blockSize; n++) {
-    am[n] = buffer[0][n] + a;
+    am[n] = (buffer[0][n] + amp)*a;
     fm[n] = buffer[1][n];
   }
 
