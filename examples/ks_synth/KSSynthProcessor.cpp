@@ -68,7 +68,7 @@ void KSSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
   pluckL.vsize(blockSize);
   pluckR.vsize(blockSize);
   float detune = freq*getParameter("Detune");
-  float pan = (1. - getParameter("Pan Spread"))*0.5f;
+  float pan = (1. - getParameter("Pan Spread"))*.5f;
     
   auto &outL = pluckL(1., freq + detune, getParameter("Decay Time"));
   auto &outR = pluckR(1., freq - detune, getParameter("Decay Time"));

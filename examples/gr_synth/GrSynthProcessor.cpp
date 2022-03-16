@@ -37,6 +37,7 @@ void GrSynthProcessor::createParameters(std::vector<ModuleParameter> &parameters
   parameters.push_back({"sustain", {0, 1.f, 1.f, 0.005f, 1}});
   parameters.push_back({"release", {0.005f, 5.f, 0.1f, 0.005f, 1}});
   parameters.push_back({"volume", {0.f, 1.f, 0.5f, 0.005f, 1}});
+  parameters.push_back({"pan spread", {0.f, 1.f, 0.5f, 0.005f, 1}});
 }
 
 void GrSynthProcessor::hostParameterChanged(const std::string& parameterID, float newValue)
@@ -82,6 +83,7 @@ void GrSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
   float a = getParameter("volume");
   am.resize(blockSize);
   fm.resize(blockSize);
+  env.vsize(blockSize);
   for(std::size_t n = 0 ; n < blockSize; n++) {
     am[n] = (buffer[0][n] + amp)*a;
     fm[n] = buffer[1][n];
@@ -89,18 +91,20 @@ void GrSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
 
   if(isNoteOn || siglevel > thresh) {
     float ss = 0.f;
-    auto &out = env(grain(am, freq, fm, getParameter("density"),
+    std::size_t n = 0;
+    grain(am, freq, fm, getParameter("pan spread"), getParameter("density"),
 			  getParameter("grain size"),
-			  rnd(1./fac),blockSize), isNoteOn);	  
-    std::copy(out.begin(),out.end(),buffer[0]);
-    std::copy(out.begin(),out.end(),buffer[1]);
-    for (auto &s : out) ss += s;
-    siglevel = std::fabs(ss/blockSize);
+		      rnd(1./fac),blockSize);	  
+    for(auto &e : env(0, 1., isNoteOn)) {
+      ss += (buffer[0][n] = e*grain.channel(0)[n]);
+      ss += (buffer[1][n] = e*grain.channel(1)[n]);
+      n++;
+    }
+    siglevel = std::fabs(ss/(2*blockSize));
   } else {
     std::fill(buffer[0],buffer[0]+blockSize,0);
     std::fill(buffer[1],buffer[1]+blockSize,0);
   }
- 
 }
 
 
