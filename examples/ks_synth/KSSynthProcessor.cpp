@@ -64,19 +64,20 @@ void KSSynthProcessor::triggerParameterUpdate(const std::string& parameterID, fl
 
 void KSSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
 {
-  const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
+  const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440) + buffer[1][0];
   pluckL.vsize(blockSize);
   pluckR.vsize(blockSize);
   float detune = freq*getParameter("Detune");
-  float pan = getParameter("Pan Spread");
+  float pan = (1. - getParameter("Pan Spread"))*0.5f;
     
-  auto &outL = pluckL(amp, freq + detune, getParameter("Decay Time"));
-  auto &outR = pluckR(amp, freq - detune, getParameter("Decay Time"));
+  auto &outL = pluckL(1., freq + detune, getParameter("Decay Time"));
+  auto &outR = pluckR(1., freq - detune, getParameter("Decay Time"));
 
+  
   for (int i = 0; i < blockSize; i++)
     {
-      buffer[0][i] = outL[i]*(pan - 1.) +  outR[i]*pan;
-      buffer[1][i] = outR[i]*(pan - 1.) +  outL[i]*pan;
+      buffer[0][i] = (outL[i]*(pan - 1.) +  outR[i]*pan)*(amp + buffer[0][i]);
+      buffer[1][i] = (outR[i]*(pan - 1.) +  outL[i]*pan)*(amp + buffer[0][i]);
     }
 }
 
