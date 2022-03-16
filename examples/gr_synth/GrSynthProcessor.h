@@ -51,7 +51,7 @@ class GrSynthProcessor : public LatticeProcessorModule
 
     std::string getModuleName() override
     {
-      return "Grain Synth";
+        return "Grain Synth";
     }
 
  private:
