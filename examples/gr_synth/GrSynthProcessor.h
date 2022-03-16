@@ -58,5 +58,7 @@ class GrSynthProcessor : public LatticeProcessorModule
   float siglevel;
   float sr;
   float fac;
+  std::vector<float> am;
+  std::vector<float> fm;  
   bool isNoteOn = false;
 };
