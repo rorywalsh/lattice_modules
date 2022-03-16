@@ -13,7 +13,7 @@ GrSynthProcessor::GrSynthProcessor()
     am(Aurora::def_vsize),
     fm(Aurora::def_vsize),
     sr(Aurora::def_sr),
-    fac(wave.size()/sr)   
+    fac(wave.size()/sr)
 {
   std::size_t n = 0;
   for (auto &s : wave)
@@ -31,7 +31,7 @@ void GrSynthProcessor::createChannelLayout(std::vector<std::string> &inputs, std
 void GrSynthProcessor::createParameters(std::vector<ModuleParameter> &parameters)
 {
   parameters.push_back({"density", {1, 300, 40, 1, 1}});
-  parameters.push_back({"grain size", {0.01, 0.1, 0.05, 0.01, 1}});
+  parameters.push_back({"grain size", {0.01f, 0.1f, 0.05f, 0.005f, 1}});
   parameters.push_back({"attack", {0.005f, 5.f, 0.005f, 0.005f, 1}});
   parameters.push_back({"decay", {0.005f, 5.f, 0.005f, 0.005f, 1}});
   parameters.push_back({"sustain", {0, 1.f, 1.f, 0.005f, 1}});
@@ -96,8 +96,8 @@ void GrSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
 			  getParameter("grain size"),
 		      rnd(1./fac),blockSize);	  
     for(auto &e : env(0, 1., isNoteOn)) {
-      ss += (buffer[0][n] = e*grain.channel(0)[n]);
-      ss += (buffer[1][n] = e*grain.channel(1)[n]);
+      ss += (buffer[0][n] = e*grain.channel(0)[n])*0.25f;
+      ss += (buffer[1][n] = e*grain.channel(1)[n])*0.25f;
       n++;
     }
     siglevel = std::fabs(ss/(2*blockSize));

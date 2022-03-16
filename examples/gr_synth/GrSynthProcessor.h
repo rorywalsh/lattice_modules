@@ -61,9 +61,9 @@ class GrSynthProcessor : public LatticeProcessorModule
   Aurora::Env<float> env;
   float amp;
   float siglevel;
+  std::vector<float> am;
+  std::vector<float> fm;
   float sr;
   float fac;
-  std::vector<float> am;
-  std::vector<float> fm;  
   bool isNoteOn = false;
 };
