@@ -79,7 +79,7 @@ static float rnd(float s) { return s * std::rand() / float(RAND_MAX); }
 void GrSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
 {
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
-  float thresh = amp*0.000001f;
+  float thresh = 0;
   float a = getParameter("volume");
   am.resize(blockSize);
   fm.resize(blockSize);
