@@ -84,12 +84,12 @@ void GrSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
   fm.resize(blockSize);
   for(std::size_t n = 0 ; n < blockSize; n++) {
     am[n] = buffer[0][n] + a;
-    fm[n] = buffer[1][n] + freq;
+    fm[n] = buffer[1][n];
   }
 
   if(isNoteOn || siglevel > thresh) {
     float ss = 0.f;
-    auto &out = env(grain(am,fm, getParameter("density"),
+    auto &out = env(grain(am, freq, fm, getParameter("density"),
 			  getParameter("grain size"),
 			  rnd(1./fac),blockSize), isNoteOn);	  
     std::copy(out.begin(),out.end(),buffer[0]);
