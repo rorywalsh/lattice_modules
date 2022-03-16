@@ -31,7 +31,7 @@ void FilePlayerProcessor::hostParameterChanged(const std::string& parameterID, s
 {
     const std::string paramName = getParameterNameFromId(parameterID);
     if(paramName == "Load Soundfile")
-        cout << "File to load" << newValue;
+        std::cout << "File to load" << newValue;
     
 }
 
