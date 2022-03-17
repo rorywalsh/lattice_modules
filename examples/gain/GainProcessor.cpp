@@ -65,7 +65,7 @@ std::string GainProcessor::getSVGXml()
 {
 	okToDraw = true;
 	const float width = 200;
-	const float height = 40;
+	const float height = 80;
 	svg::Dimensions dimensions(width, height);
 	svg::Document doc("rms.svg", svg::Layout(dimensions, svg::Layout::TopLeft));
 	svg::Polyline svgPath(svg::Fill(), svg::Stroke(1, svg::Color("#00ABD1"), 1));
@@ -77,7 +77,6 @@ std::string GainProcessor::getSVGXml()
 		auto pos = svg::Point(x, y);
 		svgPath << pos;
 	}
-
 
 	doc << svgPath;
 	return doc.toString();

@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <functional>
 #include <iostream>
+#include "simple_svg_1.0.0.hpp"
 
 
 class GrSynthProcessor : public LatticeProcessorModule
@@ -54,6 +55,28 @@ class GrSynthProcessor : public LatticeProcessorModule
         return "Grain Synth";
     }
 
+	/* override this method if you want to draw to the Lattice generic editor viewport */
+	std::string getSVGXml() override;
+
+	/* override this method and return true if you wish to enable drawing on the generic editor viewport */
+	bool canDraw() override { return true; }
+
+	static float remap(float value, float from1, float to1, float from2, float to2)
+	{
+		return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
+	}
+
+	double getRMS(std::vector<float> const& v)
+	{
+		double sum = 0;
+		auto const count = static_cast<float>(v.size());
+
+		for (int i = 0; i < count; i++)
+			sum += pow(v[i], 2);
+
+		return sqrt(sum / count);
+	}
+
  private:
   std::vector<float> wave;
   float att, dec, sus, rel;
@@ -66,4 +89,8 @@ class GrSynthProcessor : public LatticeProcessorModule
   float sr;
   float fac;
   bool isNoteOn = false;
+  bool okToDraw = true;
+  float rms = 0;
+	
+  std::vector<svg::Color> colours;
 };
