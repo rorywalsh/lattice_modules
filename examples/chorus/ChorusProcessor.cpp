@@ -34,7 +34,7 @@ void ChorusProcessor::triggerParameterUpdate(const std::string& parameterID, flo
     updateParameter(parameterID, newValue);
 }
 
-void ChorusProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+void ChorusProcessor::createChannelLayout(DynamicArray<const char*> &inputs, DynamicArray<const char*> &outputs)
 {
     inputs.push_back("Input 1");
     inputs.push_back("Input 2");

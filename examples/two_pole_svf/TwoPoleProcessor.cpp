@@ -9,7 +9,7 @@ TwoPoleProcessor::TwoPoleProcessor():lpL(44100), lpR(44100)
 
 }
 
-void TwoPoleProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+void TwoPoleProcessor::createChannelLayout(DynamicArray<const char*> &inputs, DynamicArray<const char*> &outputs)
 {
     inputs.push_back("Input 1");
     inputs.push_back("Input 2");    

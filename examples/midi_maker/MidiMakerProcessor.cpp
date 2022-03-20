@@ -12,7 +12,7 @@ MidiMakerProcessor::MidiMakerProcessor()
     }
 }
 
-void MidiMakerProcessor::createChannelLayout(std::vector<std::string> &/*inputs*/, std::vector<std::string> &/*outputs*/)
+void MidiMakerProcessor::createChannelLayout(DynamicArray<const char*> &/*inputs*/, DynamicArray<const char*> &/*outputs*/)
 {
     
 }

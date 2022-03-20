@@ -10,7 +10,7 @@ DriveSynthProcessor::DriveSynthProcessor()
 }
 
 
-void DriveSynthProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+void DriveSynthProcessor::createChannelLayout(DynamicArray<const char*> &inputs, DynamicArray<const char*> &outputs)
 {
     outputs.push_back("Output 1");
     outputs.push_back("Output 2");

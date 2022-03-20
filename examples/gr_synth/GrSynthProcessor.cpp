@@ -26,7 +26,7 @@ GrSynthProcessor::GrSynthProcessor()
   colours.push_back(svg::Color("#77C1A4"));
 }
 
-void GrSynthProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+void GrSynthProcessor::createChannelLayout(DynamicArray<const char*> &inputs, DynamicArray<const char*> &outputs)
 {
   inputs.push_back("amplitude");
   inputs.push_back("phase");

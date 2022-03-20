@@ -9,12 +9,12 @@ GainProcessor::GainProcessor()
 	samples.resize(512);
 }
 
-void GainProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+void GainProcessor::createChannelLayout(DynamicArray<const char*> &inputs, DynamicArray<const char*> &outputs)
 {
-    inputs.push_back("Input 1");
-    inputs.push_back("Input 2");    
-    outputs.push_back("Output 1");
-    outputs.push_back("Output 2");
+    inputs.push_back("Gain Input 1");
+    inputs.push_back("Gain Input 2");    
+    outputs.push_back("Gain Output 1");
+    outputs.push_back("Gain Output 2");
 }
 
 
@@ -23,7 +23,7 @@ void GainProcessor::createParameters(std::vector<ModuleParameter> &parameters)
     parameters.push_back({ "Gain", {0, 1, .1f, .0001f, 1}});
 }
 
-void GainProcessor::hostParameterChanged(const std::string& /*parameterID*/, float /*newValue*/)
+void GainProcessor::hostParameterChanged(const const char*& /*parameterID*/, float /*newValue*/)
 {
 //    ignoreParameters(parameterID, newValue);
 }
@@ -32,13 +32,6 @@ void GainProcessor::prepareProcessor(int /*sr*/, std::size_t /*block*/)
 {
 
 }
-
-
-void GainProcessor::triggerParameterUpdate(const std::string& parameterID, float newValue)
-{
-    updateParameter(parameterID, newValue);
-}
-
 
 void GainProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
 {
@@ -61,7 +54,7 @@ void GainProcessor::process(float** buffer, int /*numChannels*/, std::size_t blo
 	samples.push_back(inL[0]);
 }
 
-std::string GainProcessor::getSVGXml()
+const char* GainProcessor::getSVGXml()
 {
 	okToDraw = true;
 	const float width = 200;
@@ -79,7 +72,7 @@ std::string GainProcessor::getSVGXml()
 	}
 
 	doc << svgPath;
-	return doc.toString();
+	return doc.toString().c_str();
 }
 
 

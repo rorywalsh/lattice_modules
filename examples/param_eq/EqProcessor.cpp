@@ -9,7 +9,7 @@ EqProcessor::EqProcessor():eqL(44100), eqR(44100)
 
 }
 
-void EqProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+void EqProcessor::createChannelLayout(DynamicArray<const char*> &inputs, DynamicArray<const char*> &outputs)
 {
     inputs.push_back("Input 1");
     inputs.push_back("Input 2");    

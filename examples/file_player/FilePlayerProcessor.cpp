@@ -9,7 +9,7 @@ FilePlayerProcessor::FilePlayerProcessor()
 	
 }
 
-void FilePlayerProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+void FilePlayerProcessor::createChannelLayout(DynamicArray<const char*> &inputs, DynamicArray<const char*> &outputs)
 {
     outputs.push_back("Output 1");
     outputs.push_back("Output 2");

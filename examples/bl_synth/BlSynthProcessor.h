@@ -64,7 +64,7 @@ public:
 
     virtual ~BlSynthProcessor() {}
     
-    void createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs);
+    void createChannelLayout(DynamicArray<const char*> &inputs, DynamicArray<const char*> &outputs);
     
     /* This function is called by he host to populate the parameter vector */
     void createParameters(std::vector<ModuleParameter> &parameters) override;

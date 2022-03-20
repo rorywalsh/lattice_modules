@@ -42,7 +42,7 @@ class SimpleSynthProcessor : public LatticeProcessorModule
 public:
     SimpleSynthProcessor();
     
-    void createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs) override;
+    void createChannelLayout(DynamicArray<const char*> &inputs, DynamicArray<const char*> &outputs) override;
     
     /* This function is called by he host to populate the parameter vector */
     void createParameters(std::vector<ModuleParameter> &parameters) override;

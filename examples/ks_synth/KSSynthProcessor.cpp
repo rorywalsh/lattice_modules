@@ -12,7 +12,7 @@ KSSynthProcessor::KSSynthProcessor()
     
 }
 
-void KSSynthProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+void KSSynthProcessor::createChannelLayout(DynamicArray<const char*> &inputs, DynamicArray<const char*> &outputs)
 {
   inputs.push_back("amplitude");
   inputs.push_back("frequency (control rate)");

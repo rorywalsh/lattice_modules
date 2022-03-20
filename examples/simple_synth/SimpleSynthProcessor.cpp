@@ -49,7 +49,7 @@ SimpleSynthProcessor::SimpleSynthProcessor()
     
 }
 
-void SimpleSynthProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+void SimpleSynthProcessor::createChannelLayout(DynamicArray<const char*> &inputs, DynamicArray<const char*> &outputs)
 {
     inputs.push_back("Input 1");
     inputs.push_back("Input 2");
