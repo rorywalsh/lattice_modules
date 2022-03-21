@@ -9,18 +9,18 @@ GainProcessor::GainProcessor()
 	samples.resize(512);
 }
 
-void GainProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+void GainProcessor::createChannelLayout()
 {
-    inputs.push_back("Input 1");
-    inputs.push_back("Input 2");    
-    outputs.push_back("Output 1");
-    outputs.push_back("Output 2");
+    createChannel("Input 1", ChannelType::input);
+    createChannel("Input 2", ChannelType::input);
+    createChannel("Output 1", ChannelType::output);
+    createChannel("Output 2" , ChannelType::output);
 }
 
 
-void GainProcessor::createParameters(std::vector<ModuleParameter> &parameters)
+void GainProcessor::createParameterLayout()
 {
-    parameters.push_back({ "Gain", {0, 1, .1f, .0001f, 1}});
+    createParameter({ "Gain", {0, 1, .1f, .0001f, 1}});
 }
 
 void GainProcessor::hostParameterChanged(const std::string& /*parameterID*/, float /*newValue*/)

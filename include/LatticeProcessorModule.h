@@ -84,13 +84,13 @@ struct HostData
     double timeInSeconds = 0;
 };
 
+
 /** @struct LatticeMidiMessage
  * @brief MIDI message class
  *
  * A simple MIDI message struct. `LatticeMidiMessage` vectors of can be accessed in the `<LatticeProcessorModule::process()>`
  
  */
-
 struct LatticeMidiMessage {
 
     /*! Midi Message Type enum */
@@ -132,8 +132,13 @@ enum ModuleType
  */
 class LatticeProcessorModule
 {
-
+    
 public:
+    enum ChannelType{
+        input = 0,
+        output = 1
+    };
+
     LatticeProcessorModule() {}
 
     /**
@@ -141,21 +146,21 @@ public:
     * @param[in] inputs Fill this with your input channels.
      * @param[in] outputs Fill this with your output channels.
     */
-    virtual void createChannelLayout(std::vector<std::string>& inputs, std::vector<std::string>& outputs)
+    virtual void createChannelLayout()
     {
-        inputs.push_back("Input 1");
-        inputs.push_back("Input 2");
-        outputs.push_back("Output 1");
-        outputs.push_back("Output 2");
+        createChannel("Input 1", ChannelType::input);
+        createChannel("Output 2", ChannelType::output);
+//        createOutputChannel("Output 1");
+//        createOutputChannel("Output 2");
     }
 
     /**
      * This method is called by the host to create the plugin parameters. Override and fill the `ModuleParameter` vector
      * @param[in] parameters Fill this with your modules parameters.
      */
-    virtual void createParameters(std::vector<ModuleParameter>& parameters)
+    virtual void createParameterLayout()
     {
-        parameters.push_back({ "Parameter 1", {0, 1, 0.001f, 0.001f, 1} });
+        createParameter({ "Parameter 1", {0, 1, 0.001f, 0.001f, 1} });
     }
 
     /**
@@ -279,7 +284,7 @@ public:
     /** Override this method to provide a unique name for the module
      * @return The name of the module as shown in Lattice
     */
-    virtual std::string getModuleName()
+    virtual const char* getModuleName()
     {
         return "ModuleName";
     }
@@ -303,6 +308,22 @@ public:
         paramCallback = func;
     }
 
+    /* Called by the host to register channels and assign callback function
+    */
+    /// @private
+    void registerChannelSetupCallback(const std::function<void(const char* channel, ChannelType type)>& func)
+    {
+        channelSetupCallback = func;
+    }
+    
+    /* Called by the host to register parameters and assign callback function
+    */
+    /// @private
+    void registerParameterSetupCallback(const std::function<void(ModuleParameter p)>& func)
+    {
+        parameterSetupCallback = func;
+    }
+    
     /** returns a MIDI note number in Hertz, according to A tuning
      * @param [in] noteNumber The MIDI note number.
      * @param [in] aTuning The selected frequency for middle A.
@@ -355,7 +376,18 @@ public:
         if (paramCallback != nullptr)
             paramCallback(parameterID, newValue);
     }
+    
+    void createChannel(const char* channel, ChannelType type)
+    {
+        if(channelSetupCallback != nullptr)
+            channelSetupCallback(channel, type);
+    }
 
+    void createParameter(ModuleParameter p)
+    {
+        if(parameterSetupCallback != nullptr)
+            parameterSetupCallback(p);
+    }
     /** Used to query the current value of a parameter - the names correspond to the names used
         in the createParameters() function
         * @return the current value of the parameter
@@ -408,6 +440,8 @@ private:
     int midiNoteNumber = 0;
     std::string nodeName;
     std::function<void(const std::string&, float)> paramCallback;
+    std::function<void(const char* channel, ChannelType type)> channelSetupCallback;
+    std::function<void(ModuleParameter)> parameterSetupCallback;
     std::vector<std::string> parameterNames;
     std::vector<std::atomic<float>*> paramValues;
 };
