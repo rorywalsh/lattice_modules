@@ -9,18 +9,20 @@ GainProcessor::GainProcessor()
 	samples.resize(512);
 }
 
-void GainProcessor::createChannelLayout()
+LatticeProcessorModule::Channel* GainProcessor::createChannels()
 {
-    createChannel("Input 1", ChannelType::input);
-    createChannel("Input 2", ChannelType::input);
-    createChannel("Output 1", ChannelType::output);
-    createChannel("Output 2" , ChannelType::output);
+    channels.push_back({"Input 1", ChannelType::input});
+    channels.push_back({"Input 2", ChannelType::input});
+    channels.push_back({"Output 2", ChannelType::output});
+    channels.push_back({"Output 2", ChannelType::output});
+    return channels.data();
 }
 
 
-void GainProcessor::createParameterLayout()
+
+void GainProcessor::createParameters(std::vector<ModuleParameter> &parameters)
 {
-    createParameter({ "Gain", {0, 1, .1f, .0001f, 1}});
+    parameters.push_back({"Gain", {0, 1, 0.4, 0.001, 1}});
 }
 
 void GainProcessor::hostParameterChanged(const std::string& /*parameterID*/, float /*newValue*/)
