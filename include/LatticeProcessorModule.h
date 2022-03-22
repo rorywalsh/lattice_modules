@@ -330,13 +330,13 @@ public:
         std::string* names, int namesSize)
     {
         std::size_t i = 0;
-        std::vector<std::string> parameterNames(names, names + namesSize);
-        std::vector<std::atomic<float>*> paramVals(params, params + paramsSize);
+        std::vector<std::string> namesVec(names, names + namesSize);
+        std::vector<std::atomic<float>*> paramsVec(params, params + paramsSize);
 
-        for (auto& p : paramVals)
+        for (auto& p : paramsVec)
         {
             paramValues.push_back(p);
-            parameterNames.push_back(getParameterNameFromId(names[i]));
+            parameterNames.push_back(getParameterNameFromId(namesVec[i]));
             i++;
         }
     }
