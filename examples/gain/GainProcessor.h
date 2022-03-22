@@ -8,10 +8,10 @@ class GainProcessor : public LatticeProcessorModule
 public:
     GainProcessor();
     
-    Channel* createChannels() override;
+    ChannelData createChannels() override;
     
     /* This function is called by he host to populate the parameter vector */
-    void createParameters(std::vector<ModuleParameter> &parameters) override;
+    ParameterData createParameters() override;
     
     /*  This function is called by the host whenever a parameter changes */
     void hostParameterChanged(const std::string& parameterID, float newValue);
@@ -37,7 +37,7 @@ public:
     /* override this method and return true if you wish to enable drawing on the generic editor viewport */
     bool canDraw() override { return true; }
     
-    std::string getModuleName() override {    return "Gain";     }
+    const char* getModuleName() override {    return "Gain";     }
     
 	static int remap(float value, float rangeMin, float rangeMax, float newRangeMin, float newRangeMax)
 	{
@@ -55,9 +55,9 @@ public:
 		return sqrt(sum / count);
 	}
 
-
 private:
 	float amp = .5f;
+    int numChannels = 0;
     std::vector<float> inL;
     std::vector<float> inR;
 	std::vector<float> samples;

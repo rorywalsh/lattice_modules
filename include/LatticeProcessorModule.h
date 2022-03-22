@@ -15,114 +15,7 @@
 template <typename... Types>
 void unused(Types&&...) noexcept {}
 
-/** @struct ModuleParameter
- * @brief Module parameters
- *
- * This is the main Lattice parameter struct. As as many of these to as you need to the `std::vector<ModuleParameter>& parameters` that is passed to the `LatticeModuleProcessor::createParameters(std::vector<ModuleParameter>& parameters)` method. Each parameter added here will be accessible in the Lattice graph when you double click the processor module.
- *
- */
-struct ModuleParameter
-{
-    /*! Parameter Type enum */
-    enum ParamType {
-        Trigger = -99, /*!< A trigger button - shown only a single state button */
-        Switch = -98,  /*!< A switch button - shown as an dual state button */
-        Slider = -97, /*!< A slider (default) - shown as a horizontal slider */
-        FileButton = -96 /*!< A non-automatable button that launches a file browser dialogue */
-    };
 
-    /** Name of your module parameter - this is the name that will appear in the module editor in Lattice */
-    std::string parameterName;
-    /** A vector holding min, max, increment, defaultValue, and skew values for your parameter. A skew of 1 is linear, while a skew of less than one will result in non-linear behaviour. */
-    std::vector<double> range;
-
-    /*! Creates a module parameter. You can add as many of these as you wish to your module by pushing to the `std::vector<ModuleParameter>& parameters` argument that gets passed to LatticeProcessorModule::createParameters()
-
-```
-void ChorusProcessor::createParameters(std::vector<ModuleParameter> &parameters)
-{
-    parameters.push_back({ "Delay Time (L)", {0, 5, .017f, .001f, 1}});
-    parameters.push_back({ "LFO Frequency (L)", {0, 10, .93, .001f, 1}});
-    parameters.push_back({ "Delay Time (R)", {0, 5, .013f, .001f, 1}});
-    parameters.push_back({ "LFO Frequency (R)", {0, 10, .083f, .001f, 1} });
-}
-```
-*/
-     
-    ModuleParameter(std::string name, std::vector<double> paramRange, std::string paramLabel = "", ModuleParameter::ParamType type = ParamType::Slider)
-        :parameterName(name), range(paramRange), label(paramLabel), paramType(type) {}
-
-    /** Set this to use a different label than the one given to parameterName */
-    std::string label = {};
-    /** Set the type of basic UI element to use for the parameter. If you select a a switch or trigger, many sure your parameter range is between 0 and 1, and the increment is set to 1*/
-    ParamType paramType = ParamType::Slider;
-};
-
-
-/** @struct HostData
- * @brief Data from the host
- *
- * One of these is passed to the `LatticeProcessorModule::process()` method each time is it called. This can be used to query everything from the current host BPM to whether or not the host is actually playing. (Note: only available in effect plugins)
- */
-struct HostData
-{
-    /** The current host BPM */
-    double bpm = 120;
-    /** The time signature numerator */
-    int timeSigNumerator = 4;
-    /** The time signature denomiator */
-    int timeSigDenomiator = 4;
-    /** The current performance time in samples */
-    long int timeInSamples = 0;
-    /** Indicates if the host is playing */
-    bool isPlaying = false;
-    /** Indicates if the host is recording */
-    bool isRecording = false;
-    /** Indicates if the host is looping */
-    bool isLooping = false;
-    /** The current performance time in seconds */
-    double timeInSeconds = 0;
-};
-
-/** @struct LatticeMidiMessage
- * @brief MIDI message class
- *
- * A simple MIDI message struct. `LatticeMidiMessage` vectors of can be accessed in the `<LatticeProcessorModule::process()>`
- 
- */
-
-struct LatticeMidiMessage {
-
-    /*! Midi Message Type enum */
-    enum Type {
-        noteOn=1,/** noteOn message */
-        noteOff /** noteOff message */
-    };
-    
-    /** Message type, on or off*/
-    Type msgType = Type::noteOff;
-    /** MIDI note number */
-    int note = 60;
-    /** MIDI channel */
-    int channel = 0;
-    /** MIDI velocity as a float between 0 and 1 */
-    float velocity;
-    
-    /** Creates a simple MIDI message that can be added to a incoming MIDI vector in process()
-     */
-    LatticeMidiMessage(LatticeMidiMessage::Type type, int chan, int noteNum, float vel)
-    : msgType(type), note(noteNum), channel(chan), velocity(vel)
-    {}
-
-};
-
-/*! ModuleType enum */
-enum ModuleType
-{
-    synthProcessor = 0,/** a module that will form part of a polyphonic or monophonic synth. This type of module can not only generate audio, but can also process incoming. See LatticeProcessorModule::getNumberOfVoices() for details on how to limit the number of voices. */
-    audioProcessor,/** an audio processor. This can be used to process or generate audio */
-    midiProcessor /** a Midi based processor - can parse and modify incoming Midi data or generate new Midi streams on the fly*/
-};
 
 /** @class LatticeProcessorModule
  * @brief Base class for all modules
@@ -134,17 +27,149 @@ class LatticeProcessorModule
 {
 
 public:
-    
-    enum ChannelType{
+
+    /** @struct ModuleParameter
+ * @brief Module parameters
+ *
+ * This is the main Lattice parameter struct. As as many of these to as you need to the `std::vector<ModuleParameter>& parameters` that is passed to the `LatticeModuleProcessor::createParameters(std::vector<ModuleParameter>& parameters)` method. Each parameter added here will be accessible in the Lattice graph when you double click the processor module.
+ *
+ */
+    struct ModuleParameter
+    {
+        /*! Parameter Type enum */
+        enum ParamType {
+            Trigger = -99, /*!< A trigger button - shown only a single state button */
+            Switch = -98,  /*!< A switch button - shown as an dual state button */
+            Slider = -97, /*!< A slider (default) - shown as a horizontal slider */
+            FileButton = -96 /*!< A non-automatable button that launches a file browser dialogue */
+        };
+
+        /** Name of your module parameter - this is the name that will appear in the module editor in Lattice */
+        const char* parameterName;
+        /** A vector holding min, max, increment, defaultValue, and skew values for your parameter. A skew of 1 is linear, while a skew of less than one will result in non-linear behaviour. */
+        struct Range {
+            float min = 0;
+            float max = 1;
+            float increment = 0.01f;
+            float defaultValue = 0;
+            float skew = 1;
+            Range(float m, float n, float i, float d, float s)
+                : min(m), max(n), increment(i), skew(s), defaultValue(d) {}
+        };
+
+        Range range;
+
+        /*! Creates a module parameter. You can add as many of these as you wish to your module by pushing to the `std::vector<ModuleParameter>& parameters` argument that gets passed to LatticeProcessorModule::createParameters()
+
+    ```
+    void ChorusProcessor::createParameters(std::vector<ModuleParameter> &parameters)
+    {
+        parameters.push_back({ "Delay Time (L)", {0, 5, .017f, .001f, 1}});
+        parameters.push_back({ "LFO Frequency (L)", {0, 10, .93, .001f, 1}});
+        parameters.push_back({ "Delay Time (R)", {0, 5, .013f, .001f, 1}});
+        parameters.push_back({ "LFO Frequency (R)", {0, 10, .083f, .001f, 1} });
+    }
+    ```
+    */
+
+        ModuleParameter(const char* name, Range paramRange, const char* paramLabel = "", ModuleParameter::ParamType type = ParamType::Slider)
+            :parameterName(name), range(paramRange), label(paramLabel), paramType(type) {}
+
+        /** Set this to use a different label than the one given to parameterName */
+        const char* label = {};
+        /** Set the type of basic UI element to use for the parameter. If you select a a switch or trigger, many sure your parameter range is between 0 and 1, and the increment is set to 1*/
+        ParamType paramType = ParamType::Slider;
+    };
+
+
+    /** @struct HostData
+     * @brief Data from the host
+     *
+     * One of these is passed to the `LatticeProcessorModule::process()` method each time is it called. This can be used to query everything from the current host BPM to whether or not the host is actually playing. (Note: only available in effect plugins)
+     */
+    struct HostData
+    {
+        /** The current host BPM */
+        double bpm = 120;
+        /** The time signature numerator */
+        int timeSigNumerator = 4;
+        /** The time signature denomiator */
+        int timeSigDenomiator = 4;
+        /** The current performance time in samples */
+        long int timeInSamples = 0;
+        /** Indicates if the host is playing */
+        bool isPlaying = false;
+        /** Indicates if the host is recording */
+        bool isRecording = false;
+        /** Indicates if the host is looping */
+        bool isLooping = false;
+        /** The current performance time in seconds */
+        double timeInSeconds = 0;
+    };
+
+    /** @struct LatticeMidiMessage
+     * @brief MIDI message class
+     *
+     * A simple MIDI message struct. `LatticeMidiMessage` vectors of can be accessed in the `<LatticeProcessorModule::process()>`
+
+     */
+
+    struct LatticeMidiMessage {
+
+        /*! Midi Message Type enum */
+        enum Type {
+            noteOn = 1,/** noteOn message */
+            noteOff /** noteOff message */
+        };
+
+        /** Message type, on or off*/
+        Type msgType = Type::noteOff;
+        /** MIDI note number */
+        int note = 60;
+        /** MIDI channel */
+        int channel = 0;
+        /** MIDI velocity as a float between 0 and 1 */
+        float velocity;
+
+        /** Creates a simple MIDI message that can be added to a incoming MIDI vector in process()
+         */
+        LatticeMidiMessage(LatticeMidiMessage::Type type, int chan, int noteNum, float vel)
+            : msgType(type), note(noteNum), channel(chan), velocity(vel)
+        {}
+
+    };
+
+    /*! ModuleType enum */
+    enum ModuleType
+    {
+        synthProcessor = 0,/** a module that will form part of a polyphonic or monophonic synth. This type of module can not only generate audio, but can also process incoming. See LatticeProcessorModule::getNumberOfVoices() for details on how to limit the number of voices. */
+        audioProcessor,/** an audio processor. This can be used to process or generate audio */
+        midiProcessor /** a Midi based processor - can parse and modify incoming Midi data or generate new Midi streams on the fly*/
+    };
+
+    enum ChannelType {
         input = 0,
         output
     };
-    
-    struct Channel{
-        std::string name;
+
+    struct Channel {
+        const char* name;
         ChannelType type;
+        Channel(const char* n, ChannelType t) :name(n), type(t) {}
     };
-    
+
+    struct ChannelData {
+        Channel* data;
+        std::size_t size;
+        ChannelData(Channel* n, std::size_t  s) : data(n), size(s) { }
+    };
+
+    struct ParameterData {
+        ModuleParameter* data;
+        std::size_t size;
+        ParameterData(ModuleParameter* n, std::size_t  s) : data(n), size(s) { }
+    };
+
     LatticeProcessorModule() {}
 
     /**
@@ -152,22 +177,23 @@ public:
     * @param[in] inputs Fill this with your input channels.
      * @param[in] outputs Fill this with your output channels.
     */
-    virtual Channel* createChannels()
+    virtual ChannelData createChannels()
     {
-        channels.push_back({"Input 1", ChannelType::input});
-        channels.push_back({"Input 2", ChannelType::input});
-        channels.push_back({"Output 2", ChannelType::output});
-        channels.push_back({"Output 2", ChannelType::output});
-        return channels.data();
+        channels.push_back({ "Input 1", ChannelType::input });
+        channels.push_back({ "Input 2", ChannelType::input });
+        channels.push_back({ "Output 2", ChannelType::output });
+        channels.push_back({ "Output 2", ChannelType::output });
+        return ChannelData(getChannels(), getNumberOfChannels());
     }
 
     /**
      * This method is called by the host to create the plugin parameters. Override and fill the `ModuleParameter` vector
      * @param[in] parameters Fill this with your modules parameters.
      */
-    virtual void createParameters(std::vector<ModuleParameter>& parameters)
+    virtual ParameterData createParameters()
     {
-        parameters.push_back({ "Parameter 1", {0, 1, 0.001f, 0.001f, 1} });
+        addParameter({ "Parameter 1", { 0, 1, 0.001f, 0.001f, 1 } });
+        return ParameterData(getParameters(), getNumberOfParameters());
     }
 
     /**
@@ -183,7 +209,7 @@ public:
 
     /*!
     Buffer is an array of audio channels. Each channel array will be blockSize samples longer. You can access and modify the sample data like this
-    
+
     @code
     for ( int i = 0 ; i < blockSize ; i++)
     {
@@ -216,12 +242,12 @@ public:
     {
         unused(buffer, numChannels, blockSize, midiMessages, info);
     }
-     /*!
-     This processing method is called by synth modules. No MIDI messages are passed directly to this function. Instead, the start and stop notes methods will be called. Lattice will allocating an instance of the module to each voice. Lattice will set the number of voices when it calls  getNumberOfVoices(). Buffer is an array of audio channels. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages. (See above for an example of how to access the channel data.)
-    * @param[in] buffer An array of audio channels.
-    * @param[in] numChannels  The number of channels in the buffer array
-    * @param[in] blockSize The number of samples in each channel
-    */
+    /*!
+    This processing method is called by synth modules. No MIDI messages are passed directly to this function. Instead, the start and stop notes methods will be called. Lattice will allocating an instance of the module to each voice. Lattice will set the number of voices when it calls  getNumberOfVoices(). Buffer is an array of audio channels. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages. (See above for an example of how to access the channel data.)
+   * @param[in] buffer An array of audio channels.
+   * @param[in] numChannels  The number of channels in the buffer array
+   * @param[in] blockSize The number of samples in each channel
+   */
     virtual void processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
     {
         unused(buffer, numChannels, blockSize);
@@ -252,7 +278,7 @@ public:
     {
         unused(parameterID, newValue);
     }
-    
+
     /** called by the host when a note is started
      * @param[in] noteNumber Midi note number sent from host
      * @param[in] velocity Midi velocity in the range of 0 to 1
@@ -262,7 +288,7 @@ public:
         unused(noteNumber, velocity);
     }
 
-    
+
     /** called by the host when a note is stoped
      * @param velocity Midi velocity in the range of 0 to 1
     */
@@ -278,7 +304,7 @@ public:
     {
         unused(newValue);
     }
-    
+
     /** called by the host when a the pitchbend wheel is moved
      * @param controllerNumber the controller number
      * @param newValue integer in the range of 0 to 128
@@ -287,11 +313,11 @@ public:
     {
         unused(controllerNumber, newValue);
     }
-    
+
     /** Override this method to provide a unique name for the module
      * @return The name of the module as shown in Lattice
     */
-    virtual std::string getModuleName()
+    virtual const char* getModuleName()
     {
         return "ModuleName";
     }
@@ -300,9 +326,24 @@ public:
     /* Called by the host to register parameters and assign callback function for parameter updates
     */
     /// @private
+    void registerParams(std::atomic<float>* params, int paramsSize,
+        std::string* names, int namesSize)
+    {
+        std::size_t i = 0;
+        std::vector<std::string> parameterNames(names, names + namesSize);
+        std::vector<std::atomic<float>*> paramVals(params, params + paramsSize);
+
+        for (auto& p : paramVals)
+        {
+            paramValues.push_back(p);
+            parameterNames.push_back(getParameterNameFromId(names[i]));
+            i++;
+        }
+    }
+
     void registerParameters(std::vector<std::atomic<float>*> paramVals,
         std::vector<std::string> names,
-        const std::function<void(const std::string&, float)>& func)
+        const std::function<void(const const char*, float)>& func)
     {
         std::size_t i = 0;
         for (auto& p : paramVals)
@@ -362,7 +403,7 @@ public:
     * @param [in] parameterID The parameter in the host you wish to update
     * @param [in] newValue The value you wish to set the parameter to.
     */
-    void updateParameter(const std::string& parameterID, float newValue)
+    void updateParameter(const char* parameterID, float newValue)
     {
         if (paramCallback != nullptr)
             paramCallback(parameterID, newValue);
@@ -376,9 +417,9 @@ public:
     {
         //these are not picking up teh correct anme...
         std::size_t index = 0;
-        for(const auto& m : parameterNames)
+        for (const auto& m : parameterNames)
         {
-            if(m == name)
+            if (m == name)
                 break;
             index++;
         }
@@ -416,13 +457,42 @@ public:
         return "";
     }
 
-    std::size_t getNumberOfChannels(){  return channels.size();    }
-    std::vector<Channel> channels;
-    
+    int getNumberOfChannels()
+    {
+        return channels.size();
+    }
+
+    int getNumberOfParameters()
+    {
+        return parameters.size();
+    }
+
+    void addChannel(Channel c)
+    {
+        channels.push_back(c);
+    }
+
+    void addParameter(ModuleParameter p)
+    {
+        parameters.push_back(p);
+    }
+
+    ModuleParameter* getParameters()
+    {
+        return parameters.data();
+    }
+
+    Channel* getChannels()
+    {
+        return channels.data();
+    }
+
 private:
+    std::vector<Channel> channels;
+    std::vector<ModuleParameter> parameters;
     int midiNoteNumber = 0;
     std::string nodeName;
-    std::function<void(const std::string&, float)> paramCallback;
+    std::function<void(const char*, float)> paramCallback;
     std::vector<std::string> parameterNames;
     std::vector<std::atomic<float>*> paramValues;
 

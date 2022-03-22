@@ -5,24 +5,26 @@
 
 
 GainProcessor::GainProcessor()
+	:LatticeProcessorModule()
 {
 	samples.resize(512);
 }
 
-LatticeProcessorModule::Channel* GainProcessor::createChannels()
+LatticeProcessorModule::ChannelData GainProcessor::createChannels()
 {
-    channels.push_back({"Input 1", ChannelType::input});
-    channels.push_back({"Input 2", ChannelType::input});
-    channels.push_back({"Output 2", ChannelType::output});
-    channels.push_back({"Output 2", ChannelType::output});
-    return channels.data();
+	addChannel({ "Gain Input 1", ChannelType::input });
+	addChannel({ "Gain Input 2", ChannelType::input });
+	addChannel({ "Gain Output 1", ChannelType::output });
+	addChannel({ "Gain Output 2", ChannelType::output });
+	return ChannelData(getChannels(), getNumberOfChannels());
 }
 
 
 
-void GainProcessor::createParameters(std::vector<ModuleParameter> &parameters)
+LatticeProcessorModule::ParameterData GainProcessor::createParameters()
 {
-    parameters.push_back({"Gain", {0, 1, 0.4, 0.001, 1}});
+    addParameter({"Gain", LatticeProcessorModule::ModuleParameter::Range(0.f, 1.f, 0.4f, 0.001f, 1.f)});
+	return ParameterData(getParameters(), getNumberOfParameters());
 }
 
 void GainProcessor::hostParameterChanged(const std::string& /*parameterID*/, float /*newValue*/)
@@ -33,13 +35,7 @@ void GainProcessor::hostParameterChanged(const std::string& /*parameterID*/, flo
 void GainProcessor::prepareProcessor(int /*sr*/, std::size_t /*block*/)
 {
 
-}
-
-
-void GainProcessor::triggerParameterUpdate(const std::string& parameterID, float newValue)
-{
-    updateParameter(parameterID, newValue);
-}
+}  
 
 
 void GainProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
