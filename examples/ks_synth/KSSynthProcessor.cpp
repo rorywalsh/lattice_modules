@@ -12,26 +12,25 @@ KSSynthProcessor::KSSynthProcessor()
     
 }
 
-void KSSynthProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+LatticeProcessorModule::ChannelData KSSynthProcessor::createChannels()
 {
-  inputs.push_back("amplitude");
-  inputs.push_back("frequency (control rate)");
-  outputs.push_back("left");
-  outputs.push_back("right");
+    addChannel({"amplitude", ChannelType::input });
+    addChannel({"frequency (control rate)", ChannelType::input });
+    addChannel({"left", ChannelType::output });
+    addChannel({"right", ChannelType::output });
+    return ChannelData(getChannels(), getNumberOfChannels());
 }
 
-void KSSynthProcessor::createParameters(std::vector<ModuleParameter> &parameters)
+LatticeProcessorModule::ParameterData KSSynthProcessor::createParameters()
 {
-  parameters.push_back({"Decay Time", {0.1, 10, 3, 0.1, 1}});
-  parameters.push_back({"Release Time", {0.1, 4, 0.5, 0.1, 1}});
-  parameters.push_back({"Detune", {0, 0.1, 0, 0.001, 1}});
-  parameters.push_back({"Pan Spread", {0, 1., 0.5, 0.001, 1}});
+    addParameter({"Decay Time", {0.1, 10, 3, 0.1, 1}});
+    addParameter({"Release Time", {0.1, 4, 0.5, 0.1, 1}});
+    addParameter({"Detune", {0, 0.1, 0, 0.001, 1}});
+    addParameter({"Pan Spread", {0, 1., 0.5, 0.001, 1}});
+    return ParameterData(getParameters(), getNumberOfParameters());
 }
 
-void KSSynthProcessor::hostParameterChanged(const std::string& parameterID, float newValue)
-{
-  
-}
+
 
 void KSSynthProcessor::prepareProcessor(int sr, std::size_t blockSize)
 {

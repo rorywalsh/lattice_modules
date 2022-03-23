@@ -9,18 +9,15 @@ ChorusProcessor::ChorusProcessor()
     
 }
 
-void ChorusProcessor::createParameters(std::vector<ModuleParameter> &parameters)
+LatticeProcessorModule::ParameterData ChorusProcessor::createParameters()
 {
-    parameters.push_back({ "Delay Time (L)", {0, 5, .017f, .001f, 1}});
-    parameters.push_back({ "LFO Frequency (L)", {0, 10, .93, .001f, 1}});
-    parameters.push_back({ "Delay Time (R)", {0, 5, .013f, .001f, 1}});
-	parameters.push_back({ "LFO Frequency (R)", {0, 10, .083f, .001f, 1} });
+    addParameter({ "Delay Time (L)", {0, 5, .017f, .001f, 1}});
+    addParameter({ "LFO Frequency (L)", {0, 10, .93, .001f, 1}});
+    addParameter({ "Delay Time (R)", {0, 5, .013f, .001f, 1}});
+	addParameter({ "LFO Frequency (R)", {0, 10, .083f, .001f, 1} });
+    return ParameterData(getParameters(), getNumberOfParameters());
 }
 
-void ChorusProcessor::hostParameterChanged(const std::string& parameterID, float newValue)
-{
-   unused(parameterID, newValue);
-}
 
 void ChorusProcessor::prepareProcessor(int sr, std::size_t block)
 {
@@ -34,12 +31,13 @@ void ChorusProcessor::triggerParameterUpdate(const std::string& parameterID, flo
     updateParameter(parameterID, newValue);
 }
 
-void ChorusProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+LatticeProcessorModule::ChannelData ChorusProcessor::createChannels()
 {
-    inputs.push_back("Input 1");
-    inputs.push_back("Input 2");
-    outputs.push_back("Output 1");
-    outputs.push_back("Output 2");
+    addChannel({"Input 1", ChannelType::input });
+    addChannel({"Input 2", ChannelType::input });
+    addChannel({"Output 1", ChannelType::output });
+    addChannel({"Output 2", ChannelType::output });
+    return ChannelData(getChannels(), getNumberOfChannels());
 }
 
 void ChorusProcessor::process(float** buffer, int numChannels, std::size_t blockSize, const HostData)
