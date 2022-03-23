@@ -27,13 +27,12 @@ class LatticeProcessorModule
 {
 
 public:
-
     /** @struct ModuleParameter
- * @brief Module parameters
- *
- * This is the main Lattice parameter struct. As as many of these to as you need to the `std::vector<ModuleParameter>& parameters` that is passed to the `LatticeModuleProcessor::createParameters(std::vector<ModuleParameter>& parameters)` method. Each parameter added here will be accessible in the Lattice graph when you double click the processor module.
- *
- */
+    * @brief Module parameters
+    *
+    * This is the main Lattice parameter struct. As as many of these to as you need to the `std::vector<ModuleParameter>& parameters` that is passed to the `LatticeModuleProcessor::createParameters(std::vector<ModuleParameter>& parameters)` method. Each parameter added here will be accessible in the Lattice graph when you double click the processor module.
+    *
+    */
     struct ModuleParameter
     {
         /*! Parameter Type enum */
@@ -155,7 +154,14 @@ public:
     struct Channel {
         const char* name;
         ChannelType type;
+        Channel() = default;
         Channel(const char* n, ChannelType t) :name(n), type(t) {}
+        Channel& operator=(Channel other)
+        {
+            std::swap(name, other.name);
+            std::swap(type, other.type);
+            return *this;
+        }
     };
 
     struct ChannelData {
@@ -376,7 +382,6 @@ public:
         */
     float getParameter(std::string name)
     {
-        auto mem = &parameterValues;
         return parameterValues.at(name).load();
     }
 
@@ -435,10 +440,6 @@ public:
     {
         parameters.push_back(p);
         parameterValues[p.parameterName].store(p.range.defaultValue);
-        auto mem = &parameterValues;
-
-        auto size = parameterValues.size();
-        auto test = parameterValues[p.parameterName].load();
     }
 
     ModuleParameter* getParameters()
