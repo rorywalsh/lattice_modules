@@ -26,30 +26,28 @@ GrSynthProcessor::GrSynthProcessor()
   colours.push_back(svg::Color("#77C1A4"));
 }
 
-void GrSynthProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+LatticeProcessorModule::ChannelData GrSynthProcessor::createChannels()
 {
-  inputs.push_back("amplitude");
-  inputs.push_back("phase");
-  outputs.push_back("left");
-  outputs.push_back("right");
+	addChannel({ "amplitude", LatticeProcessorModule::ChannelType::input });
+	addChannel({ "phase", LatticeProcessorModule::ChannelType::input });
+	addChannel({ "left", LatticeProcessorModule::ChannelType::output });
+	addChannel({ "right", LatticeProcessorModule::ChannelType::output });
+	return ChannelData(getChannels(), getNumberOfChannels());
 }
 
-void GrSynthProcessor::createParameters(std::vector<ModuleParameter> &parameters)
+LatticeProcessorModule::ParameterData GrSynthProcessor::createParameters()
 {
-  parameters.push_back({"density", {1, 300, 40, 1, 1}});
-  parameters.push_back({"grain size", {0.01f, 0.1f, 0.05f, 0.005f, 1}});
-  parameters.push_back({"attack", {0.005f, 5.f, 0.005f, 0.005f, 1}});
-  parameters.push_back({"decay", {0.005f, 5.f, 0.005f, 0.005f, 1}});
-  parameters.push_back({"sustain", {0, 1.f, 1.f, 0.005f, 1}});
-  parameters.push_back({"release", {0.005f, 5.f, 0.1f, 0.005f, 1}});
-  parameters.push_back({"volume", {0.f, 1.f, 0.5f, 0.005f, 1}});
-  parameters.push_back({"pan spread", {0.f, 1.f, 0.5f, 0.005f, 1}});
+  addParameter({"density", {1, 300, 40, 1, 1}});
+  addParameter({"grain size", {0.01f, 0.1f, 0.05f, 0.005f, 1}});
+  addParameter({"attack", {0.005f, 5.f, 0.005f, 0.005f, 1}});
+  addParameter({"decay", {0.005f, 5.f, 0.005f, 0.005f, 1}});
+  addParameter({"sustain", {0, 1.f, 1.f, 0.005f, 1}});
+  addParameter({"release", {0.005f, 5.f, 0.1f, 0.005f, 1}});
+  addParameter({"volume", {0.f, 1.f, 0.5f, 0.005f, 1}});
+  addParameter({"pan spread", {0.f, 1.f, 0.5f, 0.005f, 1}});
+  return ParameterData(getParameters(), getNumberOfParameters());
 }
 
-void GrSynthProcessor::hostParameterChanged(const std::string& parameterID, float newValue)
-{
-  
-}
 
 void GrSynthProcessor::prepareProcessor(int samplingRate, std::size_t block)
 {
@@ -120,7 +118,7 @@ void GrSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
 
 }
 
-std::string GrSynthProcessor::getSVGXml()
+const char* GrSynthProcessor::getSVGXml()
 {
 	okToDraw = true;
 	const float width = 200;
@@ -144,7 +142,8 @@ std::string GrSynthProcessor::getSVGXml()
 	else
 		doc << svg::Circle(svg::Point(width / 2, height / 2), 3, svg::Fill(colours[0]), svg::Stroke());;
 
-	return doc.toString();
+	svgText = doc.toString();
+	return svgText.c_str();
 }
 
 // the class factories

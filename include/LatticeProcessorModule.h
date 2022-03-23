@@ -46,15 +46,15 @@ public:
 
         /** Name of your module parameter - this is the name that will appear in the module editor in Lattice */
         const char* parameterName;
-        /** A vector holding min, max, increment, defaultValue, and skew values for your parameter. A skew of 1 is linear, while a skew of less than one will result in non-linear behaviour. */
+        /** A vector holding min, max, defaultValue, increment, and skew values for your parameter. A skew of 1 is linear, while a skew of less than one will result in non-linear behaviour. */
         struct Range {
             float min = 0;
             float max = 1;
             float increment = 0.01f;
             float defaultValue = 0;
             float skew = 1;
-            Range(float m, float n, float i, float d, float s)
-                : min(m), max(n), increment(i), skew(s), defaultValue(d) {}
+            Range(float m, float n, float d, float i, float s)
+                : min(m), max(n), defaultValue(d), increment(i), skew(s) {}
         };
 
         Range range;
@@ -265,16 +265,16 @@ public:
     * @param[in] parameterID The name of the parameter that has been update. This will also contain information about the module instance, so use getParameterName() to extract the actual module parameter name.
      * @param[in] newValue  The parameter value sent by the host.
     */
-    virtual void hostParameterChanged(const std::string& parameterID, float newValue)
+    virtual void hostParameterChanged(const char* parameterId, float newValue)
     {
-        unused(parameterID, newValue);
+        updateParameter(getParameterNameFromId(parameterId), newValue);
     }
 
     /** Called by the host when a string paremeter changes. The parameterID in this instance is a combination of the unique name for the module, assigned by the host, and the parameter name itself, i.e, 'Super Synth 11 - Attack'. Use the getParameterName() method to extract the parameter name - note that in the case of audio FX, you can just called getParameter() from your process block.
     * @param[in] parameterID The name of the parameter that has been update. This will also contain information about the module instance, so use getParameterName() to extract the actual module parameter name.
      * @param[in] newValue  The parameter value sent by the host.
     */
-    virtual void hostParameterChanged(const std::string& parameterID, std::string newValue)
+    virtual void hostParameterChanged(const char* parameterID, const char* newValue)
     {
         unused(parameterID, newValue);
     }
@@ -322,48 +322,9 @@ public:
         return "ModuleName";
     }
 
-
-    /* Called by the host to register parameters and assign callback function for parameter updates
-    */
-    /// @private
-    void registerParams(std::atomic<float>* params, int paramsSize,
-        std::string* names, int namesSize)
-    {
-        std::size_t i = 0;
-        std::vector<std::string> namesVec(names, names + namesSize);
-        std::vector<std::atomic<float>*> paramsVec(params, params + paramsSize);
-
-        for (auto& p : paramsVec)
-        {
-            paramValues.push_back(p);
-            parameterNames.push_back(getParameterNameFromId(namesVec[i]));
-            i++;
-        }
-    }
-
-    void registerParameters(std::vector<std::atomic<float>*> paramVals,
-        std::vector<std::string> names,
-        const std::function<void(const const char*, float)>& func)
-    {
-        std::size_t i = 0;
-        for (auto& p : paramVals)
-        {
-            paramValues.push_back(p);
-            parameterNames.push_back(getParameterNameFromId(names[i]));
-            i++;
-        }
-
-        paramCallback = func;
-    }
-
-    /** returns a MIDI note number in Hertz, according to A tuning
-     * @param [in] noteNumber The MIDI note number.
-     * @param [in] aTuning The selected frequency for middle A.
-     * @return the note number in Hz.
-    */
     double getMidiNoteInHertz(const int noteNumber, const double aTuning = 440)
     {
-        return aTuning * std::pow(2.0, (noteNumber - 69) / 12.0);
+        return aTuning * std::pow(2.0, static_cast<double>(noteNumber - 69) / 12.0);
     }
 
     ///@private
@@ -403,7 +364,7 @@ public:
     * @param [in] parameterID The parameter in the host you wish to update
     * @param [in] newValue The value you wish to set the parameter to.
     */
-    void updateParameter(const char* parameterID, float newValue)
+    void updateHostParameter(const char* parameterID, float newValue)
     {
         if (paramCallback != nullptr)
             paramCallback(parameterID, newValue);
@@ -415,15 +376,13 @@ public:
         */
     float getParameter(std::string name)
     {
-        //these are not picking up teh correct anme...
-        std::size_t index = 0;
-        for (const auto& m : parameterNames)
-        {
-            if (m == name)
-                break;
-            index++;
-        }
-        return paramValues[index]->load();
+        auto mem = &parameterValues;
+        return parameterValues.at(name).load();
+    }
+
+    void updateParameter(std::string name, float newValue)
+    {
+        parameterValues.at(name) = newValue;
     }
 
     /** this method will extract the parameter name, as defined in createParameters(), from the unique
@@ -439,7 +398,7 @@ public:
     /** override this method if you want to draw to the Lattice generic editor viewport
      * @return This should return a Valid SVG Xml string
     */
-    virtual std::string getSVGXml() { return ""; }
+    virtual const char* getSVGXml() { return ""; }
 
     /** override this method and return true if you wish to enable drawing on the generic editor viewport. Note that you should only return true when you need the graphics updated. Leaving this permanently set to true will have a negative effect on performance.
      * @return This should return true is you wish the viewport to update
@@ -452,7 +411,7 @@ public:
     /** Called by Lattice when a user right-clicks and module and select 'Show Info'
      * @return Text that will appear in a module's info window.
     */
-    virtual std::string getDescription()
+    virtual const char* getDescription()
     {
         return "";
     }
@@ -475,6 +434,11 @@ public:
     void addParameter(ModuleParameter p)
     {
         parameters.push_back(p);
+        parameterValues[p.parameterName].store(p.range.defaultValue);
+        auto mem = &parameterValues;
+
+        auto size = parameterValues.size();
+        auto test = parameterValues[p.parameterName].load();
     }
 
     ModuleParameter* getParameters()
@@ -494,8 +458,8 @@ private:
     std::string nodeName;
     std::function<void(const char*, float)> paramCallback;
     std::vector<std::string> parameterNames;
-    std::vector<std::atomic<float>*> paramValues;
-
+    std::vector<float> paramValues;
+    std::map<std::string, std::atomic<float>> parameterValues;
 };
 
 #ifdef JUCE_MAC

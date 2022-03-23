@@ -13,41 +13,41 @@ class GrSynthProcessor : public LatticeProcessorModule
 {
     
  public:
-  GrSynthProcessor();
+    GrSynthProcessor();
     
-  void createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs) override;
+    LatticeProcessorModule::ChannelData createChannels() override;
+    ParameterData createParameters() override;
+
+      /*  This function is called by the host before playback/performance */
+      void prepareProcessor(int sr, std::size_t block) override;
     
-  /* This function is called by he host to populate the parameter vector */
-  void createParameters(std::vector<ModuleParameter> &parameters) override;
+      /* Call this method to trigger host callback */
+      void triggerParameterUpdate(const std::string& parameterID, float newValue);
     
-  /*  This function is called by the host whenever a parameter changes */
-  void hostParameterChanged(const std::string& parameterID, float newValue) override;
+      /* Called by the host when a note is started */
+      void startNote(int midiNoteNumber, float velocity) override;
     
-  /*  This function is called by the host before playback/performance */
-  void prepareProcessor(int sr, std::size_t block) override;
+      /* Called by the host when a note is stoped */
+      void stopNote (float velocity) override;
     
-  /* Call this method to trigger host callback */
-  void triggerParameterUpdate(const std::string& parameterID, float newValue);
+      /*  Main processing function called continuously by the host on the audio thread.
+          paramValues is a list of parameter values passed from the host in order of their creation */
+      void processSynthVoice(float** buffer, int numChannels, std::size_t blockSize) override;
     
-  /* Called by the host when a note is started */
-  void startNote(int midiNoteNumber, float velocity) override;
-    
-  /* Called by the host when a note is stoped */
-  void stopNote (float velocity) override;
-    
-  /*  Main processing function called continuously by the host on the audio thread.
-      paramValues is a list of parameter values passed from the host in order of their creation */
-  void processSynthVoice(float** buffer, int numChannels, std::size_t blockSize) override;
-    
-  /* Is a synth */
-  bool isSynth() override
-  {
-    return true;
-  }
+      /* Is a synth */
+      bool isSynth() override
+      {
+        return true;
+      }
 
     ModuleType getModuleType() override
     {
         return ModuleType::synthProcessor;
+    }
+
+    int getNumberOfVoices() override
+    {
+        return 1;
     }
 
     const char* getModuleName() override
@@ -56,7 +56,7 @@ class GrSynthProcessor : public LatticeProcessorModule
     }
 
 	/* override this method if you want to draw to the Lattice generic editor viewport */
-	std::string getSVGXml() override;
+	const char* getSVGXml() override;
 
 	/* override this method and return true if you wish to enable drawing on the generic editor viewport */
 	bool canDraw() override { return true; }
@@ -91,6 +91,7 @@ class GrSynthProcessor : public LatticeProcessorModule
   bool isNoteOn = false;
   bool okToDraw = true;
   float rms = 0;
+  std::string svgText;
 	
   std::vector<svg::Color> colours;
 };

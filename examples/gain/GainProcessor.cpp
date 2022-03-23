@@ -27,11 +27,6 @@ LatticeProcessorModule::ParameterData GainProcessor::createParameters()
 	return ParameterData(getParameters(), getNumberOfParameters());
 }
 
-void GainProcessor::hostParameterChanged(const std::string& /*parameterID*/, float /*newValue*/)
-{
-//    ignoreParameters(parameterID, newValue);
-}
-
 void GainProcessor::prepareProcessor(int /*sr*/, std::size_t /*block*/)
 {
 
@@ -59,7 +54,7 @@ void GainProcessor::process(float** buffer, int /*numChannels*/, std::size_t blo
 	samples.push_back(inL[0]);
 }
 
-std::string GainProcessor::getSVGXml()
+const char* GainProcessor::getSVGXml()
 {
 	okToDraw = true;
 	const float width = 200;
@@ -77,7 +72,9 @@ std::string GainProcessor::getSVGXml()
 	}
 
 	doc << svgPath;
-	return doc.toString();
+	svgText = doc.toString();
+
+	return svgText.c_str();
 }
 
 
