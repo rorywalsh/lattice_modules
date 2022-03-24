@@ -10,37 +10,30 @@ flangerR(10, 44100)
     
 }
 
-void FlangerProcessor::createParameters(std::vector<ModuleParameter> &parameters)
+LatticeProcessorModule::ChannelData FlangerProcessor::createChannelLayout()
 {
-    parameters.push_back({ "Max Delay", {0, 5, 2.5f, 0.1f, 1.f} });
-    parameters.push_back({ "LFO Frequency", {0, 20, .5f, .0001f, 1.f}});
-    parameters.push_back({ "Feedback", {0, 1, .7f, .0001f, 1.f}});
-    parameters.push_back({ "Gain", {0, 1, .5, .01f, 1.f}});
+    addChannel({"Input 1", LatticeProcessorModule::ChannelType::input });
+    addChannel({ "Input 2", LatticeProcessorModule::ChannelType::input });
+    addChannel({ "Output 1", LatticeProcessorModule::ChannelType::output });
+    addChannel({ "Output 1", LatticeProcessorModule::ChannelType::output });
+    return ChannelData(getChannels(), getNumberOfChannels());
 }
 
-void FlangerProcessor::hostParameterChanged(const std::string& parameterID, float newValue)
+
+LatticeProcessorModule::ParameterData FlangerProcessor::createParameters()
 {
-   // ignoreParameters(parameterID, newValue);
+    addParameter({ "Max Delay", {0, 5, 2.5f, 0.1f, 1.f} });
+    addParameter({ "LFO Frequency", {0, 20, .5f, .0001f, 1.f}});
+    addParameter({ "Feedback", {0, 1, .7f, .0001f, 1.f}});
+    addParameter({ "Gain", {0, 1, .5, .01f, 1.f}});
+    return ParameterData(getParameters(), getNumberOfParameters());
 }
+
 
 void FlangerProcessor::prepareProcessor(int sr, std::size_t block)
 {
 	flangerL.reset(sr);
 	flangerR.reset(sr);
-}
-
-
-void FlangerProcessor::triggerParameterUpdate(const std::string& parameterID, float newValue)
-{
-    updateParameter(parameterID, newValue);
-}
-
-void FlangerProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
-{
-    inputs.push_back("Input 1");
-    inputs.push_back("Input 2");
-    outputs.push_back("Output 1");
-    outputs.push_back("Output 2");
 }
 
 void FlangerProcessor::process(float** buffer, int numChannels, std::size_t blockSize, const HostData)

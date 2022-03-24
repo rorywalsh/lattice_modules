@@ -54,6 +54,13 @@ public:
             float skew = 1;
             Range(float m, float n, float d, float i, float s)
                 : min(m), max(n), defaultValue(d), increment(i), skew(s) {}
+            Range() {
+                min = 0;
+                max = 1;
+                defaultValue = .5f;
+                skew = 1;
+                increment = 0.001f;
+            }
         };
 
         Range range;

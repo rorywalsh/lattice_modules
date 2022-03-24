@@ -64,19 +64,18 @@ public:
 
     virtual ~BlSynthProcessor() {}
     
-    void createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs);
-    
-    /* This function is called by he host to populate the parameter vector */
-    void createParameters(std::vector<ModuleParameter> &parameters) override;
+
+    ChannelData createChannels();
+
+        /* This function is called by he host to populate the parameter vector */
+    ParameterData createParameters();
     
     /*  This function is called by the host whenever a parameter changes */
-    void hostParameterChanged(const std::string& parameterID, float newValue);
+    void hostParameterChanged(const char* parameterID, float newValue);
     
     /*  This function is called by the host before playback/performance */
     void prepareProcessor(int sr, std::size_t block) override;
     
-    /* Call this method to trigger host callback */
-    void triggerParameterUpdate(const std::string& parameterID, float newValue);
     
     /* Called by the host when a note is started */
     void startNote(int midiNoteNumber, float velocity) override;
@@ -88,7 +87,7 @@ public:
         paramValues is a list of parameter values passed from the host in order of their creation */
     void processSynthVoice(float** buffer, int numChannels, std::size_t blockSize) override;
     
-    std::string getModuleName() override
+    const char* getModuleName() override
     {
         return "Bandlimited Synth";
     }
@@ -106,7 +105,7 @@ public:
     }
 
 	/* override this method if you want to draw to the Lattice generic editor viewport */
-	std::string getSVGXml() override;
+	const char* getSVGXml() override;
 
 	/* override this method and return true if you wish to enable drawing on the generic editor viewport */
 	/* override this method and return true if you wish to enable drawing on the generic editor viewport */
@@ -130,6 +129,7 @@ private:
     bool isNoteOn = false;
 	bool okToDraw = true;
 	int waveform = 1;
+    std::string svgText = "";
 
 };
 

@@ -8,13 +8,10 @@ class WaveformViewerProcessor : public LatticeProcessorModule
 public:
 	WaveformViewerProcessor();
 
-	void createChannelLayout(std::vector<std::string>& inputs, std::vector<std::string>& outputs) override;
+	ChannelData createChannels() override;
 
 	/* This function is called by he host to populate the parameter vector */
-	void createParameters(std::vector<ModuleParameter>& parameters) override;
-
-	/*  This function is called by the host whenever a parameter changes */
-	void hostParameterChanged(const std::string& parameterID, float newValue) override;
+	ParameterData createParameters() override;
 
 	/*  This function is called by the host before playback/performance */
 	void prepareProcessor(int sr, std::size_t block) override;
@@ -28,12 +25,12 @@ public:
 
 
 	/* override this method if you want to draw to the Lattice generic editor viewport */
-	std::string getSVGXml() override;
+	const char* getSVGXml() override;
 
 	/* override this method and return true if you wish to enable drawing on the generic editor viewport */
 	bool canDraw() override { return okToDraw; }
 
-	std::string getModuleName() override { return "SVG Waveform Viewer"; }
+	const char* getModuleName() override { return "SVG Waveform Viewer"; }
 
 	static int remap(float value, float rangeMin, float rangeMax, float newRangeMin, float newRangeMax)
 	{
@@ -58,5 +55,6 @@ private:
 	std::vector<float> inR;
 	std::vector<float> samples;
 	bool okToDraw = true;
+	std::string svgText;
 };
 

@@ -93,26 +93,28 @@ BlSynthProcessor::BlSynthProcessor()
 }
 
 
-void BlSynthProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+LatticeProcessorModule::ChannelData BlSynthProcessor::createChannels()
 {
-    inputs.push_back("Input 1");
-    inputs.push_back("Input 2");
-    outputs.push_back("Output 1");
-    outputs.push_back("Output 2");
+    addChannel({ "Input 1", LatticeProcessorModule::ChannelType::input });
+    addChannel({ "Input 2", LatticeProcessorModule::ChannelType::input });
+    addChannel({ "Output 1", LatticeProcessorModule::ChannelType::output });
+    addChannel({ "Output 2", LatticeProcessorModule::ChannelType::output });
+    return ChannelData(getChannels(), getNumberOfChannels());
 }
 
-void BlSynthProcessor::createParameters(std::vector<ModuleParameter> &parameters)
+LatticeProcessorModule::ParameterData BlSynthProcessor::createParameters()
 {
-    parameters.push_back({"Attack", {0, 1, 0.4, 0.001, 1}});
-    parameters.push_back({"Decay", {0, 2, 0.1, 0.001, 1}});
-    parameters.push_back({"Sustain", {0, 1, 0.8, 0.001, 1}});
-    parameters.push_back({"Release", {0, 3, 0.1, 0.001, 1}});
-    parameters.push_back({"Wave", {0, 3, 1, 1, 1}});
-    parameters.push_back({"PWM", {0.01, .999, .5, 0.001, 1}});
-    parameters.push_back({"Detune", {.5, 2, 1, 0.001, 1}});
+    addParameter({ "Attack", {0, 1, 0.4, 0.001, 1}});
+    addParameter({ "Decay", {0, 2, 0.1, 0.001, 1}});
+    addParameter({ "Sustain", {0, 1, 0.8, 0.001, 1}});
+    addParameter({ "Release", {0, 3, 0.1, 0.001, 1}});
+    addParameter({ "Wave", {0, 3, 1, 1, 1}});
+    addParameter({ "PWM", {0.01, .999, .5, 0.001, 1}});
+    addParameter({ "Detune", {.5, 2, 1, 0.001, 1}});
+    return ParameterData(getParameters(), getNumberOfParameters());
 }
 
-void BlSynthProcessor::hostParameterChanged(const std::string& parameterID, float newValue)
+void BlSynthProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
     auto parameterName = getParameterNameFromId(parameterID);
     
@@ -169,11 +171,6 @@ void BlSynthProcessor::stopNote (float /*velocity*/)
     isNoteOn = false;
 }
 
-void BlSynthProcessor::triggerParameterUpdate(const std::string& parameterID, float newValue)
-{
-    updateParameter(parameterID, newValue);
-}
-
 void BlSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
 {
     const float freq = static_cast<float>(getMidiNoteInHertz(getMidiNoteNumber(), 440));
@@ -186,7 +183,7 @@ void BlSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
           buffer[chan][i] = out[i];
 }
 
-std::string BlSynthProcessor::getSVGXml()
+const char* BlSynthProcessor::getSVGXml()
 {
 	const float width = 200;
 	const float height = 40;
@@ -235,7 +232,9 @@ std::string BlSynthProcessor::getSVGXml()
 	}
 
 	doc << svgPath;
-	return doc.toString();
+	svgText = doc.toString();
+    return svgText.c_str();
+
 }
 // the class factories
 #ifdef WIN32

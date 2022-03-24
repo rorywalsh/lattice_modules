@@ -9,25 +9,23 @@ FourPoleProcessor::FourPoleProcessor():lpL(44100), lpR(44100)
 
 }
 
-void FourPoleProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+LatticeProcessorModule::ChannelData FourPoleProcessor::createChannels()
 {
-    inputs.push_back("Input 1");
-    inputs.push_back("Input 2");    
-    outputs.push_back("Output 1");
-    outputs.push_back("Output 2");
+    addChannel({ "Input 1", LatticeProcessorModule::ChannelType::input });
+    addChannel({ "Input 2", LatticeProcessorModule::ChannelType::input });
+    addChannel({ "Output 1", LatticeProcessorModule::ChannelType::output });
+    addChannel({ "Output 2", LatticeProcessorModule::ChannelType::output });
+    return ChannelData(getChannels(), getNumberOfChannels());
 }
 
 
-void FourPoleProcessor::createParameters(std::vector<ModuleParameter> &parameters)
+LatticeProcessorModule::ParameterData FourPoleProcessor::createParameters()
 {
-    parameters.push_back({ "Frequency", {1, 22050, 100, 1, .5f}});
-	parameters.push_back({ "Resonance", {0, 1, 0, 0.001f, 1.f}});
+    addParameter({ "Frequency", {1, 22050, 100, 1, .5f}});
+	addParameter({ "Resonance", {0, 1, 0, 0.001f, 1.f}});
+    return ParameterData(getParameters(), getNumberOfParameters());
 }
 
-void FourPoleProcessor::hostParameterChanged(const std::string& /*parameterID*/, float /*newValue*/)
-{
-//    ignoreParameters(parameterID, newValue);
-}
 
 void FourPoleProcessor::prepareProcessor(int sr, std::size_t /*block*/)
 {

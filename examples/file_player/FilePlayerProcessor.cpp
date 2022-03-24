@@ -9,42 +9,33 @@ FilePlayerProcessor::FilePlayerProcessor()
 	
 }
 
-void FilePlayerProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+LatticeProcessorModule::ChannelData FilePlayerProcessor::createChannels()
 {
-    outputs.push_back("Output 1");
-    outputs.push_back("Output 2");
+    addChannel({ "Output 1", LatticeProcessorModule::ChannelType::input });
+    addChannel({ "Output 2", LatticeProcessorModule::ChannelType::input });
+    return ChannelData(getChannels(), getNumberOfChannels());
 }
 
 
-void FilePlayerProcessor::createParameters(std::vector<ModuleParameter> &parameters)
+LatticeProcessorModule::ParameterData FilePlayerProcessor::createParameters()
 {
-    parameters.push_back({ "Play", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch });
-    parameters.push_back({ "Load Soundfile", {}, "", ModuleParameter::ParamType::FileButton});
+    addParameter({ "Play", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch });
+    addParameter({ "Load Soundfile", {}, "", ModuleParameter::ParamType::FileButton});
+    return ParameterData(getParameters(), getNumberOfParameters());
 }
 
-void FilePlayerProcessor::hostParameterChanged(const std::string& /*parameterID*/, float /*newValue*/)
-{
-//    ignoreParameters(parameterID, newValue);
-}
 
 void FilePlayerProcessor::hostParameterChanged(const std::string& parameterID, std::string newValue)
 {
     const std::string paramName = getParameterNameFromId(parameterID);
     if(paramName == "Load Soundfile")
-        std::cout << "File to load" << newValue;
-    
+        std::cout << "File to load" << newValue;  
 }
 
 
 void FilePlayerProcessor::prepareProcessor(int /*sr*/, std::size_t /*block*/)
 {
 
-}
-
-
-void FilePlayerProcessor::triggerParameterUpdate(const std::string& parameterID, float newValue)
-{
-    updateParameter(parameterID, newValue);
 }
 
 

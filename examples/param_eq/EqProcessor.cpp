@@ -9,37 +9,29 @@ EqProcessor::EqProcessor():eqL(44100), eqR(44100)
 
 }
 
-void EqProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+LatticeProcessorModule::ChannelData EqProcessor::createChannels()
 {
-    inputs.push_back("Input 1");
-    inputs.push_back("Input 2");    
-    outputs.push_back("Output 1");
-    outputs.push_back("Output 2");
+    addChannel({ "Input 1", LatticeProcessorModule::ChannelType::input });
+    addChannel({"Input 2", LatticeProcessorModule::ChannelType::input});
+    addChannel({"Output 1" , LatticeProcessorModule::ChannelType::output });
+    addChannel({"Output 2", LatticeProcessorModule::ChannelType::input });
+    return ChannelData(getChannels(), getNumberOfChannels());
 }
 
 
-void EqProcessor::createParameters(std::vector<ModuleParameter> &parameters)
+LatticeProcessorModule::ParameterData EqProcessor::createParameters()
 {
-    parameters.push_back({ "Frequency", {1, 22050, 100, 1, .5f}});
-	parameters.push_back({ "Bandwidth", {1, 22050, 100, 1, .5f}});
-	parameters.push_back({ "Output Gain", {0, 2.f, 0.5f, 0.01f, 1}});
+    addParameter({ "Frequency", {1, 22050, 100, 1, .5f}});
+	addParameter({ "Bandwidth", {1, 22050, 100, 1, .5f}});
+	addParameter({ "Output Gain", {0, 2.f, 0.5f, 0.01f, 1}});
+    return ParameterData(getParameters(), getNumberOfParameters());
 }
 
-void EqProcessor::hostParameterChanged(const std::string& /*parameterID*/, float /*newValue*/)
-{
-//    ignoreParameters(parameterID, newValue);
-}
 
 void EqProcessor::prepareProcessor(int sr, std::size_t)
 {
 	eqL.reset(sr);
 	eqR.reset(sr);
-}
-
-
-void EqProcessor::triggerParameterUpdate(const std::string& parameterID, float newValue)
-{
-    updateParameter(parameterID, newValue);
 }
 
 

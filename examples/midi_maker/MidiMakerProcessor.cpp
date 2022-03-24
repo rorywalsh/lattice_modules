@@ -12,21 +12,23 @@ MidiMakerProcessor::MidiMakerProcessor()
     }
 }
 
-void MidiMakerProcessor::createChannelLayout(std::vector<std::string> &/*inputs*/, std::vector<std::string> &/*outputs*/)
+LatticeProcessorModule::ChannelData MidiMakerProcessor::createChannels()
 {
-    
+    return ChannelData(getChannels(), getNumberOfChannels());
 }
-  
 
-void MidiMakerProcessor::createParameters(std::vector<ModuleParameter> &parameters)
+
+
+LatticeProcessorModule::ParameterData MidiMakerProcessor::createParameters()
 {
-    parameters.push_back({ "Number of Notes in Loop", {1, 32, 8, 1, 1}});
-    parameters.push_back({ "Tempo", {0, 20, 1, 0.2, 1}});
-    parameters.push_back({ "Lowest Note", {20, 128, 48, 1, 1}});
-    parameters.push_back({ "Range in semitones", {0, 60, 12, 1, 1}});
-	parameters.push_back({ "Generate new pattern", {0, 1, 1, 1, 1}, "", ModuleParameter::ParamType::Trigger });
-	parameters.push_back({ "Permit silences", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch });
-	parameters.push_back({ "Play Midi", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch });
+    addParameter({ "Number of Notes in Loop", {1, 32, 8, 1, 1}});
+    addParameter({ "Tempo", {0, 20, 1, 0.2, 1}});
+    addParameter({ "Lowest Note", {20, 128, 48, 1, 1}});
+    addParameter({ "Range in semitones", {0, 60, 12, 1, 1}});
+	addParameter({ "Generate new pattern", {0, 1, 1, 1, 1}, "", ModuleParameter::ParamType::Trigger });
+	addParameter({ "Permit silences", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch });
+	addParameter({ "Play Midi", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch });
+    return ParameterData(getParameters(), getNumberOfParameters());
 }
 
 void MidiMakerProcessor::hostParameterChanged(const std::string& parameterID, float /*newValue*/)
@@ -96,7 +98,7 @@ void MidiMakerProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, st
     }
 }
 
-std::string MidiMakerProcessor::getSVGXml()
+const char* MidiMakerProcessor::getSVGXml()
 {
 	const float width = 200;
 	const float height = 40;
@@ -111,7 +113,8 @@ std::string MidiMakerProcessor::getSVGXml()
 		doc << svg::Rectangle(svg::Point(x, height-y), width/notes.size(), y, svg::Fill(svg::Color("#00ABD1")), svg::Stroke(1, svg::Color("#77C1A4"), 2));
 	}
 
-	return doc.toString();
+	svgText =  doc.toString();
+    return svgText.c_str();
 }
 
 

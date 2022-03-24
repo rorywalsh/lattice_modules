@@ -9,34 +9,26 @@ WaveformViewerProcessor::WaveformViewerProcessor()
 	samples.resize(512);
 }
 
-void WaveformViewerProcessor::createChannelLayout(std::vector<std::string>& inputs, std::vector<std::string>& outputs)
+LatticeProcessorModule::ChannelData WaveformViewerProcessor::createChannels()
 {
-	inputs.push_back("Input 1");
-	inputs.push_back("Input 2");
-	outputs.push_back("Output 1");
-	outputs.push_back("Output 2");
+	addChannel({ "Input 1", LatticeProcessorModule::ChannelType::input });
+	addChannel({"Input 2", LatticeProcessorModule::ChannelType::input });
+	addChannel({"Output 1", LatticeProcessorModule::ChannelType::output });
+	addChannel({"Output 2", LatticeProcessorModule::ChannelType::output });
+	return ChannelData(getChannels(), getNumberOfChannels());
 }
 
 
-void WaveformViewerProcessor::createParameters(std::vector<ModuleParameter>& parameters)
+LatticeProcessorModule::ParameterData WaveformViewerProcessor::createParameters()
 {
-	parameters.push_back({ "Gain", {0, 1, .1f, .0001f, 1} });
+	addParameter({ "Gain", {0, 1, .1f, .0001f, 1} });
+	return ParameterData(getParameters(), getNumberOfParameters());
 }
 
-void WaveformViewerProcessor::hostParameterChanged(const std::string& /*parameterID*/, float /*newValue*/)
-{
-
-}
 
 void WaveformViewerProcessor::prepareProcessor(int /*sr*/, std::size_t /*block*/)
 {
 
-}
-
-
-void WaveformViewerProcessor::triggerParameterUpdate(const std::string& parameterID, float newValue)
-{
-	updateParameter(parameterID, newValue);
 }
 
 
@@ -61,7 +53,7 @@ void WaveformViewerProcessor::process(float** buffer, int /*numChannels*/, std::
 	samples.push_back(inL[0]);
 }
 
-std::string WaveformViewerProcessor::getSVGXml()
+const char* WaveformViewerProcessor::getSVGXml()
 {
 	okToDraw = true;
 	const int width = 200;
@@ -80,7 +72,8 @@ std::string WaveformViewerProcessor::getSVGXml()
 
 
 	doc << svgPath;
-	return doc.toString();
+	svgText = doc.toString();
+	return svgText.c_str();
 }
 
 

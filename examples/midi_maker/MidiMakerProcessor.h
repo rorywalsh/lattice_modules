@@ -7,10 +7,9 @@ class MidiMakerProcessor : public LatticeProcessorModule
 public:
     MidiMakerProcessor();
     
-    void createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs) override;
-    
+    ChannelData createChannels() override;
     /* This function is called by he host to populate the parameter vector */
-    void createParameters(std::vector<ModuleParameter> &parameters) override;
+    ParameterData createParameters() override;
     
     /*  This function is called by the host whenever a parameter changes */
     void hostParameterChanged(const std::string& parameterID, float newValue);
@@ -42,7 +41,7 @@ public:
 			"Note that the pattern will only be updated once 'Generate new pattern' is triggered. ";
 	}
 
-    std::string getModuleName() override {    return "Midi Pattern Generator";     }
+    const char* getModuleName() override {    return "Midi Pattern Generator";     }
     
     int getRandomNote(int lowestNote, int range)
     {
@@ -50,7 +49,7 @@ public:
     }
 
 	/* override this method if you want to draw to the Lattice generic editor viewport */
-	std::string getSVGXml() override;
+	const char* getSVGXml() override;
 
 	/* override this method and return true if you wish to enable drawing on the generic editor viewport */
 	bool canDraw() override { 
@@ -81,5 +80,6 @@ private:
     bool playNote = true;
 	std::atomic<bool> canUpdate{ true };
 	bool okToDraw = true;
+    std::string svgText;
 };
 

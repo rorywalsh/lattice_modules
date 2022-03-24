@@ -10,46 +10,48 @@ DriveSynthProcessor::DriveSynthProcessor()
 }
 
 
-void DriveSynthProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+LatticeProcessorModule::ChannelData DriveSynthProcessor::createChannels()
 {
-    outputs.push_back("Output 1");
-    outputs.push_back("Output 2");
+    addChannel({ "Output L", LatticeProcessorModule::ChannelType::output });
+    addChannel({ "Output R", LatticeProcessorModule::ChannelType::output });
+    return ChannelData(getChannels(), getNumberOfChannels());
 }
 
-void DriveSynthProcessor::createParameters(std::vector<ModuleParameter> &parameters)
+LatticeProcessorModule::ParameterData DriveSynthProcessor::createParameters()
 {
-    parameters.push_back({"Attack", {0, 1, 0.4, 0.001, 1}});
-    parameters.push_back({"Decay", {0, 2, 0.1, 0.001, 1}});
-    parameters.push_back({"Sustain", {0, 1, 0.8, 0.001, 1}});
-    parameters.push_back({"Release", {0, 3, 0.1, 0.001, 1}});
-    parameters.push_back({"Drive", {0, 100, 1, 0.001, 1}});
+    addParameter({"Attack", {0, 1, 0.4, 0.001, 1}});
+    addParameter({"Decay", {0, 2, 0.1, 0.001, 1}});
+    addParameter({"Sustain", {0, 1, 0.8, 0.001, 1}});
+    addParameter({"Release", {0, 3, 0.1, 0.001, 1}});
+    addParameter({"Drive", {0, 100, 1, 0.001, 1}});
+    return ParameterData(getParameters(), getNumberOfParameters());
 }
 
-void DriveSynthProcessor::hostParameterChanged(const std::string& parameterID, float newValue)
+void DriveSynthProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
     auto parameterName = getParameterNameFromId(parameterID);
- 
-    if(parameterName == "Attack")
+
+    if (parameterName == "Attack")
     {
         synth.setAttack(newValue);
     }
-    else if(parameterName == "Decay")
+    else if (parameterName == "Decay")
     {
         synth.setDecay(newValue);
     }
-    else if(parameterName == "Sustain")
+    else if (parameterName == "Sustain")
     {
         synth.setSustain(newValue);
     }
-    else if(parameterName == "Release")
+    else if (parameterName == "Release")
     {
         synth.setRelease(newValue);
     }
-    else if(parameterName == "Drive")
+    else if (parameterName == "Drive")
     {
         drive = newValue;
     }
-    
+
 }
 
 void DriveSynthProcessor::prepareProcessor(int sr, std::size_t blockSize)
@@ -74,11 +76,6 @@ void DriveSynthProcessor::stopNote (float velocity)
     {
         isNoteOn = false;
     }
-}
-
-void DriveSynthProcessor::triggerParameterUpdate(const std::string& parameterID, float newValue)
-{
-    updateParameter(parameterID, newValue);
 }
 
 void DriveSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)

@@ -49,24 +49,26 @@ SimpleSynthProcessor::SimpleSynthProcessor()
     
 }
 
-void SimpleSynthProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+LatticeProcessorModule::ChannelData SimpleSynthProcessor::createChannels()
 {
-    inputs.push_back("Input 1");
-    inputs.push_back("Input 2");
-    outputs.push_back("Output 1");
-    outputs.push_back("Output 2");
+    addChannel({"Input 1", LatticeProcessorModule::ChannelType::input });
+    addChannel({"Input 2", LatticeProcessorModule::ChannelType::input });
+    addChannel({"Output 1", LatticeProcessorModule::ChannelType::output });
+    addChannel({ "Output 2", LatticeProcessorModule::ChannelType::output });
+    return ChannelData(getChannels(), getNumberOfChannels());
 }
 
-void SimpleSynthProcessor::createParameters(std::vector<ModuleParameter> &parameters)
+LatticeProcessorModule::ParameterData SimpleSynthProcessor::createParameters()
 {
-    parameters.push_back({"Attack", {0, 1, synth.getAttack(), 0.001, 1}});
-    parameters.push_back({"Decay", {0, 2, synth.getDecay(), 0.001, 1}});
-    parameters.push_back({"Sustain", {0, 1, synth.getSustain(), 0.001, 1}});
-    parameters.push_back({"Release", {0, 3, 0.1, 0.001, 1}});
-    parameters.push_back({"Wave", {1, 3, 1, 1, 1}});
+    addParameter({"Attack", {0, 1, synth.getAttack(), 0.001, 1}});
+    addParameter({"Decay", {0, 2, synth.getDecay(), 0.001, 1}});
+    addParameter({"Sustain", {0, 1, synth.getSustain(), 0.001, 1}});
+    addParameter({"Release", {0, 3, 0.1, 0.001, 1}});
+    addParameter({"Wave", {1, 3, 1, 1, 1}});
+    return ParameterData(getParameters(), getNumberOfParameters());
 }
 
-void SimpleSynthProcessor::hostParameterChanged(const std::string& parameterID, float newValue)
+void SimpleSynthProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
     const std::string paramName = getParameterNameFromId(parameterID);
     if(paramName == "Wave")
@@ -107,10 +109,6 @@ void SimpleSynthProcessor::stopNote (float /* velocity */)
     isNoteOn = false;
 }
 
-void SimpleSynthProcessor::triggerParameterUpdate(const std::string& parameterID, float newValue)
-{
-    updateParameter(parameterID, newValue);
-}
 
 void SimpleSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
 {

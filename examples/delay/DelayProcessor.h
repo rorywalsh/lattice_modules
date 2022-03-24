@@ -8,14 +8,12 @@ class DelayProcessor : public LatticeProcessorModule
 public:
     DelayProcessor();
     
-    void createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs) override;
+    LatticeProcessorModule::ChannelData  DelayProcessor::createChannels() override;
     
     /* This function is called by he host to populate the parameter vector */
-    void createParameters(std::vector<ModuleParameter> &parameters) override;
+    LatticeProcessorModule::ParameterData createParameters() override;
     
-    /*  This function is called by the host whenever a parameter changes */
-    void hostParameterChanged(const std::string& parameterID, float newValue);
-    
+
     /*  This function is called by the host before playback/performance */
     void prepareProcessor(int sr, std::size_t block) override;
     
@@ -26,7 +24,7 @@ public:
         paramValues is a list of parameter values passed from the host in order of their creation */
     void process(float** buffer, int numChannels, std::size_t blockSize, const HostData hostInfo) override;
     
-    std::string getModuleName() override
+    const char* getModuleName() override
     {
         return "Feedback Delay";
     }

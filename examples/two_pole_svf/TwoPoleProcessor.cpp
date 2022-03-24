@@ -9,39 +9,30 @@ TwoPoleProcessor::TwoPoleProcessor():lpL(44100), lpR(44100)
 
 }
 
-void TwoPoleProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+LatticeProcessorModule::ChannelData TwoPoleProcessor::createChannels()
 {
-    inputs.push_back("Input 1");
-    inputs.push_back("Input 2");    
-    outputs.push_back("Output 1");
-    outputs.push_back("Output 2");
+   addChannel({"Input 1", LatticeProcessorModule::ChannelType::input });
+   addChannel({"Input 2", LatticeProcessorModule::ChannelType::input });
+   addChannel({"Output 1", LatticeProcessorModule::ChannelType::output });
+   addChannel({ "Output 2", LatticeProcessorModule::ChannelType::output });
+   return ChannelData(getChannels(), getNumberOfChannels());
 }
 
 
-void TwoPoleProcessor::createParameters(std::vector<ModuleParameter> &parameters)
+LatticeProcessorModule::ParameterData TwoPoleProcessor::createParameters()
 {
-    parameters.push_back({ "Filter Type", {0, 3.f, 0.f, 1.f, 1.f}});
-    parameters.push_back({ "Frequency", {1, 22050, 100, 1, .5f}});
-	parameters.push_back({ "Damping", {0, 2, 1, 0.001f, 1.f}});
-    parameters.push_back({ "Overdrive", {0, 5, 0, 0.0001f, 1.f}});
-	
+    addParameter({ "Filter Type", {0, 3.f, 0.f, 1.f, 1.f}});
+    addParameter({ "Frequency", {1, 22050, 100, 1, .5f}});
+	addParameter({ "Damping", {0, 2, 1, 0.001f, 1.f}});
+    addParameter({ "Overdrive", {0, 5, 0, 0.0001f, 1.f}});
+    return ParameterData(getParameters(), getNumberOfParameters());	
 }
 
-void TwoPoleProcessor::hostParameterChanged(const std::string& /*parameterID*/, float /*newValue*/)
-{
-//    ignoreParameters(parameterID, newValue);
-}
 
 void TwoPoleProcessor::prepareProcessor(int sr, std::size_t block)
 {
   	lpL.reset(sr);
 	lpR.reset(sr);
-}
-
-
-void TwoPoleProcessor::triggerParameterUpdate(const std::string& parameterID, float newValue)
-{
-    updateParameter(parameterID, newValue);
 }
 
 

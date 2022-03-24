@@ -10,39 +10,30 @@ delayR(2, 44100)
     
 }
 
-void DelayProcessor::createChannelLayout(std::vector<std::string> &inputs, std::vector<std::string> &outputs)
+
+LatticeProcessorModule::ChannelData  DelayProcessor::createChannels()
 {
-    inputs.push_back("Input 1");
-    inputs.push_back("Input 2");    
-    outputs.push_back("Output 1");
-    outputs.push_back("Output 2");
+   addChannel({ "Input 1", LatticeProcessorModule::ChannelType::input });
+   addChannel({ "Input 2", LatticeProcessorModule::ChannelType::input });
+   addChannel({ "Output 1", LatticeProcessorModule::ChannelType::output });
+   addChannel({ "Output 2", LatticeProcessorModule::ChannelType::output });
+   return ChannelData(getChannels(), getNumberOfChannels());
 }
 
 
-void DelayProcessor::createParameters(std::vector<ModuleParameter> &parameters)
+LatticeProcessorModule::ParameterData DelayProcessor::createParameters()
 {
-    parameters.push_back({ "Delay Time", {0, 2, .1f, .01f, 1}});
-    parameters.push_back({ "Feedback", {0, 1, .5f, .01f, 1}});
-    parameters.push_back({ "Dry", {0, 1, .5f, .01f, 1}});
+    addParameter({ "Delay Time", {0, 2, .1f, .01f, 1}});
+    addParameter({ "Feedback", {0, 1, .5f, .01f, 1}});
+    addParameter({ "Dry", {0, 1, .5f, .01f, 1}});
+    return ParameterData(getParameters(), getNumberOfParameters());
     
-    
-}
-
-void DelayProcessor::hostParameterChanged(const std::string& /*parameterID*/, float /*newValue*/)
-{
-//    ignoreParameters(parameterID, newValue);
 }
 
 void DelayProcessor::prepareProcessor(int sr, std::size_t/*block*/)
 {
 	delayL.reset(2, sr);
 	delayL.reset(2, sr);
-}
-
-
-void DelayProcessor::triggerParameterUpdate(const std::string& parameterID, float newValue)
-{
-    updateParameter(parameterID, newValue);
 }
 
 void DelayProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
