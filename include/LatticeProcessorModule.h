@@ -430,17 +430,20 @@ public:
 
     int getNumberOfChannels()
     {
-        return channels.size();
+        return static_cast<int>(channels.size());
     }
 
     int getNumberOfParameters()
     {
-        return parameters.size();
+        return static_cast<int>(parameters.size());
     }
 
     void addChannel(Channel c)
     {
         channels.push_back(c);
+        if(c.type == ChannelType::input)
+            connections.push_back({inCount++, false});
+
     }
 
     void addParameter(ModuleParameter p)
@@ -459,8 +462,32 @@ public:
         return channels.data();
     }
 
+    struct Connection
+    {
+        int index = 0;
+        bool isConnected = false;
+        Connection(int i, bool c): index(i), isConnected(c){}
+    };
+    
+    void setConnection(int index, bool isConnected)
+    {
+        for(auto& connection : connections)
+        {
+            if(connection.index == index)
+                connection.isConnected = isConnected;
+        }
+    }
+    
+    bool isConnected(std::size_t index)
+    {
+        return connections[index].isConnected;
+    }
+    
+    
 private:
     std::vector<Channel> channels;
+    int inCount = 0;
+    std::vector<Connection> connections;
     std::vector<ModuleParameter> parameters;
     int midiNoteNumber = 0;
     std::string nodeName;

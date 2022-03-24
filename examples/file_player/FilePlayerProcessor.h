@@ -8,7 +8,7 @@ class FilePlayerProcessor : public LatticeProcessorModule
 public:
     FilePlayerProcessor();
     
-    ChannelData FilePlayerProcessor::createChannels() override;
+    ChannelData createChannels() override;
     
     /* This function is called by he host to populate the parameter vector */
     ParameterData createParameters() override;

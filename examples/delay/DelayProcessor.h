@@ -8,10 +8,10 @@ class DelayProcessor : public LatticeProcessorModule
 public:
     DelayProcessor();
     
-    LatticeProcessorModule::ChannelData  DelayProcessor::createChannels() override;
+    ChannelData createChannels() override;
     
     /* This function is called by he host to populate the parameter vector */
-    LatticeProcessorModule::ParameterData createParameters() override;
+    ParameterData createParameters() override;
     
 
     /*  This function is called by the host before playback/performance */

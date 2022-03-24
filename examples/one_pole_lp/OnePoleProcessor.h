@@ -10,8 +10,8 @@ public:
     OnePoleProcessor();
     
 
-    LatticeProcessorModule::ChannelData OnePoleProcessor::createChannels() override;
-    LatticeProcessorModule::ParameterData createParameters() override;
+    ChannelData createChannels() override;
+    ParameterData createParameters() override;
     
 
     /*  This function is called by the host before playback/performance */

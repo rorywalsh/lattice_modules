@@ -92,10 +92,10 @@ public:
 
     virtual ~DriveSynthProcessor() {}
     
-    LatticeProcessorModule::ChannelData DriveSynthProcessor::createChannels() override;
+    ChannelData createChannels() override;
     
     /* This function is called by he host to populate the parameter vector */
-    LatticeProcessorModule::ParameterData createParameters() override;
+    ParameterData createParameters() override;
 
     /*  This function is called by the host before playback/performance */
     void prepareProcessor(int sr, std::size_t block) override;
@@ -111,11 +111,11 @@ public:
     /*  Main processing function called continuously by the host on the audio thread.
         paramValues is a list of parameter values passed from the host in order of their creation */
     void processSynthVoice(float** buffer, int numChannels, std::size_t blockSize) override;
+      
     
-        /* Is a synth */
-    bool isSynth()
+    ModuleType getModuleType() override
     {
-        return true;
+        return ModuleType::synthProcessor;
     }
     
     const char* getModuleName() override

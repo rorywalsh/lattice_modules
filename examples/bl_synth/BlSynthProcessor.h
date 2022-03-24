@@ -65,13 +65,13 @@ public:
     virtual ~BlSynthProcessor() {}
     
 
-    ChannelData createChannels();
+    ChannelData createChannels() override;
 
         /* This function is called by he host to populate the parameter vector */
-    ParameterData createParameters();
+    ParameterData createParameters() override;
     
     /*  This function is called by the host whenever a parameter changes */
-    void hostParameterChanged(const char* parameterID, float newValue);
+    void hostParameterChanged(const char* parameterID, float newValue) override;
     
     /*  This function is called by the host before playback/performance */
     void prepareProcessor(int sr, std::size_t block) override;
@@ -92,14 +92,8 @@ public:
         return "Bandlimited Synth";
     }
 
-    /* Is a synth */
-    bool isSynth()
-    {
-        return true;
-    }
-
     /* Set number of voices */
-    int getNumberOfVoices()
+    int getNumberOfVoices() override
     {
         return 10;
     }
