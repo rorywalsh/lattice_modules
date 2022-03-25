@@ -478,9 +478,12 @@ public:
         }
     }
     
-    bool isConnected(std::size_t index)
+    bool isInputConnected(std::size_t index)
     {
-        return connections[index].isConnected;
+        if(index<connections.size())
+            return connections[index].isConnected;
+        
+        return false;
     }
     
     
