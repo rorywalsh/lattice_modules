@@ -44,7 +44,6 @@ void TableViewerProcessor::hostParameterChanged(const char* parameterID, float n
         }
         okToDraw = true;
     }
-        
 }
 
 

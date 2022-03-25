@@ -16,7 +16,6 @@ template <typename... Types>
 void unused(Types&&...) noexcept {}
 
 
-
 /** @class LatticeProcessorModule
  * @brief Base class for all modules
  *
@@ -428,6 +427,7 @@ public:
         return "";
     }
 
+    //==================================================================
     int getNumberOfChannels()
     {
         return static_cast<int>(channels.size());
@@ -486,6 +486,24 @@ public:
         return false;
     }
     
+    struct AudioFileSamples{
+        const float** data;
+        int numChannels;
+        int size;
+        AudioFileSamples(const float** d, int c, int s)
+        :data(d), numChannels(c), size(s){}
+    };
+    
+    void registerAudioFileCallback(AudioFileSamples(*func)( const char* filename))
+    {
+        audioFileSamplesCallback = func;
+    }
+    
+    AudioFileSamples getSamplesFromFile(const char* filename)
+    {
+        if (audioFileSamplesCallback != nullptr)
+            return audioFileSamplesCallback(filename);
+    }
     
 private:
     std::vector<Channel> channels;
@@ -498,6 +516,7 @@ private:
     std::vector<std::string> parameterNames;
     std::vector<float> paramValues;
     std::map<std::string, std::atomic<float>> parameterValues;
+    AudioFileSamples(*audioFileSamplesCallback)(const char* channel);
 };
 
 #ifdef JUCE_MAC
