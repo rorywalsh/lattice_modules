@@ -32,8 +32,8 @@ void FilePlayerProcessor::hostParameterChanged(const char* parameterID, const ch
     {
         std::cout << "File to load" << newValue;
         auto samples = getSamplesFromFile(newValue);
-        soundfileSamples.resize(samples.size);
-        std::copy(samples.data[0], samples.data[0] + samples.size, soundfileSamples.begin());
+        soundfileSamples.resize(samples.numSamples);
+        std::copy(samples.data[0], samples.data[0] + samples.numSamples, soundfileSamples.begin());
         okToDraw = true;
     }
 }

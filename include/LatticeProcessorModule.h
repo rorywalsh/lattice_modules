@@ -489,9 +489,9 @@ public:
     struct AudioFileSamples{
         const float** data;
         int numChannels;
-        int size;
+        int numSamples;
         AudioFileSamples(const float** d, int c, int s)
-        :data(d), numChannels(c), size(s){}
+        :data(d), numChannels(c), numSamples(s){}
     };
     
     void registerAudioFileCallback(AudioFileSamples(*func)( const char* filename))
