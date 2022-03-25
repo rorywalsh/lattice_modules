@@ -47,7 +47,7 @@ class GrSynthProcessor : public LatticeProcessorModule
 
     int getNumberOfVoices() override
     {
-        return 1;
+        return 10;
     }
 
     const char* getModuleName() override
