@@ -490,6 +490,7 @@ public:
         const float** data;
         int numChannels;
         int numSamples;
+        AudioFileSamples() = default ;
         AudioFileSamples(const float** d, int c, int s)
         :data(d), numChannels(c), numSamples(s){}
     };
@@ -503,6 +504,8 @@ public:
     {
         if (audioFileSamplesCallback != nullptr)
             return audioFileSamplesCallback(filename);
+        
+        return AudioFileSamples();
     }
     
 private:
