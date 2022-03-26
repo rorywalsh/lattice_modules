@@ -1,22 +1,16 @@
 
-#include "TableConvProcessor.h"
+#include "ConvolutionReverbProcessor.h"
 #include <iterator>
 #include <sstream>
 
 
-TableConvProcessor::TableConvProcessor()
+ConvolutionReverbProcessor::ConvolutionReverbProcessor()
 : irTable(Aurora::def_sr), ir(irTable, Aurora::def_vsize), delay(&ir), inL(Aurora::def_vsize), inR(Aurora::def_vsize)
 {
-    std::size_t n = 1;
-    for (auto &s : irTable)
-    {
-      s = 1-((float)n/(float)irTable.size());
-        n++;
-    }
-
+	
 }
 
-LatticeProcessorModule::ChannelData TableConvProcessor::createChannels()
+LatticeProcessorModule::ChannelData ConvolutionReverbProcessor::createChannels()
 {
     addChannel({ "Input 1", LatticeProcessorModule::ChannelType::input });
     addChannel({ "Input 2", LatticeProcessorModule::ChannelType::input });
@@ -26,46 +20,51 @@ LatticeProcessorModule::ChannelData TableConvProcessor::createChannels()
 }
 
 
-LatticeProcessorModule::ParameterData TableConvProcessor::createParameters()
+LatticeProcessorModule::ParameterData ConvolutionReverbProcessor::createParameters()
 {
-    addParameter({ "Gain", {0, 1, 0, 0.001, 1}});
-    addParameter({ "Update Table", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Trigger });
+    addParameter({ "Load IR", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::FileButton});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
 
-void TableConvProcessor::hostParameterChanged(const char* parameterID, float newValue)
+void ConvolutionReverbProcessor::hostParameterChanged(const char* parameterID, const char* newValue)
 {
     const std::string paramName = getParameterNameFromId(parameterID);
-    if(paramName == "Update Table")
+    if(paramName == "Load IR")
     {
-        std::size_t n = 1;
-        for (auto &s : irTable)
-        {
-          s = 1-((float)n/(float)irTable.size());
-            n++;
-        }
+        //std::cout << "File to load" << newValue;
+        auto samples = getSamplesFromFile(newValue);
+        irTable.resize(samples.numSamples);
+        std::copy(samples.data[0], samples.data[0] + samples.numSamples, irTable.begin());
         okToDraw = true;
     }
 }
 
-
-void TableConvProcessor::prepareProcessor(int /*sr*/, std::size_t /*block*/)
+void ConvolutionReverbProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
 
 }
 
 
-void TableConvProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+
+void ConvolutionReverbProcessor::prepareProcessor(int /*sr*/, std::size_t /*block*/)
 {
+
+}
+
+
+void ConvolutionReverbProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+{
+    
     inL.resize(blockSize);
     inR.resize(blockSize);
 
     std::copy(buffer[0], buffer[0] + blockSize, inL.begin());
     std::copy(buffer[1], buffer[1] + blockSize, inR.begin());
     
-    auto &outL = mix(delay(inL, 0.001), inL);
-    auto &outR = mix(delay(inR, 0.001), inL);
+    float g = 0.001;
+    auto &outL = mix(delay(inL, g), inL);
+    auto &outR = mix(delay(inR, g), inL);
 
     for(int i = 0; i < blockSize ; i++)
     {
@@ -75,29 +74,28 @@ void TableConvProcessor::process(float** buffer, int /*numChannels*/, std::size_
 
 }
 
-const char* TableConvProcessor::getSVGXml()
+const char* ConvolutionReverbProcessor::getSVGXml()
 {
     const int width = 200;
-    const int height = 80;
+    const int height = 100;
     svg::Dimensions dimensions(width, height);
     svg::Document doc("rms.svg", svg::Layout(dimensions, svg::Layout::TopLeft));
-    svg::Path svgPath(svg::Fill(svg::Color("#00A2A4")), svg::Stroke());
+    svg::Path svgPath(svg::Fill(svg::Color("#00A2A4")), svg::Stroke(1, svg::Color("#00A2A4"), 1));
 
-    svgPath << svg::Point(0, height);
-    for (int i = 0; i < irTable.size(); i += 12)
+    svgPath << svg::Point(0, height/2.f);
+    for (int i = 0; i < irTable.size(); i += irTable.size()/1000)
     {
         double x = remap(float(i), 0, irTable.size(), 0, width);
-        double y = remap(irTable[i] * .6f, 0, 1, height, 0);
+        double y = remap(irTable[i], -1, 1, height, 0);
         svgPath << svg::Point(x, y);
     }
 
-    svgPath << svg::Point(width, height);
-    svgPath << svg::Point(0, height);
+    svgPath << svg::Point(width, height/2);
+    svgPath << svg::Point(0, height/2);
     doc << svgPath;
     svgText = doc.toString();
     return svgText.c_str();
 }
-
 // the class factories
 #ifdef WIN32
 extern "C" 
@@ -110,6 +108,6 @@ extern "C"
 	__declspec(dllexport) void destroy(LatticeProcessorModule* p) { delete p; }
 };
 #else
-extern "C" LatticeProcessorModule* create(){             return new TableConvProcessor;         }
+extern "C" LatticeProcessorModule* create(){             return new ConvolutionReverbProcessor;         }
 extern "C" void destroy(LatticeProcessorModule* p){      delete p;                     }
 #endif
