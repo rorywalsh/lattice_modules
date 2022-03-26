@@ -4,7 +4,7 @@
 
 
 FreverbProcessor::FreverbProcessor()
-  : reverbL(1.f,10000), reverbR(1.f,10000), inL(Aurora::def_vsize), inR(Aurora::def_vsize), fs(def_sr)
+  : reverbL(1.f,2000.f,dtL,adtL), reverbR(1.f,1000.f,dtR,adtR), inL(Aurora::def_vsize), inR(Aurora::def_vsize), fs(def_sr)
 {
     
 }

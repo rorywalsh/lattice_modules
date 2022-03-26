@@ -10,14 +10,16 @@
 
 using namespace Aurora;
 template <typename S> inline S scl(S a, S b) { return a * b; }
+  static float dtL[4] = {0.041, 0.031, 0.023, 0.013};
+  static float adtL[2] = {0.009, 0.0017};
+  static const float dtR[4] = {0.043, 0.037, 0.029, 0.017};
+  static const float adtR[2] = {0.01, 0.0013};
   
-class FreverbProcessor : public LatticeProcessorModule
-{
-  
-  template <typename S> struct Reverb {
-  static constexpr S dt[4] = {0.037, 0.031, 0.029, 0.023};
-  static constexpr S adt[2] = {0.01, 0.0017};
 
+class FreverbProcessor : public LatticeProcessorModule
+{  
+  template <typename S> struct Reverb {
+  const S *dt, *adt;  
   std::array<Del<S, lp_delay>, 4> combs;
   std::array<Del<S>, 2> apfs;
   Mix<S> mix;
@@ -25,6 +27,9 @@ class FreverbProcessor : public LatticeProcessorModule
   std::array<std::vector<S>, 4> mem;
   std::array<S, 4> g;
   S rvt;
+
+  
+  
 
   void reverb_time(S rvt) {
     std::size_t n = 0;
@@ -50,8 +55,9 @@ class FreverbProcessor : public LatticeProcessorModule
     lp_freq(lpf, fs);
   }
 
-  Reverb(S rvt, S lpf, S fs = def_sr, std::size_t vsize = def_vsize)
-      : combs({Del<S, lp_delay>(dt[0], fs, vsize),
+  Reverb(S rvt, S lpf, const S dti[], const S adti[],
+	 S fs = def_sr, std::size_t vsize = def_vsize)
+  : dt(dti), adt(adti), combs({Del<S, lp_delay>(dt[0], fs, vsize),
                Del<S, lp_delay>(dt[1], fs, vsize),
                Del<S, lp_delay>(dt[2], fs, vsize),
                Del<S, lp_delay>(dt[3], fs, vsize)}),
