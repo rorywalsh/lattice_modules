@@ -37,7 +37,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/examples/gr_synth)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/file_player)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/table_viewer)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/table_conv)
-add_subdirectory(${CMAKE_SOURCE_DIR}/examples/file_player)
+
 
 
 
