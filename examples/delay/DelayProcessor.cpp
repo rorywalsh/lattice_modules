@@ -32,8 +32,8 @@ LatticeProcessorModule::ParameterData DelayProcessor::createParameters()
 
 void DelayProcessor::prepareProcessor(int sr, std::size_t/*block*/)
 {
-	delayL.reset(2, sr);
-	delayL.reset(2, sr);
+	//delayL.reset(2, sr);
+	//delayL.reset(2, sr);
 }
 
 void DelayProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
@@ -43,9 +43,10 @@ void DelayProcessor::process(float** buffer, int /*numChannels*/, std::size_t bl
 
     std::copy(buffer[0], buffer[0] + blockSize, inL.begin());
     std::copy(buffer[1], buffer[1] + blockSize, inR.begin());
-                                
-    const std::vector<float> &outL = delayL(inL, getParameter("Delay Time"), getParameter("Feedback"), getParameter("Dry"));
-    const std::vector<float> &outR = delayR(inR, getParameter("Delay Time"), getParameter("Feedback"), getParameter("Dry"));
+    
+    std::cout << getParameter("Delay Time") << std::endl;
+    auto &outL = delayL(inL, getParameter("Delay Time"), getParameter("Feedback"), getParameter("Dry"));
+    auto &outR = delayR(inR, getParameter("Delay Time"), getParameter("Feedback"), getParameter("Dry"));
 
     for(std::size_t i = 0; i < blockSize ; i++)
     {

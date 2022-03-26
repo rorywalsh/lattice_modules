@@ -5,7 +5,7 @@
 
 
 ConvolutionReverbProcessor::ConvolutionReverbProcessor()
-: irTable(Aurora::def_sr), ir(irTable, Aurora::def_vsize), delay(&ir), inL(Aurora::def_vsize), inR(Aurora::def_vsize)
+: irTable(Aurora::def_sr), ir(irTable, 512), delay(&ir), inL(Aurora::def_vsize), inR(Aurora::def_vsize)
 {
 	
 }
@@ -22,6 +22,8 @@ LatticeProcessorModule::ChannelData ConvolutionReverbProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData ConvolutionReverbProcessor::createParameters()
 {
+    addParameter({ "Reverb Gain", {0, 20, 1.f, .01f, 1}});
+    addParameter({ "Bypass", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch});
     addParameter({ "Load IR", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::FileButton});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
@@ -42,7 +44,11 @@ void ConvolutionReverbProcessor::hostParameterChanged(const char* parameterID, c
 
 void ConvolutionReverbProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
-
+    const std::string paramName = getParameterNameFromId(parameterID);
+    if(paramName == "Bypass")
+    {
+        bypass = newValue == 1 ? true : false;
+    }
 }
 
 
@@ -62,14 +68,23 @@ void ConvolutionReverbProcessor::process(float** buffer, int /*numChannels*/, st
     std::copy(buffer[0], buffer[0] + blockSize, inL.begin());
     std::copy(buffer[1], buffer[1] + blockSize, inR.begin());
     
-    float g = 0.001;
-    auto &outL = mix(delay(inL, g), inL);
-    auto &outR = mix(delay(inR, g), inL);
+
+    auto &outL = mix(delay(inL, getParameter("Reverb Gain")), inL);
+    auto &outR = mix(delay(inR, getParameter("Reverb Gain")), inL);
 
     for(int i = 0; i < blockSize ; i++)
     {
-        buffer[0][i] = outL[i];
-        buffer[1][i] = outR[i];
+        if(bypass)
+        {
+            buffer[0][i] = buffer[0][i];
+            buffer[1][i] = buffer[1][i];
+        }
+        else
+        {
+            buffer[0][i] = outL[i];
+            buffer[1][i] = outR[i];
+        }
+
     }
 
 }

@@ -50,6 +50,7 @@ private:
     std::string svgText;
     bool isPlaying = false;
     int sampleIndex = 0;
+    bool fileLoaded = false;
     
 };
 

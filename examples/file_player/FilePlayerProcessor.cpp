@@ -35,6 +35,7 @@ void FilePlayerProcessor::hostParameterChanged(const char* parameterID, const ch
         soundfileSamples.resize(samples.numSamples);
         std::copy(samples.data[0], samples.data[0] + samples.numSamples, soundfileSamples.begin());
         okToDraw = true;
+        fileLoaded = true;
     }
 }
 
@@ -59,7 +60,7 @@ void FilePlayerProcessor::process(float** buffer, int /*numChannels*/, std::size
 {
     for(int i = 0; i < blockSize ; i++)
     {
-        if(isPlaying)
+        if(isPlaying && fileLoaded)
         {
             buffer[0][i] = soundfileSamples[sampleIndex];
             buffer[1][i] = soundfileSamples[sampleIndex];

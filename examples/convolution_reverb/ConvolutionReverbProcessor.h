@@ -55,6 +55,7 @@ private:
     Aurora::Conv<float> delay;
     Aurora::Mix<float> mix;
     std::vector<float> inL, inR;
+    bool bypass = false;
     
 };
 
