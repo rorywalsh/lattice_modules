@@ -30,7 +30,7 @@ void FilePlayerProcessor::hostParameterChanged(const char* parameterID, const ch
     const std::string paramName = getParameterNameFromId(parameterID);
     if(paramName == "Load Soundfile")
     {
-        std::cout << "File to load" << newValue;
+        //std::cout << "File to load" << newValue;
         auto samples = getSamplesFromFile(newValue);
         soundfileSamples.resize(samples.numSamples);
         std::copy(samples.data[0], samples.data[0] + samples.numSamples, soundfileSamples.begin());
