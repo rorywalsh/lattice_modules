@@ -5,7 +5,7 @@
 
 
 ConvolutionReverbProcessor::ConvolutionReverbProcessor()
-: irTable(Aurora::def_sr), ir(irTable, 512), delay(&ir), inL(Aurora::def_vsize), inR(Aurora::def_vsize)
+: irTable(Aurora::def_sr), ir(irTable), delay(&ir), inL(Aurora::def_vsize), inR(Aurora::def_vsize)
 {
 	
 }
@@ -22,7 +22,7 @@ LatticeProcessorModule::ChannelData ConvolutionReverbProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData ConvolutionReverbProcessor::createParameters()
 {
-    addParameter({ "Reverb Gain", {0, 20, 1.f, .01f, 1}});
+    addParameter({ "Reverb Gain", {0, 1.f, .5f, .01f, 1}});
     addParameter({ "Bypass", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch});
     addParameter({ "Load IR", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::FileButton});
     return ParameterData(getParameters(), getNumberOfParameters());
@@ -36,9 +36,10 @@ void ConvolutionReverbProcessor::hostParameterChanged(const char* parameterID, c
     {
         //std::cout << "File to load" << newValue;
         auto samples = getSamplesFromFile(newValue);
-        irTable.resize(samples.numSamples);
+        irTable.resize(samples.numSamples);	
         std::copy(samples.data[0], samples.data[0] + samples.numSamples, irTable.begin());
         okToDraw = true;
+	ir.reset(irTable);
     }
 }
 
@@ -64,13 +65,12 @@ void ConvolutionReverbProcessor::process(float** buffer, int /*numChannels*/, st
     
     inL.resize(blockSize);
     inR.resize(blockSize);
-
-    std::copy(buffer[0], buffer[0] + blockSize, inL.begin());
-    std::copy(buffer[1], buffer[1] + blockSize, inR.begin());
+    
+    for(int n = 0; n < blockSize; n++)
+      inL[n] = (buffer[0][n] + buffer[1][n])*0.5;
     
 
     auto &outL = mix(delay(inL, getParameter("Reverb Gain")), inL);
-    auto &outR = mix(delay(inR, getParameter("Reverb Gain")), inL);
 
     for(int i = 0; i < blockSize ; i++)
     {
@@ -82,7 +82,7 @@ void ConvolutionReverbProcessor::process(float** buffer, int /*numChannels*/, st
         else
         {
             buffer[0][i] = outL[i];
-            buffer[1][i] = outR[i];
+            buffer[1][i] = outL[i];
         }
 
     }
