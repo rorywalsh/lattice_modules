@@ -5,7 +5,7 @@
 
 
 ConvolutionReverbProcessor::ConvolutionReverbProcessor()
-  : irTable(Aurora::def_sr), ir(irTable,512), delay(&ir), inL(Aurora::def_vsize), inR(Aurora::def_vsize)
+  : irTable(Aurora::def_sr), delay(create_reverb(irTable)), inL(Aurora::def_vsize), inR(Aurora::def_vsize)
 {
 	
 }
@@ -39,7 +39,7 @@ void ConvolutionReverbProcessor::hostParameterChanged(const char* parameterID, c
         irTable.resize(samples.numSamples);	
         std::copy(samples.data[0], samples.data[0] + samples.numSamples, irTable.begin());
         okToDraw = true;
-	ir.reset(irTable,512);
+        reset_reverb(delay,irTable);
     }
 }
 
