@@ -11,9 +11,10 @@ FreverbProcessor::FreverbProcessor()
 
 LatticeProcessorModule::ParameterData FreverbProcessor::createParameters()
 {
-    addParameter({ "Reverb Time", {0, 5, 1.f, .01f, 1}});
+    addParameter({ "Reverb Time", {0, 10., 1.f, .01f, 1}});
     addParameter({ "Lowpass Frequency", {100, 20000, 10000.f, 1.f, 1}});
     addParameter({ "Reverb Mix", {0, 1.f, .5f, 0.001f, 1}});
+    addParameter({ "Stereo Width", {0, 1.f, .5f, 0.001f, 1}});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
@@ -55,10 +56,12 @@ void FreverbProcessor::process(float** buffer, int numChannels, std::size_t bloc
     auto &l = reverbL(inL, getParameter("Reverb Mix"));
     auto &r = reverbR(inR, getParameter("Reverb Mix"));
 
+    float spr = (1 - getParameter("Stereo Width"))*0.5;
+
     for(int i = 0; i < blockSize ; i++)
     {
-        buffer[0][i] = l[i] * 0.1 - r[i] * 0.13;
-        buffer[1][i] = r[i] * 0.1 - l[i] * 0.13;
+      buffer[0][i] = l[i] * (1 - spr) - r[i] * spr;
+      buffer[1][i] = r[i] * (1 - spr) - l[i] * spr;
     }
     
 }
