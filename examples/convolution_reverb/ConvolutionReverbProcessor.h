@@ -111,11 +111,12 @@ private:
     std::string svgText;
     bool isPlaying = false;
     int sampleIndex = 0;
-    ConvReverb<float> delay;
+    ConvReverb<float> left;
+    ConvReverb<float> right;
     Mix<float> mix;
     std::vector<float> inL, inR;
     bool bypass = false;
     bool fileLoaded = false;
-    
+    int nchnls = 1;
 };
 

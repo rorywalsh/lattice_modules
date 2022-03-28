@@ -5,7 +5,7 @@
 
 
 ConvolutionReverbProcessor::ConvolutionReverbProcessor()
-  : irTable(def_psize), delay(create_reverb(irTable)), inL(Aurora::def_vsize), inR(Aurora::def_vsize)
+  : irTable(0), left(create_reverb(irTable)), right(create_reverb(irTable)), inL(Aurora::def_vsize), inR(Aurora::def_vsize)
 {
 	
 }
@@ -23,6 +23,7 @@ LatticeProcessorModule::ChannelData ConvolutionReverbProcessor::createChannels()
 LatticeProcessorModule::ParameterData ConvolutionReverbProcessor::createParameters()
 {
     addParameter({ "Reverb Gain", {0, 1.f, .5f, .01f, 1}});
+    addParameter({ "Stereo Width", {0, 1.f, .5f, .01f, 1}});
     addParameter({ "Bypass", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch});
     addParameter({ "Load IR", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::FileButton});
     return ParameterData(getParameters(), getNumberOfParameters());
@@ -37,13 +38,18 @@ void ConvolutionReverbProcessor::hostParameterChanged(const char* parameterID, c
         //std::cout << "File to load" << newValue;
         auto samples = getSamplesFromFile(newValue);
         irTable.resize(samples.numSamples);
-	std::cout << "frames: " << samples.numSamples-1 << std::endl;
+	std::cout << "frames: " << samples.numSamples << std::endl;
 	if(samples.numSamples > 0) {
-        std::copy(samples.data[0], samples.data[0] + samples.numSamples-1, irTable.begin());
+        std::copy(samples.data[0], samples.data[0] + samples.numSamples, irTable.begin());
+        reset_reverb(left,irTable);
+        if(samples.numChannels > 1) {
+         std::copy(samples.data[1], samples.data[1] + samples.numSamples, irTable.begin());
+        reset_reverb(right,irTable);
+	nchnls = 2;
+	} else nchnls = 1;
         okToDraw = true;
         fileLoaded = true;
-        reset_reverb(delay,irTable);
-	} 
+	}
     }
 }
 
@@ -57,24 +63,29 @@ void ConvolutionReverbProcessor::prepareProcessor(int /*sr*/, std::size_t /*bloc
 
 void ConvolutionReverbProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
 {
-    
-    inL.resize(blockSize);
-    inR.resize(blockSize);
-
-    
-    for(int n = 0; n < blockSize; n++)
-      inL[n] = (buffer[0][n] + buffer[1][n])*0.5;
-    
     if (fileLoaded && getParameter("Bypass")==0)
     {
-        auto& outL = mix(delay(inL, getParameter("Reverb Gain")), inL);
-
-        for (int i = 0; i < blockSize; i++)
-        {
-            buffer[0][i] = outL[i];
-            buffer[1][i] = outL[i];
-
+      inL.resize(blockSize);
+      if(nchnls == 1) {
+        for(int n = 0; n < blockSize; n++)
+            inL[n] = (buffer[0][n] + buffer[1][n])*0.5;
+        auto& out = mix(left(inL, getParameter("Reverb Gain")), inL);
+	std::copy(out.cbegin(),out.cend(),buffer[0]);
+        std::copy(out.cbegin(),out.cend(),buffer[1]);
         }
+      else {
+	float p = (1. - getParameter("Stereo Width"))*0.5f;
+	inR.resize(blockSize); 
+        std::copy(buffer[0],buffer[0]+blockSize,inL.begin());
+        std::copy(buffer[1],buffer[1]+blockSize,inR.begin());
+        auto& outL = mix(left(inL, getParameter("Reverb Gain")), inL);
+	auto& outR = mix(right(inL, getParameter("Reverb Gain")), inL);
+       for (int i = 0; i < blockSize; i++)
+        {
+	  buffer[0][i] = outL[i]*p + outR[i]*(1.-p);
+          buffer[1][i] = outR[i]*p + outR[i]*(1.-p);
+        }
+      }
     }
     else
     {
