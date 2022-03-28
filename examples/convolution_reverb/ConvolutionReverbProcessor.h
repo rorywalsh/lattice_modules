@@ -76,7 +76,6 @@ public:
     ParameterData createParameters() override;
     
     void hostParameterChanged(const char* parameterID, const char* newValue) override;
-    void hostParameterChanged(const char* parameterID, float newValue) override;
     /*  This function is called by the host before playback/performance */
     void prepareProcessor(int sr, std::size_t block) override;
     

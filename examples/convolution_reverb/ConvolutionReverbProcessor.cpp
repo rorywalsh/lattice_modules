@@ -44,15 +44,6 @@ void ConvolutionReverbProcessor::hostParameterChanged(const char* parameterID, c
     }
 }
 
-void ConvolutionReverbProcessor::hostParameterChanged(const char* parameterID, float newValue)
-{
-    const std::string paramName = getParameterNameFromId(parameterID);
-    if(paramName == "Bypass")
-    {
-        bypass = newValue == 1 ? true : false;
-    }
-}
-
 
 
 void ConvolutionReverbProcessor::prepareProcessor(int /*sr*/, std::size_t /*block*/)
@@ -66,11 +57,12 @@ void ConvolutionReverbProcessor::process(float** buffer, int /*numChannels*/, st
     
     inL.resize(blockSize);
     inR.resize(blockSize);
+
     
     for(int n = 0; n < blockSize; n++)
       inL[n] = (buffer[0][n] + buffer[1][n])*0.5;
     
-    if (fileLoaded && !bypass)
+    if (fileLoaded && getParameter("Bypass")==0)
     {
         auto& outL = mix(delay(inL, getParameter("Reverb Gain")), inL);
 
