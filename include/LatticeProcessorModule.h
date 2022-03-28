@@ -412,7 +412,7 @@ public:
     virtual const char* getSVGXml() { return ""; }
 
     /** override this method and return true if you wish to enable drawing on the generic editor viewport. Note that you should only return true when you need the graphics updated. Leaving this permanently set to true will have a negative effect on performance.
-     * @return This should return true is you wish the viewport to update
+     * @return This should return true is you wish the viewport to update - it sh 
     */
     virtual bool canDraw()
     {

@@ -39,6 +39,7 @@ void ConvolutionReverbProcessor::hostParameterChanged(const char* parameterID, c
         irTable.resize(samples.numSamples);	
         std::copy(samples.data[0], samples.data[0] + samples.numSamples, irTable.begin());
         okToDraw = true;
+        fileLoaded = true;
         reset_reverb(delay,irTable);
     }
 }
@@ -69,22 +70,24 @@ void ConvolutionReverbProcessor::process(float** buffer, int /*numChannels*/, st
     for(int n = 0; n < blockSize; n++)
       inL[n] = (buffer[0][n] + buffer[1][n])*0.5;
     
-
-    auto &outL = mix(delay(inL, getParameter("Reverb Gain")), inL);
-
-    for(int i = 0; i < blockSize ; i++)
+    if (fileLoaded && !bypass)
     {
-        if(bypass)
-        {
-            buffer[0][i] = buffer[0][i];
-            buffer[1][i] = buffer[1][i];
-        }
-        else
+        auto& outL = mix(delay(inL, getParameter("Reverb Gain")), inL);
+
+        for (int i = 0; i < blockSize; i++)
         {
             buffer[0][i] = outL[i];
             buffer[1][i] = outL[i];
-        }
 
+        }
+    }
+    else
+    {
+        for (int i = 0; i < blockSize; i++)
+        {
+            buffer[0][i] = inL[i];
+            buffer[1][i] = inR[i];
+        }
     }
 
 }
@@ -115,7 +118,7 @@ const char* ConvolutionReverbProcessor::getSVGXml()
 #ifdef WIN32
 extern "C" 
 {
-	__declspec(dllexport) LatticeProcessorModule* create() { return new TableConvProcessor; }
+	__declspec(dllexport) LatticeProcessorModule* create() { return new ConvolutionReverbProcessor; }
 };
 
 extern "C" 

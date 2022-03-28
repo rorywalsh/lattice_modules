@@ -116,6 +116,7 @@ private:
     Mix<float> mix;
     std::vector<float> inL, inR;
     bool bypass = false;
+    bool fileLoaded = false;
     
 };
 

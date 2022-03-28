@@ -64,7 +64,7 @@ void FilePlayerProcessor::process(float** buffer, int /*numChannels*/, std::size
         {
             buffer[0][i] = soundfileSamples[sampleIndex];
             buffer[1][i] = soundfileSamples[sampleIndex];
-            sampleIndex = sampleIndex < soundfileSamples.size() ? sampleIndex+1 : 0;
+            sampleIndex = sampleIndex < soundfileSamples.size()-1 ? sampleIndex+1 : 0;
         }
         else
         {
