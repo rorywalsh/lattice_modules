@@ -5,7 +5,7 @@
 
 
 ConvolutionReverbProcessor::ConvolutionReverbProcessor()
-  : irTable(Aurora::def_sr), delay(create_reverb(irTable)), inL(Aurora::def_vsize), inR(Aurora::def_vsize)
+  : irTable(def_psize), delay(create_reverb(irTable)), inL(Aurora::def_vsize), inR(Aurora::def_vsize)
 {
 	
 }
@@ -36,11 +36,14 @@ void ConvolutionReverbProcessor::hostParameterChanged(const char* parameterID, c
     {
         //std::cout << "File to load" << newValue;
         auto samples = getSamplesFromFile(newValue);
-        irTable.resize(samples.numSamples);	
-        std::copy(samples.data[0], samples.data[0] + samples.numSamples, irTable.begin());
+        irTable.resize(samples.numSamples);
+	std::cout << "frames: " << samples.numSamples-1 << std::endl;
+	if(samples.numSamples > 0) {
+        std::copy(samples.data[0], samples.data[0] + samples.numSamples-1, irTable.begin());
         okToDraw = true;
         fileLoaded = true;
         reset_reverb(delay,irTable);
+	} 
     }
 }
 
