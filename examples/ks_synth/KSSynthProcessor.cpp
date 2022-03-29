@@ -27,6 +27,8 @@ LatticeProcessorModule::ParameterData KSSynthProcessor::createParameters()
     addParameter({"Release Time", {0.1, 4, 0.5, 0.1, 1}});
     addParameter({"Detune", {0, 0.1, 0, 0.001, 1}});
     addParameter({"Pan Spread", {0, 1., 0.5, 0.001, 1}});
+    addParameter({"Pluck Pos", {0, 1., 0.1, 0.001, 1}});
+    addParameter({"Volume", {0, 1., 0.1, 0.001, 1}});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
@@ -44,8 +46,8 @@ void KSSynthProcessor::startNote(int midiNoteNumber, float velocity )
 {
   setMidiNoteNumber(midiNoteNumber);
   amp = velocity;
-  pluckL.note_on();
-  pluckR.note_on();
+  pluckL.note_on(getMidiNoteInHertz(midiNoteNumber),getParameter("Pluck Pos"));
+  pluckR.note_on(getMidiNoteInHertz(midiNoteNumber),getParameter("Pluck Pos"));
   pluckL.release(getParameter("Release Time"));
   pluckR.release(getParameter("Release Time"));
 }
@@ -66,11 +68,12 @@ void KSSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440) + buffer[1][0];
   pluckL.vsize(blockSize);
   pluckR.vsize(blockSize);
+  float g = getParameter("Volume");
   float detune = freq*getParameter("Detune");
   float pan = (1. - getParameter("Pan Spread"))*.5f;
     
-  auto &outL = pluckL(1., freq + detune, getParameter("Decay Time"));
-  auto &outR = pluckR(1., freq - detune, getParameter("Decay Time"));
+  auto &outL = pluckL(g, freq + detune, getParameter("Decay Time"));
+  auto &outR = pluckR(g, freq - detune, getParameter("Decay Time"));
 
   
   for (int i = 0; i < blockSize; i++)

@@ -36,20 +36,34 @@ template <typename S> struct Karplus {
   BinOp<S, scl> amp;
   std::vector<S> mem;
   std::vector<S> rnd;
+  std::vector<S> wv;
   std::vector<S> in;
   S sr;
   bool gate;
   S g, ff, ddt;
   S twopiosr;
 
-  void fill_delay() {
-    delay(rnd, 0);
+  void fill_delay(S fr = 0, S pos = 0) {
+    if(pos > 0) {
+      std::size_t e = 2*sr/fr;
+      std::size_t m = e/2;
+      pos *= m;
+      wv.resize(e);
+      for(std::size_t n = 0; n < e; n++) {
+	if(n < m)
+	  wv[n] = n < pos ? n/pos : 1 - n/(pos - m);
+        else
+	  wv[n] = -wv[e - n];
+      }
+      delay(wv,0);
+    }    
+    else delay(rnd, 0);
     mem[0] = 0;
   }
 
   Karplus(S fs = def_sr, std::size_t vsiz = def_vsize)
       : delay(0.05, fs, vsiz), env(nullptr, 0.1, fs, vsiz), amp(vsiz), mem(1),
-        rnd(fs * 0.05), in(vsiz), sr(fs), gate(0), g(1), ff(0), ddt(0),
+        rnd(fs * 0.05), wv(fs * 0.05), in(vsiz), sr(fs), gate(0), g(1), ff(0), ddt(0),
         twopiosr(2 * M_PI / sr) {
     for (auto &s : rnd) {
       s = 2 * (std::rand() / (S)RAND_MAX) - 1;
@@ -88,8 +102,8 @@ template <typename S> struct Karplus {
     ddt = dt;
   }
 
-  void note_on() {
-    fill_delay();
+  void note_on(S f = 0.f, S p = 0.f) {
+    fill_delay(f,p);
     gate = 1;
   }
 
