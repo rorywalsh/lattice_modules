@@ -14,7 +14,7 @@ KSSynthProcessor::KSSynthProcessor()
 
 LatticeProcessorModule::ChannelData KSSynthProcessor::createChannels()
 {
-    addChannel({"amplitude", ChannelType::input });
+    addChannel({"audio input", ChannelType::input });
     addChannel({"frequency (control rate)", ChannelType::input });
     addChannel({"left", ChannelType::output });
     addChannel({"right", ChannelType::output });
@@ -28,7 +28,9 @@ LatticeProcessorModule::ParameterData KSSynthProcessor::createParameters()
     addParameter({"Detune", {0, 0.1, 0, 0.001, 1}});
     addParameter({"Pan Spread", {0, 1., 0.5, 0.001, 1}});
     addParameter({"Pluck Pos", {0, 1., 0.1, 0.001, 1}});
+    addParameter({"Input Gain", {0, 1., 0.1, 0.001, 1}});
     addParameter({"Volume", {0, 1., 0.1, 0.001, 1}});
+    addParameter({ "Pluck", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
@@ -46,8 +48,9 @@ void KSSynthProcessor::startNote(int midiNoteNumber, float velocity )
 {
   setMidiNoteNumber(midiNoteNumber);
   amp = velocity;
-  pluckL.note_on(getMidiNoteInHertz(midiNoteNumber),getParameter("Pluck Pos"));
-  pluckR.note_on(getMidiNoteInHertz(midiNoteNumber),getParameter("Pluck Pos"));
+  int plck = getParameter("Pluck");
+  pluckL.note_on(getMidiNoteInHertz(midiNoteNumber),getParameter("Pluck Pos")*(plck ? 1 : -1));
+  pluckR.note_on(getMidiNoteInHertz(midiNoteNumber),getParameter("Pluck Pos")*(plck ? 1 : -1));
   pluckL.release(getParameter("Release Time"));
   pluckR.release(getParameter("Release Time"));
 }
@@ -68,18 +71,22 @@ void KSSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440) + buffer[1][0];
   pluckL.vsize(blockSize);
   pluckR.vsize(blockSize);
-  float g = getParameter("Volume");
+  float g = getParameter("Volume")*amp;
   float detune = freq*getParameter("Detune");
   float pan = (1. - getParameter("Pan Spread"))*.5f;
+  float *buff =  buffer[0];
+  float scl = getParameter("Input Gain");
+  for(int n =0 ; n < blockSize; n++)
+     buff[n] *= scl;
     
-  auto &outL = pluckL(g, freq + detune, getParameter("Decay Time"));
-  auto &outR = pluckR(g, freq - detune, getParameter("Decay Time"));
+     auto &outL = pluckL(g, freq + detune, getParameter("Decay Time"), buff);
+     auto &outR = pluckR(g, freq - detune, getParameter("Decay Time"), buff);
 
   
   for (int i = 0; i < blockSize; i++)
     {
-      buffer[0][i] = (outL[i]*(pan - 1.) +  outR[i]*pan)*(amp + buffer[0][i]);
-      buffer[1][i] = (outR[i]*(pan - 1.) +  outL[i]*pan)*(amp + buffer[0][i]);
+      buffer[0][i] = (outL[i]*(pan - 1.) +  outR[i]*pan);
+      buffer[1][i] = (outR[i]*(pan - 1.) +  outL[i]*pan);
     }
 }
 

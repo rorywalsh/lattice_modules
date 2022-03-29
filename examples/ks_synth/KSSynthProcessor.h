@@ -57,6 +57,10 @@ template <typename S> struct Karplus {
       }
       delay(wv,0);
     }    
+    else if (pos < 0){
+      std::fill(wv.begin(), wv.end(), 0);
+      delay(wv,0);
+    } 
     else delay(rnd, 0);
     mem[0] = 0;
   }
@@ -109,7 +113,11 @@ template <typename S> struct Karplus {
 
   void note_off() { gate = 0; }
 
-  const std::vector<S> &operator()(S a, S fr, S dt) {
+  const std::vector<S> &operator()(S a, S fr, S dt, const S* s = nullptr) {
+    if(s) {
+      std::copy(s, s + in.size(), in.begin());
+    } else std::fill(in.begin(), in.end(), 0);
+    
     fr = fr > 20 ? fr : 20;
     if (ff != fr || ddt != dt)
       decay(fr, dt);
@@ -161,8 +169,8 @@ public:
     }
 
 private:
-    Aurora::Karplus<double> pluckL;
-    Aurora::Karplus<double> pluckR;
+    Aurora::Karplus<float> pluckL;
+    Aurora::Karplus<float> pluckR;
     float amp;
     bool isNoteOn = false;
 };
