@@ -76,8 +76,11 @@ void KSSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
   float pan = (1. - getParameter("Pan Spread"))*.5f;
   float *buff =  buffer[0];
   float scl = getParameter("Input Gain");
+  if(isInputConnected(0)) {
   for(int n =0 ; n < blockSize; n++)
      buff[n] *= scl;
+     std::cout << "connected\n";
+  } else buff = nullptr;
     
      auto &outL = pluckL(g, freq + detune, getParameter("Decay Time"), buff);
      auto &outR = pluckR(g, freq - detune, getParameter("Decay Time"), buff);
