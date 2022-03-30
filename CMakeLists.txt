@@ -39,7 +39,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/examples/table_conv)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/freverb)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/file_player)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/convolution_reverb)
-
+add_subdirectory(${CMAKE_SOURCE_DIR}/examples/tvconv)
 
 
 
