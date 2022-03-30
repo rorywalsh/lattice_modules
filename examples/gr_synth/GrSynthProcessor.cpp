@@ -86,7 +86,7 @@ void GrSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
   float thresh = 0;
   float a = getParameter("volume");
-  if(blockSize != env.vsize()) std::cout << env.vsize() << " " <<  blockSize << std::endl;
+  //if(blockSize != env.vsize()) std::cout << env.vsize() << " " <<  blockSize << std::endl;
   am.resize(blockSize);
   fm.resize(blockSize);
   env.vsize(blockSize);
