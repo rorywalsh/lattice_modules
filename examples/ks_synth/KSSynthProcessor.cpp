@@ -30,7 +30,7 @@ LatticeProcessorModule::ParameterData KSSynthProcessor::createParameters()
     addParameter({"Pluck Pos", {0, 1., 0.1, 0.001, 1}});
     addParameter({"Input Gain", {0, 1., 0.1, 0.001, 1}});
     addParameter({"Volume", {0, 1., 0.1, 0.001, 1}});
-    addParameter({ "Pluck", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch});
+    addParameter({ "Pluck", {0, 1, 1, 1, 1}, "", ModuleParameter::ParamType::Switch});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
@@ -76,11 +76,9 @@ void KSSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
   float pan = (1. - getParameter("Pan Spread"))*.5f;
   float *buff =  buffer[0];
   float scl = getParameter("Input Gain");
-  if(isInputConnected(0)) {
   for(int n =0 ; n < blockSize; n++)
      buff[n] *= scl;
-     std::cout << "connected\n";
-  } else buff = nullptr;
+   
     
      auto &outL = pluckL(g, freq + detune, getParameter("Decay Time"), buff);
      auto &outR = pluckR(g, freq - detune, getParameter("Decay Time"), buff);
