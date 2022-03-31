@@ -42,7 +42,7 @@ public:
     const char* getModuleName() override {    return "TV Conv";     }
     
 private:
-    TVConv<float> conv;
+    Conv<float> conv;
     bool isPlaying = false;
     int sampleIndex = 0;
     std::vector<float> in1, in2;
