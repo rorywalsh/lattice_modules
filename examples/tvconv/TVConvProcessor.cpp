@@ -31,7 +31,9 @@ LatticeProcessorModule::ParameterData TVConvProcessor::createParameters()
 
 void TVConvProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
-  const std::string paramName = getParameterNameFromId(parameterID);
+    const std::string paramName = getParameterNameFromId(parameterID);
+    updateParameter(paramName, newValue);
+    
     if(paramName == "Filter Length")
     {
       std::size_t filter_length =  newValue*fs;

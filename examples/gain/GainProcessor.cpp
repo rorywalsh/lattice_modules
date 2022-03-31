@@ -47,11 +47,12 @@ void GainProcessor::process(float** buffer, int /*numChannels*/, std::size_t blo
         buffer[1][i] *= getParameter("Gain");
     }
 
-	if (getRMS(inL) > 0)
-		okToDraw = true;
+
 
 	samples.erase(samples.begin());
-	samples.push_back(inL[0]);
+	samples.push_back(buffer[0][0]);
+    if (getRMS(samples) > 0)
+        okToDraw = true;
 }
 
 const char* GainProcessor::getSVGXml()
