@@ -13,8 +13,11 @@ GrSynthProcessor::GrSynthProcessor()
     am(Aurora::def_vsize),
     fm(Aurora::def_vsize),
     sr(Aurora::def_sr),
-    fac(wave.size()/sr)
+    fac(wave.size()/sr),
+    c1(0.), c2(0.), ffr(0.)
 {
+  c2 = std::pow(0.5, (double)(Aurora::def_vsize/Aurora::def_sr)/0.01);
+  c1 = 1.0 - c2;
   std::size_t n = 0;
   for (auto &s : wave)
     s = Aurora::cos<float>(n++ / double(Aurora::def_ftlen));   
@@ -24,6 +27,7 @@ GrSynthProcessor::GrSynthProcessor()
   colours.push_back(svg::Color("#0BB3BF"));
   colours.push_back(svg::Color("#00A2A4"));
   colours.push_back(svg::Color("#77C1A4"));
+  
 }
 
 LatticeProcessorModule::ChannelData GrSynthProcessor::createChannels()
@@ -53,6 +57,7 @@ void GrSynthProcessor::prepareProcessor(int samplingRate, std::size_t block)
 {
   sr = samplingRate;
   fac = wave.size()/sr;
+  env.reset(sr);
 }
 
 void GrSynthProcessor::startNote(int midiNoteNumber, float velocity )
@@ -84,12 +89,15 @@ void GrSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
 {
    
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
+  
   float thresh = 0;
   float a = getParameter("volume");
   //if(blockSize != env.vsize()) std::cout << env.vsize() << " " <<  blockSize << std::endl;
   am.resize(blockSize);
   fm.resize(blockSize);
   env.vsize(blockSize);
+
+  ffr = c1 * freq + c2 * ffr;
   
   for(std::size_t n = 0 ; n < blockSize; n++) {
     am[n] = isInputConnected(0) ? (buffer[0][n] + amp)*a : amp*a;
@@ -97,11 +105,12 @@ void GrSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
   }
 
   if(isNoteOn || siglevel > thresh) {
+    //std::cout << freq << " " <<  blockSize << std::endl;
     float ss = 0.f;
     std::size_t n = 0;
-    grain(am, freq, fm, getParameter("pan spread"), getParameter("density"),
+    grain(am, ffr, fm, getParameter("pan spread"), getParameter("density"),
 			  getParameter("grain size"),
-		      rnd(1./fac),blockSize);	  
+		      rnd(1./fac));	  
     for(auto &e : env(0, 1., isNoteOn)) {
       ss += (buffer[0][n] = e*grain.channel(0)[n])*0.25f;
       ss += (buffer[1][n] = e*grain.channel(1)[n])*0.25f;
@@ -112,9 +121,9 @@ void GrSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
       n++;
     }
     siglevel = std::fabs(ss/(2*blockSize));
-    } else {
-      std::fill(buffer[0],buffer[0]+blockSize,0);
-      std::fill(buffer[1],buffer[1]+blockSize,0);
+     } else {
+    std::fill(buffer[0],buffer[0]+blockSize,0);
+    std::fill(buffer[1],buffer[1]+blockSize,0);
     }
 
 

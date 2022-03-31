@@ -39,7 +39,7 @@ class GrSynthProcessor : public LatticeProcessorModule
       {
         return true;
       }
-
+      
     ModuleType getModuleType() override
     {
         return ModuleType::synthProcessor;
@@ -47,7 +47,7 @@ class GrSynthProcessor : public LatticeProcessorModule
 
     int getNumberOfVoices() override
     {
-        return 10;
+        return 32;
     }
 
     const char* getModuleName() override
@@ -88,9 +88,12 @@ class GrSynthProcessor : public LatticeProcessorModule
   std::vector<float> fm;
   float sr;
   float fac;
+  double c1, c2;
+  float ffr;
   bool isNoteOn = false;
   bool okToDraw = true;
   float rms = 0;
+
   std::string svgText;
 	
   std::vector<svg::Color> colours;
