@@ -48,8 +48,8 @@ public:
         struct Range {
             float min = 0;
             float max = 1;
-            float increment = 0.01f;
             float defaultValue = 0;
+            float increment = 0.01f;
             float skew = 1;
             Range(float m, float n, float d, float i, float s)
                 : min(m), max(n), defaultValue(d), increment(i), skew(s) {}
@@ -412,7 +412,7 @@ public:
     virtual const char* getSVGXml() { return ""; }
 
     /** override this method and return true if you wish to enable drawing on the generic editor viewport. Note that you should only return true when you need the graphics updated. Leaving this permanently set to true will have a negative effect on performance.
-     * @return This should return true is you wish the viewport to update - it sh 
+     * @return This should return true is you wish the viewport to update
     */
     virtual bool canDraw()
     {
@@ -428,21 +428,25 @@ public:
     }
 
     //==================================================================
-    int getNumberOfChannels()
+    std::size_t getNumberOfChannels()
     {
-        return static_cast<int>(channels.size());
+        return channels.size();
     }
 
-    int getNumberOfParameters()
+    std::size_t getNumberOfParameters()
     {
-        return static_cast<int>(parameters.size());
+        return parameters.size();
     }
 
     void addChannel(Channel c)
     {
         channels.push_back(c);
-        if(c.type == ChannelType::input)
-            connections.push_back({inCount++, false});
+        if (c.type == ChannelType::input)
+        {
+            connections[inCount] = { inCount , false };
+            inCount++;
+        }
+
 
     }
 
@@ -466,52 +470,50 @@ public:
     {
         int index = 0;
         bool isConnected = false;
-        Connection(int i, bool c): index(i), isConnected(c){}
+        Connection() {}
+        Connection(int i, bool c) : index(i), isConnected(c) {}
     };
-    
+
     void setConnection(int index, bool isConnected)
     {
-        for(auto& connection : connections)
+        for (auto& connection : connections)
         {
-            if(connection.index == index)
+            if (connection.index == index)
                 connection.isConnected = isConnected;
         }
     }
-    
+
     bool isInputConnected(std::size_t index)
     {
-        if(index<connections.size())
-            return connections[index].isConnected;
-        
-        return false;
+        return connections[index].isConnected;
     }
-    
-    struct AudioFileSamples{
+
+    struct AudioFileSamples {
         const float** data;
         int numChannels;
         int numSamples;
-        AudioFileSamples() = default ;
+        AudioFileSamples() = default;
         AudioFileSamples(const float** d, int c, int s)
-        :data(d), numChannels(c), numSamples(s){}
+            :data(d), numChannels(c), numSamples(s) {}
     };
-    
-    void registerAudioFileCallback(AudioFileSamples(*func)( const char* filename))
+
+    void registerAudioFileCallback(AudioFileSamples(*func)(const char* filename))
     {
         audioFileSamplesCallback = func;
     }
-    
+
     AudioFileSamples getSamplesFromFile(const char* filename)
     {
         if (audioFileSamplesCallback != nullptr)
             return audioFileSamplesCallback(filename);
-        
+
         return AudioFileSamples();
     }
-    
+
 private:
     std::vector<Channel> channels;
     int inCount = 0;
-    std::vector<Connection> connections;
+    Connection connections[24];
     std::vector<ModuleParameter> parameters;
     int midiNoteNumber = 0;
     std::string nodeName;
