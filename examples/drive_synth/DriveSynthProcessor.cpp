@@ -72,10 +72,7 @@ void DriveSynthProcessor::startNote(int noteNumber, float velocity)
 
 void DriveSynthProcessor::stopNote (float velocity)
 {
-    if(velocity == 0)
-    {
-        isNoteOn = false;
-    }
+    isNoteOn = false;
 }
 
 void DriveSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
