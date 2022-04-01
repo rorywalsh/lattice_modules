@@ -7,7 +7,8 @@
 GainProcessor::GainProcessor()
 	:LatticeProcessorModule()
 {
-	samples.resize(512);
+	samplesL.resize(512);
+    samplesR.resize(512);
 }
 
 LatticeProcessorModule::ChannelData GainProcessor::createChannels()
@@ -23,13 +24,15 @@ LatticeProcessorModule::ChannelData GainProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData GainProcessor::createParameters()
 {
-    addParameter({"Gain", LatticeProcessorModule::ModuleParameter::Range(0.f, 1.f, 0.4f, 0.001f, 1.f)});
+    addParameter({"Gain Left", LatticeProcessorModule::ModuleParameter::Range(0.f, 1.f, 0.4f, 0.001f, 1.f)});
+    addParameter({"Gain Right", LatticeProcessorModule::ModuleParameter::Range(0.f, 1.f, 0.4f, 0.001f, 1.f)});
 	return ParameterData(getParameters(), getNumberOfParameters());
 }
 
-void GainProcessor::prepareProcessor(int /*sr*/, std::size_t /*block*/)
+void GainProcessor::prepareProcessor(int /*sr*/, std::size_t block)
 {
-
+//    samplesL.resize(block);
+//    samplesR.resize(block);
 }  
 
 
@@ -43,15 +46,15 @@ void GainProcessor::process(float** buffer, int /*numChannels*/, std::size_t blo
 
     for(int i = 0; i < blockSize ; i++)
     {
-        buffer[0][i] *= getParameter("Gain");
-        buffer[1][i] *= getParameter("Gain");
+        buffer[0][i] *= getParameter("Gain Left");
+        buffer[1][i] *= getParameter("Gain Right");
     }
 
-
-
-	samples.erase(samples.begin());
-	samples.push_back(buffer[0][0]);
-    if (getRMS(samples) > 0)
+	samplesL.erase(samplesL.begin());
+	samplesL.push_back(buffer[0][0]);
+    samplesR.erase(samplesR.begin());
+    samplesR.push_back(buffer[1][0]);
+    if (getRMS(samplesL) > 0 || getRMS(samplesR) > 0)
         okToDraw = true;
 }
 
@@ -59,20 +62,24 @@ const char* GainProcessor::getSVGXml()
 {
 	okToDraw = true;
 	const float width = 200;
-	const float height = 80;
+	const float height = 180;
 	svg::Dimensions dimensions(width, height);
 	svg::Document doc("rms.svg", svg::Layout(dimensions, svg::Layout::TopLeft));
-	svg::Polyline svgPath(svg::Fill(), svg::Stroke(1, svg::Color("#00ABD1"), 1));
+	svg::Polyline svgPathLeft(svg::Fill(), svg::Stroke(1, svg::Color("#00ABD1"), 1));
+    svg::Polyline svgPathRight(svg::Fill(), svg::Stroke(1, svg::Color("#00ABD1"), 1));
 
-	for (int i = 0; i < samples.size(); i += 12)
+	for (int i = 0; i < samplesL.size(); i += 12)
 	{
-		double x = remap(float(i), 0.f, static_cast<float>(samples.size()), 0.f, width);
-		double y = remap(samples[i] * .6f, -1, 1, 0, height);
-		auto pos = svg::Point(x, y);
-		svgPath << pos;
+		double x = remap(float(i), 0.f, static_cast<float>(samplesL.size()), 0.f, width);
+		double yL = remap(samplesL[i], -1, 1, 0, height/2);
+        svgPathLeft << svg::Point(x, yL);;
+        double yR = remap(samplesR[i], -1, 1, height/2, height);
+        svgPathRight << svg::Point(x, yR);;
 	}
 
-	doc << svgPath;
+	doc << svgPathLeft;
+    doc << svgPathRight;
+    
 	svgText = doc.toString();
 
 	return svgText.c_str();

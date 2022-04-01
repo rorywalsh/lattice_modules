@@ -25,11 +25,12 @@ class SimpleSynthProcessor : public LatticeProcessorModule
         void setAttack(float value)     {    att = value;           }
         void setDecay(float value)      {    dec = value;           }
         void setSustain(float value)    {    sus = value;           }
-        void setRelease(float value)    {    env.release(value);    }
+        void setRelease(float value)    {    env.release(value);   rel = value; }
         float getAttack()     {    return att;           }
         float getDecay()      {    return dec;           }
         float getSustain()    {    return sus;           }
-
+        float getRelease()    {    return rel;           }
+        
     private:
         float att, dec, sus, rel;
         Aurora::TableSet<float> sawWave;
@@ -73,6 +74,11 @@ public:
         return true;
     }
 
+    float getTailOffTime() override
+    {
+        return synth.getRelease();
+    }
+    
     ModuleType getModuleType() override
     {
         return ModuleType::synthProcessor;

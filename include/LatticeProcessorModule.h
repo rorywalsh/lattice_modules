@@ -270,7 +270,7 @@ public:
     */
     virtual int getNumberOfVoices()
     {
-        return 10;
+        return 32;
     }
 
     /** Called by the host when a float paremeter changes. The parameterID in this instance is a combination of the unique name for the module, assigned by the host, and the parameter name itself, i.e, 'Super Synth 11 - Attack'. Use the getParameterName() method to extract the parameter name - note that in the case of audio FX, you can just called getParameter() from your process block.
@@ -300,7 +300,13 @@ public:
         unused(noteNumber, velocity);
     }
 
-
+    /** called by the host when a note is started
+     @return The time in second that any note wil last for. This is independant of your processor's release time, so make sure that you give enough time for your processor to release.
+    */
+    virtual float getTailOffTime()
+    {
+        return 2;
+    }
     /** called by the host when a note is stoped
      * @param velocity Midi velocity in the range of 0 to 1
     */
@@ -446,7 +452,7 @@ public:
             connections[inCount] = { inCount , false };
             inCount++;
         }
-
+            
 
     }
 
@@ -471,45 +477,45 @@ public:
         int index = 0;
         bool isConnected = false;
         Connection() {}
-        Connection(int i, bool c) : index(i), isConnected(c) {}
+        Connection(int i, bool c): index(i), isConnected(c){}
     };
-
+    
     void setConnection(int index, bool isConnected)
     {
-        for (auto& connection : connections)
+        for(auto& connection : connections)
         {
-            if (connection.index == index)
+            if(connection.index == index)
                 connection.isConnected = isConnected;
         }
     }
-
+    
     bool isInputConnected(std::size_t index)
     {
         return connections[index].isConnected;
     }
-
-    struct AudioFileSamples {
+    
+    struct AudioFileSamples{
         const float** data;
         int numChannels;
         int numSamples;
-        AudioFileSamples() = default;
+        AudioFileSamples() = default ;
         AudioFileSamples(const float** d, int c, int s)
-            :data(d), numChannels(c), numSamples(s) {}
+        :data(d), numChannels(c), numSamples(s){}
     };
-
-    void registerAudioFileCallback(AudioFileSamples(*func)(const char* filename))
+    
+    void registerAudioFileCallback(AudioFileSamples(*func)( const char* filename))
     {
         audioFileSamplesCallback = func;
     }
-
+    
     AudioFileSamples getSamplesFromFile(const char* filename)
     {
         if (audioFileSamplesCallback != nullptr)
             return audioFileSamplesCallback(filename);
-
+        
         return AudioFileSamples();
     }
-
+    
 private:
     std::vector<Channel> channels;
     int inCount = 0;

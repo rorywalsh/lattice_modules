@@ -118,6 +118,11 @@ public:
         return ModuleType::synthProcessor;
     }
     
+    float getTailOffTime() override
+    {
+        return getParameter("Release");
+    }
+    
     const char* getModuleName() override
     {
         return "Waveshaping Synth";

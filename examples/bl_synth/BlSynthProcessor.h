@@ -92,10 +92,15 @@ public:
         return "Bandlimited Synth";
     }
 
+    float getTailOffTime()
+    {
+        return getParameter("Release");
+    }
+    
     /* Set number of voices */
     int getNumberOfVoices() override
     {
-        return 10;
+        return 32;
     }
 
 	/* override this method if you want to draw to the Lattice generic editor viewport */

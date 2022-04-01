@@ -158,6 +158,11 @@ public:
         return true;
     }
 
+    float getTailOffTime()
+    {
+        return getParameter("Release Time");
+    }
+    
     ModuleType getModuleType() override
     {
         return ModuleType::synthProcessor;

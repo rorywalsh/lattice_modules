@@ -49,7 +49,8 @@ private:
     int numChannels = 0;
     std::vector<float> inL;
     std::vector<float> inR;
-	std::vector<float> samples;
+	std::vector<float> samplesL;
+    std::vector<float> samplesR;
 	bool okToDraw = true;
     std::string svgText;
 };

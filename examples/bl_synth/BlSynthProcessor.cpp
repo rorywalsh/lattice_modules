@@ -116,7 +116,9 @@ LatticeProcessorModule::ParameterData BlSynthProcessor::createParameters()
 
 void BlSynthProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
+    
     auto parameterName = getParameterNameFromId(parameterID);
+    updateParameter(parameterName, newValue);
     
     if(parameterName == "Wave")
     {
