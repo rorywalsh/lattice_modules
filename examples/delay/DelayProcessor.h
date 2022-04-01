@@ -32,4 +32,3 @@ private:
     std::vector<float> inL;
     std::vector<float> inR;
 };
-
