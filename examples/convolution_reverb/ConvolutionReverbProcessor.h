@@ -34,8 +34,11 @@ struct ConvReverb {
 	     const std::vector<S> &s2,
 	     const std::vector<S> &s3) {
     ir1.reset(s1,32);
-      ir2.reset(s2,256);
-        ir3.reset(s3,4096);
+    c1.reset(&ir1);
+    ir2.reset(s2,256);
+    c2.reset(&ir2);
+    ir3.reset(s3,4096);
+    c3.reset(&ir3);
   }
 
   const std::vector<S> &operator()(const std::vector<S> &in, S g) {
