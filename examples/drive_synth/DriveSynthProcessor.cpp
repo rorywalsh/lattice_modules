@@ -23,7 +23,7 @@ LatticeProcessorModule::ParameterData DriveSynthProcessor::createParameters()
     addParameter({"Decay", {0, 2, 0.1, 0.001, 1}});
     addParameter({"Sustain", {0, 1, 0.8, 0.001, 1}});
     addParameter({"Release", {0, 3, 0.1, 0.001, 1}});
-    addParameter({"Drive", {0, 100, 1, 0.001, 1}});
+    addParameter({"Drive", {0, 50, 1, 0.001, .5f}});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

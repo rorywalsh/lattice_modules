@@ -301,7 +301,7 @@ public:
     }
 
     /** called by the host when a note is started
-     @return The time in second that any note wil last for. This is independant of your processor's release time, so make sure that you give enough time for your processor to release.
+     @return The time in second that any note wil last for. This is independent of your processor's release time, so make sure that you give enough time for your processor to release.
     */
     virtual float getTailOffTime()
     {

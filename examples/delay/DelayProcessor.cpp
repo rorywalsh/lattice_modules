@@ -25,10 +25,11 @@ LatticeProcessorModule::ParameterData DelayProcessor::createParameters()
 {
     addParameter({ "Delay Time Left", {0, 2, .1f, .01f, 1}});
     addParameter({ "Feedback Left", {0, 1, .5f, .01f, 1}});
-    addParameter({ "Dry Left", {0, 1, .5f, .01f, 1}});
+    addParameter({ "Dry Mix Left", {0, 1, .5f, .01f, 1}});
     addParameter({ "Delay Time Right", {0, 2, .1f, .01f, 1}});
     addParameter({ "Feedback Right", {0, 1, .5f, .01f, 1}});
-    addParameter({ "Dry Right", {0, 1, .5f, .01f, 1}});
+    addParameter({ "Dry Mix Right", {0, 1, .5f, .01f, 1}});
+    addParameter({ "Enabled", {0, 1, 1, 0, 1}, "", LatticeProcessorModule::ModuleParameter::ParamType::Switch});
     return ParameterData(getParameters(), getNumberOfParameters());
     
 }
@@ -48,14 +49,18 @@ void DelayProcessor::process(float** buffer, int /*numChannels*/, std::size_t bl
     std::copy(buffer[1], buffer[1] + blockSize, inR.begin());
     
 
-    auto &outL = delayL(inL, getParameter("Delay Time Left"), getParameter("Feedback Left"), getParameter("Dry Left"));
-    auto &outR = delayR(inR, getParameter("Delay Time Right"), getParameter("Feedback Right"), getParameter("Dry Right"));
+    auto &outL = delayL(inL, getParameter("Delay Time Left"), getParameter("Feedback Left"), getParameter("Dry Mix Left"));
+    auto &outR = delayR(inR, getParameter("Delay Time Right"), getParameter("Feedback Right"), getParameter("Dry Mix Right"));
 
-    for(std::size_t i = 0; i < blockSize ; i++)
+    if( getParameter("Enabled") == 1 )
     {
-        buffer[0][i] = outL[i];
-        buffer[1][i] = outR[i];
+        for(std::size_t i = 0; i < blockSize ; i++)
+        {
+            buffer[0][i] = outL[i];
+            buffer[1][i] = outR[i];
+        }
     }
+
 }
 
 
