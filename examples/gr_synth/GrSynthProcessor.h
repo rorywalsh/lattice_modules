@@ -50,6 +50,11 @@ class GrSynthProcessor : public LatticeProcessorModule
         return 32;
     }
 
+    float getTailOffTime() override
+    {
+        return getParameter("release");
+    }
+    
     const char* getModuleName() override
     {
         return "Grain Synth";
