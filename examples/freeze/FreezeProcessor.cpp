@@ -10,6 +10,10 @@ FreezeProcessor::FreezeProcessor():
   std::size_t n = 0;
   for(auto &s : win)
     s = 0.5 - 0.5*cos((Aurora::twopi*n++)/Aurora::def_fftsize);
+  //auto synwinhalf = win.begin() + win.size()/2;
+  
+  //for (int i = 1; i <= win.size()/2; i++)
+  //    *(synwinhalf - i) = *(synwinhalf + i - 1);
 }
 
 
@@ -41,20 +45,31 @@ void FreezeProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
 {
     in.resize(blockSize);
     syn.vsize(blockSize);
+    auto &s = anal.frame();
+    auto &ss = syn.vector();
 
     for(std::size_t i = 0; i < blockSize ; i++) 
       in[i] = (buffer[0][i] +  buffer[1][i])*0.5;
 
-    auto &s = anal(in);
-    
-    std::size_t n = 0;
-    for(auto &bin : s) {
-      if(!getParameter("Freeze Amplitude")) buf[n].amp(bin.amp());
-      if(!getParameter("Freeze Frequency")) buf[n].freq(bin.freq());
-      n++;
+    if(!getParameter("Freeze Amplitude")) {
+      anal(in);
+      std::copy(s.begin(), s.end(), buf.begin());
     }
+    else std::fill(buf.begin(), buf.end(), Aurora::specdata<float>(0,0));
+    syn(buf);
+
+    // if(anal.framecount() > framecount) {
+    // std::size_t n = 0;
+    // for(auto &bin : s) {
+    //   if(!getParameter("Freeze Amplitude")) buf[n].amp(bin.amp());
+    //   if(!getParameter("Freeze Frequency")) buf[n].freq(bin.freq());
+    //   else syn.clearph();
+    //   n++;
+    // }
     
-    auto &ss = syn(buf);
+    //framecount = anal.framecount();
+    //}
+    
     std::copy(ss.begin(), ss.end(), buffer[0]);
     std::copy(ss.begin(), ss.end(), buffer[1]);
 

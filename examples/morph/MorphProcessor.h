@@ -3,10 +3,10 @@
 #include "SpecStream.h"
 #include <iterator>
 
-class FreezeProcessor : public LatticeProcessorModule
+class MorphProcessor : public LatticeProcessorModule
 {
 public:
-    FreezeProcessor();
+    MorphProcessor();
     
     ChannelData createChannels() override;
     
@@ -23,14 +23,13 @@ public:
     
     const char* getModuleName() override
     {
-        return "Spectral Freeze";
+        return "Spectral Morph";
     }
 
 private:
     std::vector<float> win;
-    Aurora::SpecStream<float> anal;
+    Aurora::SpecStream<float> anal1, anal2;
     Aurora::SpecSynth<float> syn;
     std::vector<float> in;
     std::vector<Aurora::specdata<float>> buf;
-    int framecount = 0;
 };
