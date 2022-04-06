@@ -5,10 +5,11 @@
 
 
 GainProcessor::GainProcessor()
-	:LatticeProcessorModule()
+	:LatticeProcessorModule(),
+	samplesL(512, 0),
+	samplesR(512, 0)
 {
-	samplesL.resize(512);
-    samplesR.resize(512);
+
 }
 
 LatticeProcessorModule::ChannelData GainProcessor::createChannels()
@@ -17,7 +18,7 @@ LatticeProcessorModule::ChannelData GainProcessor::createChannels()
 	addChannel({ "Gain Input 2", ChannelType::input });
 	addChannel({ "Gain Output 1", ChannelType::output });
 	addChannel({ "Gain Output 2", ChannelType::output });
-	return ChannelData(getChannels(), getNumberOfChannels());
+	return {getChannels(), getNumberOfChannels()};
 }
 
 
@@ -26,7 +27,7 @@ LatticeProcessorModule::ParameterData GainProcessor::createParameters()
 {
     addParameter({"Gain Left", LatticeProcessorModule::ModuleParameter::Range(0.f, 1.f, 0.4f, 0.001f, 1.f)});
     addParameter({"Gain Right", LatticeProcessorModule::ModuleParameter::Range(0.f, 1.f, 0.4f, 0.001f, 1.f)});
-	return ParameterData(getParameters(), getNumberOfParameters());
+	return {getParameters(), getNumberOfParameters()};
 }
 
 void GainProcessor::prepareProcessor(int /*sr*/, std::size_t block)
@@ -38,11 +39,6 @@ void GainProcessor::prepareProcessor(int /*sr*/, std::size_t block)
 
 void GainProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
 {
-    inL.resize(blockSize);
-    inR.resize(blockSize);
-
-    std::copy(buffer[0], buffer[0] + blockSize, inL.begin());
-    std::copy(buffer[1], buffer[1] + blockSize, inR.begin());
 
     for(int i = 0; i < blockSize ; i++)
     {
@@ -54,13 +50,10 @@ void GainProcessor::process(float** buffer, int /*numChannels*/, std::size_t blo
 	samplesL.push_back(buffer[0][0]);
     samplesR.erase(samplesR.begin());
     samplesR.push_back(buffer[1][0]);
-    if (getRMS(samplesL) > 0 || getRMS(samplesR) > 0)
-        okToDraw = true;
 }
 
 const char* GainProcessor::getSVGXml()
 {
-	okToDraw = true;
 	const float width = 200;
 	const float height = 180;
 	svg::Dimensions dimensions(width, height);
