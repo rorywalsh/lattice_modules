@@ -15,7 +15,7 @@ endif()
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Source" FILES ${SOURCE})
 
-add_compile_options ( -fdeclspec -fms-extensions)
+#add_compile_options ( -fdeclspec -fms-extensions)
 
 # Create plugin module
 add_library(${PROJECT_NAME} SHARED ${SOURCE})
