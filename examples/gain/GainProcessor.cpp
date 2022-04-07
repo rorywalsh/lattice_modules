@@ -25,8 +25,8 @@ LatticeProcessorModule::ChannelData GainProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData GainProcessor::createParameters()
 {
-    addParameter({"Gain Left", LatticeProcessorModule::ModuleParameter::Range(0.f, 1.f, 0.4f, 0.001f, 1.f)});
-    addParameter({"Gain Right", LatticeProcessorModule::ModuleParameter::Range(0.f, 1.f, 0.4f, 0.001f, 1.f)});
+    addParameter({"Gain Left", LatticeProcessorModule::ModuleParameter::Range(0.f, 4.f, 1.f, 0.001f, 1.f)});
+    addParameter({"Gain Right", LatticeProcessorModule::ModuleParameter::Range(0.f, 4.f, 1.f, 0.001f, 1.f)});
 	return {getParameters(), getNumberOfParameters()};
 }
 

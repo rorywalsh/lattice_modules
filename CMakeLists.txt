@@ -42,5 +42,6 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/examples/convolution_reverb)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/tvconv)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/freeze)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/morph)
+add_subdirectory(${CMAKE_SOURCE_DIR}/examples/sfil)
 
 
