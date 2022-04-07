@@ -10,10 +10,6 @@ FreezeProcessor::FreezeProcessor():
   std::size_t n = 0;
   for(auto &s : win)
     s = 0.5 - 0.5*cos((Aurora::twopi*n++)/Aurora::def_fftsize);
-  //auto synwinhalf = win.begin() + win.size()/2;
-  
-  //for (int i = 1; i <= win.size()/2; i++)
-  //    *(synwinhalf - i) = *(synwinhalf + i - 1);
 }
 
 
@@ -31,47 +27,39 @@ LatticeProcessorModule::ParameterData FreezeProcessor::createParameters()
 {
     addParameter({ "Freeze Amplitude", {0, 1, 0, 1, 1}, "", LatticeProcessorModule::ModuleParameter::ParamType::Switch});
     addParameter({ "Freeze Frequency", {0, 1, 0, 1, 1}, "", LatticeProcessorModule::ModuleParameter::ParamType::Switch});
+    addParameter({ "Freeze All", {0, 1, 0, 1, 1}, "", LatticeProcessorModule::ModuleParameter::ParamType::Switch});
     return ParameterData(getParameters(), getNumberOfParameters());
     
 }
 
 void FreezeProcessor::prepareProcessor(int sr, std::size_t/*block*/)
 {
-	//delayL.reset(2, sr);
-	//delayL.reset(2, sr);
+  anal.reset(sr);
+  syn.reset(sr);	     
 }
 
 void FreezeProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
 {
+  
     in.resize(blockSize);
     syn.vsize(blockSize);
-    auto &s = anal.frame();
-    auto &ss = syn.vector();
-
+    
     for(std::size_t i = 0; i < blockSize ; i++) 
       in[i] = (buffer[0][i] +  buffer[1][i])*0.5;
 
-    if(!getParameter("Freeze Amplitude")) {
-      anal(in);
-      std::copy(s.begin(), s.end(), buf.begin());
+    auto &spec = anal(in);      
+    if(anal.framecount() > framecount) {
+    std::size_t n = 0;
+    for(auto &bin : spec) {
+      if(!getParameter("Freeze Amplitude") && !getParameter("Freeze All")) buf[n].amp(bin.amp());
+      if(!getParameter("Freeze Frequency") && !getParameter("Freeze All")) buf[n].freq(bin.freq());
+      n++;
     }
-    else std::fill(buf.begin(), buf.end(), Aurora::specdata<float>(0,0));
-    syn(buf);
-
-    // if(anal.framecount() > framecount) {
-    // std::size_t n = 0;
-    // for(auto &bin : s) {
-    //   if(!getParameter("Freeze Amplitude")) buf[n].amp(bin.amp());
-    //   if(!getParameter("Freeze Frequency")) buf[n].freq(bin.freq());
-    //   else syn.clearph();
-    //   n++;
-    // }
-    
-    //framecount = anal.framecount();
-    //}
-    
-    std::copy(ss.begin(), ss.end(), buffer[0]);
-    std::copy(ss.begin(), ss.end(), buffer[1]);
+     framecount = anal.framecount();
+    }
+    auto &s = syn(buf);
+    std::copy(s.begin(), s.end(), buffer[0]);
+    std::copy(s.begin(), s.end(), buffer[1]);
 
 }
 

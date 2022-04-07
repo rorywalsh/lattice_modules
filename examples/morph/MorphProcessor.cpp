@@ -33,8 +33,9 @@ LatticeProcessorModule::ParameterData MorphProcessor::createParameters()
 
 void MorphProcessor::prepareProcessor(int sr, std::size_t/*block*/)
 {
-	//delayL.reset(2, sr);
-	//delayL.reset(2, sr);
+  anal1.reset(sr);
+  anal2.reset(sr);
+  syn.reset(sr);
 }
 
 void MorphProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
