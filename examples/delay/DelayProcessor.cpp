@@ -4,8 +4,8 @@
 
 
 DelayProcessor::DelayProcessor():
-delayL(2, 44100),
-delayR(2, 44100)
+  delayL(2.0,Aurora::def_sr, Aurora::def_vsize),
+delayR(2.0,Aurora::def_sr, Aurora::def_vsize)
 {
     
 }
