@@ -45,7 +45,7 @@ void FreezeProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
     syn.vsize(blockSize);
     
     for(std::size_t i = 0; i < blockSize ; i++) 
-      in[i] = (buffer[0][i] +  buffer[1][i])*0.5;
+      in[i] = (buffer[0][i] +  buffer[1][i])*0.333;
 
     auto &spec = anal(in);      
     if(anal.framecount() > framecount) {

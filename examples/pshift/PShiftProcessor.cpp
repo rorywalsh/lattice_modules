@@ -100,8 +100,8 @@ void PShiftProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
     }
     auto &s = syn(buf);
     for(std::size_t n=0; n < blockSize; n++) {
-      buffer[0][n] = sg*s[n]; // + wd*g*thru[n];
-      buffer[1][n] = g*thru[n];
+      buffer[0][n] = (1-wd)*sg*s[n] + wd*g*thru[n];
+      buffer[1][n] = wd*g*s[n] + (1-wd)*g*thru[n];
     }
 
 }
