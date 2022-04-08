@@ -24,7 +24,7 @@ public:
     
     const char* getModuleName() override
     {
-        return "Spectral Pitch Shifter";
+        return "Spectral Shifter";
     }
 
 private:

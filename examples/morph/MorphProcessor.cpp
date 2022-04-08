@@ -52,7 +52,7 @@ void MorphProcessor::process(float** buffer, int /*numChannels*/, std::size_t bl
 
     std::size_t n = 0;
     for(auto &bin : buf) {
-      bin.amp(s1[n].amp()*(1 - ia) + s2[n].amp()*ia);
+      bin.amp((s1[n].amp()*(1 - ia) + s2[n].amp()*ia)*0.666);
       bin.freq(s1[n].freq()*(1 - ifr) + s2[n].freq()*ifr);
       n++;
     }
