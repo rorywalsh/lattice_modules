@@ -44,5 +44,6 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/examples/freeze)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/morph)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/sfil)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/pshift)
+add_subdirectory(${CMAKE_SOURCE_DIR}/examples/svoc)
 
 
