@@ -26,8 +26,8 @@ LatticeProcessorModule::ChannelData  SVocProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData SVocProcessor::createParameters()
 {
-  addParameter({ "Depth", {0, 1, 1, 0.001, 1}});
-  addParameter({ "Gain", {0, 2, 1, 0.001, 1}});
+  addParameter({ "Formant Depth", {0, 1, 1, 0.001, 1}});
+  addParameter({ "Formant Gain", {0, 4, 1, 0.001, 1}});
   return ParameterData(getParameters(), getNumberOfParameters());
     
 }
@@ -62,9 +62,9 @@ void SVocProcessor::process(float** buffer, int /*numChannels*/, std::size_t blo
     if(check1 && check2) {
       auto &senv2 = ceps(s2, 30);
       float maxe = 0.f;
-      float eff = getParameter("Depth");
+      float eff = getParameter("Formant Depth");
       float dir = 1. - eff;
-      float gain = getParameter("Gain");
+      float gain = getParameter("Formant Gain");
       for(auto &m : senv2) 
 	if(m > maxe) maxe = m;
       for(auto &amp : ftmp) {
@@ -84,7 +84,7 @@ void SVocProcessor::process(float** buffer, int /*numChannels*/, std::size_t blo
       }
       n = 0 ;
       for(auto &bin : buf) {
-	bin.amp(fenv[n]*ftmp[n]*eff*gain + s2[n].amp()*dir);
+	bin.amp(fenv[n]*ftmp[n]*eff*gain + s2[n].amp()*dir*0.333);
 	bin.freq(s2[n].freq());
 	n++;
       }

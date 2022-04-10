@@ -18,20 +18,22 @@ LatticeProcessorModule::ChannelData  PShiftProcessor::createChannels()
 {
    addChannel({ "Input 1", LatticeProcessorModule::ChannelType::input });
    addChannel({ "Input 2", LatticeProcessorModule::ChannelType::input });
-   addChannel({ "Output 1", LatticeProcessorModule::ChannelType::output });
-   addChannel({ "Output 2", LatticeProcessorModule::ChannelType::output });
+   addChannel({ "Left", LatticeProcessorModule::ChannelType::output });
+   addChannel({ "Right", LatticeProcessorModule::ChannelType::output });
    return ChannelData(getChannels(), getNumberOfChannels());
 }
 
 
 LatticeProcessorModule::ParameterData PShiftProcessor::createParameters()
 {
-    addParameter({ "Pitch Shift", {0.01, 2, 1, 0.001, 1}});
-    addParameter({ "Frequency Shift", {-100, 100, 0, 1, 1}});
+    addParameter({ "Frequency Scale", {0.01, 2, 1, 0.001, 1}});
+    addParameter({ "Frequency Offset", {-1000, 1000, 0, 1, 1}});
+    addParameter({ "Formant Scale", {0.01, 2, 1, 0.001, 1}});
+    addParameter({ "Formant Offset", {-1000, 1000, 0, 1, 1}});
     addParameter({ "Shift Gain", {0, 1., 1, 0.001, 1}});
     addParameter({ "Direct Gain", {0, 1., 1, 0.001, 1}});
     addParameter({ "Stereo Width", {0, 1., 0, 0.001, 1}});
-    addParameter({ "Preserve Formants", {0, 1, 0, 1, 1}, "", LatticeProcessorModule::ModuleParameter::ParamType::Switch});
+    addParameter({ "Extract Formants", {0, 1, 0, 1, 1}, "", LatticeProcessorModule::ModuleParameter::ParamType::Switch});
     return ParameterData(getParameters(), getNumberOfParameters());
     
 }
@@ -53,7 +55,7 @@ void PShiftProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
     float wd = (1-getParameter("Stereo Width"))*0.5;
     
     for(std::size_t i = 0; i < blockSize ; i++) { 
-      in[i] = (buffer[0][i] +  buffer[1][i])*0.5;
+      in[i] = buffer[0][i];
       check += fabs(in[i]);
     }
 
@@ -63,23 +65,26 @@ void PShiftProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
     if(anal.framecount() > framecount) {
     auto size = anal.size();  
     std::size_t n = 0;
-    bool preserve = getParameter("Preserve Formants");
-    float scl = getParameter("Pitch Shift");
-    float offs = getParameter("Frequency Shift");
+    bool preserve = getParameter("Extract Formants");
+    float scl = getParameter("Frequency Scale");
+    float offs = getParameter("Frequency Offset");
+    float fscl = getParameter("Formant Scale");
+    float foffs = getParameter("Formant Offset");
     float offsr = offs*size/fs;
+    float foffsr = foffs*size/fs;
     std::fill(buf.begin(),buf.end(),Aurora::specdata<float>(0,0));
 
     if (preserve) {
      if(check) {
      auto &senv = ceps(spec, 30);
      float max = 0;
-     float lim = (scl+offsr)*0.5;
+     float lim = scl*fs/2 + foffsr;
      for(auto &m : senv) 
      if(m > max) max = m;
      for(auto &amp : ftmp) {
       float cf = n/float(size);
       amp = spec[n].amp();
-      if(senv[n] > 0 && cf < lim)	
+      if(senv[n] > 0 && n*fs/size < lim)	
 	amp *= max/senv[n++];
      }
      } else preserve = false;
@@ -87,11 +92,13 @@ void PShiftProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
     
     n = 0;	
     for(auto &bin : spec) {
-      float k = round((scl+offsr)*n);
+      int k = round(scl*n + offsr);
+      int j = round((1/fscl)*n - foffsr);
       auto &senv = ceps.vector();
-      if(k < spec.size()) {
+      if(k > 0  && k < spec.size() &&
+	 j > 0  && j < spec.size()) {
 	preserve == false ? buf[k].amp(bin.amp())
-	  :  buf[k].amp(ftmp[n]*senv[k]);
+	  :  buf[k].amp(ftmp[n]*senv[j]);
 	buf[k].freq(bin.freq()*scl + offs);
       }	
       n++;
@@ -101,7 +108,7 @@ void PShiftProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
     auto &s = syn(buf);
     for(std::size_t n=0; n < blockSize; n++) {
       buffer[0][n] = (1-wd)*sg*s[n] + wd*g*thru[n];
-      buffer[1][n] = wd*g*s[n] + (1-wd)*g*thru[n];
+      buffer[1][n] = wd*sg*s[n] + (1-wd)*g*thru[n];
     }
 
 }
