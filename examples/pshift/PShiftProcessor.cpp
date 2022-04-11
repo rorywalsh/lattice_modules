@@ -34,6 +34,7 @@ LatticeProcessorModule::ParameterData PShiftProcessor::createParameters()
     addParameter({ "Direct Gain", {0, 1., 1, 0.001, 1}});
     addParameter({ "Stereo Width", {0, 1., 0, 0.001, 1}});
     addParameter({ "Extract Formants", {0, 1, 0, 1, 1}, "", LatticeProcessorModule::ModuleParameter::ParamType::Switch});
+    addParameter({ "Lock Formants", {0, 1, 0, 1, 1}, "", LatticeProcessorModule::ModuleParameter::ParamType::Switch});
     return ParameterData(getParameters(), getNumberOfParameters());
     
 }
@@ -66,6 +67,7 @@ void PShiftProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
     auto size = anal.size();  
     std::size_t n = 0;
     bool preserve = getParameter("Extract Formants");
+    bool lock = getParameter("Lock Formants");
     float scl = getParameter("Frequency Scale");
     float offs = getParameter("Frequency Offset");
     float fscl = getParameter("Formant Scale");
@@ -74,17 +76,16 @@ void PShiftProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
     float foffsr = foffs*size/fs;
     std::fill(buf.begin(),buf.end(),Aurora::specdata<float>(0,0));
 
-    if (preserve) {
+    if (preserve || lock) {
      if(check) {
      auto &senv = ceps(spec, 30);
      float max = 0;
-     float lim = scl*fs/2 + foffsr;
      for(auto &m : senv) 
      if(m > max) max = m;
      for(auto &amp : ftmp) {
       float cf = n/float(size);
       amp = spec[n].amp();
-      if(senv[n] > 0 && n*fs/size < lim)	
+      if(senv[n] > 0)	
 	amp *= max/senv[n++];
      }
      } else preserve = false;
@@ -93,7 +94,8 @@ void PShiftProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
     n = 0;	
     for(auto &bin : spec) {
       int k = round(scl*n + offsr);
-      int j = round((1/fscl)*n - foffsr);
+      int j;
+      j =  lock ? k : round((1/fscl)*n - foffsr);
       auto &senv = ceps.vector();
       if(k > 0  && k < spec.size() &&
 	 j > 0  && j < spec.size()) {
