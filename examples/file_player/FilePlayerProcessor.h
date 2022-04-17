@@ -27,6 +27,13 @@ public:
         description = "";
     }
 
+    void startNote(int noteNumber, float velocity) override;
+
+    /** called by the host when a note is stoped
+     * @param velocity Midi velocity in the range of 0 to 1
+    */
+    void stopNote(float velocity) override;
+
     /* override this method if you want to draw to the Lattice generic editor viewport */
     const char* getSVGXml() override;
 
@@ -45,11 +52,16 @@ public:
     const char* getModuleName() override {    return "Soundfile Player";     }
     
 private:
+    bool noteOff = false;
+    bool oneShot = false;
+    int numSamples = 0;
+    int releaseSegment = 0;
+    float sampleIncrement = 1;
     std::vector<float> soundfileSamples;
     bool okToDraw = true;
     std::string svgText;
     bool isPlaying = false;
-    int sampleIndex = 0;
+    float sampleIndex = 0;
     bool fileLoaded = false;
     
 };

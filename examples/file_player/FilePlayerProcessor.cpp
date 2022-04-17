@@ -20,7 +20,9 @@ LatticeProcessorModule::ChannelData FilePlayerProcessor::createChannels()
 LatticeProcessorModule::ParameterData FilePlayerProcessor::createParameters()
 {
     addParameter({ "Play", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch });
+    addParameter({ "Oneshot MIDI", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch });
     addParameter({ "Load Soundfile", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::FileButton});
+    addParameter({ "Playback Rate", {0, 2, 1, 0.001, 1}, "" });
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
@@ -28,10 +30,11 @@ LatticeProcessorModule::ParameterData FilePlayerProcessor::createParameters()
 void FilePlayerProcessor::hostParameterChanged(const char* parameterID, const char* newValue)
 {
     const std::string paramName = getParameterNameFromId(parameterID);
-    if(paramName == "Load Soundfile")
+    if (paramName == "Load Soundfile")
     {
-        //std::cout << "File to load" << newValue;
         auto samples = getSamplesFromFile(newValue);
+        numSamples = samples.numSamples;
+        releaseSegment = numSamples;
         soundfileSamples.resize(samples.numSamples);
         std::copy(samples.data[0], samples.data[0] + samples.numSamples, soundfileSamples.begin());
         okToDraw = true;
@@ -42,10 +45,22 @@ void FilePlayerProcessor::hostParameterChanged(const char* parameterID, const ch
 void FilePlayerProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
     const std::string paramName = getParameterNameFromId(parameterID);
+    updateParameter(paramName, newValue);
+
     if(paramName == "Play")
     {
         isPlaying =! isPlaying;
+        if (!isPlaying)
+            sampleIndex = 0;
     }
+    else if (paramName == "Oneshot MIDI")
+    {
+        if (newValue == 0 && isPlaying == getParameter("Play") == 0)
+            releaseSegment = 0;
+    }
+    else if (paramName == "Playback Rate")
+        sampleIncrement = newValue;
+    
 }
 
 
@@ -60,11 +75,13 @@ void FilePlayerProcessor::process(float** buffer, int /*numChannels*/, std::size
 {
     for(int i = 0; i < blockSize ; i++)
     {
-        if(isPlaying && fileLoaded)
+        if(isPlaying && fileLoaded && releaseSegment > 0)
         {
-            buffer[0][i] = soundfileSamples[sampleIndex];
-            buffer[1][i] = soundfileSamples[sampleIndex];
-            sampleIndex = sampleIndex < soundfileSamples.size()-1 ? sampleIndex+1 : 0;
+            buffer[0][i] = soundfileSamples[static_cast<int>(sampleIndex)];
+            buffer[1][i] = soundfileSamples[static_cast<int>(sampleIndex)];
+            sampleIndex = sampleIndex < soundfileSamples.size()-1 ? sampleIndex+sampleIncrement : 0;
+            if ( noteOff == true || getParameter("Oneshot MIDI") == 1 )
+                releaseSegment--;
         }
         else
         {
@@ -75,6 +92,21 @@ void FilePlayerProcessor::process(float** buffer, int /*numChannels*/, std::size
         
     }
 
+}
+
+void FilePlayerProcessor::startNote(int noteNumber, float velocity)
+{
+    isPlaying = true;
+    releaseSegment = numSamples;
+    sampleIndex = 0;
+    noteOff = false;
+}
+
+void FilePlayerProcessor::stopNote(float velocity)
+{
+    noteOff = true;
+    if (getParameter("Oneshot MIDI") == 0)
+        releaseSegment = 0;
 }
 
 const char* FilePlayerProcessor::getSVGXml()
