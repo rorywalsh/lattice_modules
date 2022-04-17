@@ -25,9 +25,9 @@ LatticeProcessorModule::ParameterData MidiMakerProcessor::createParameters()
     addParameter({ "Tempo", {0, 20, 1, 0.2, 1}});
     addParameter({ "Lowest Note", {20, 128, 48, 1, 1}});
     addParameter({ "Range in semitones", {0, 60, 12, 1, 1}});
-	addParameter({ "Generate new pattern", {0, 1, 1, 1, 1}, "", ModuleParameter::ParamType::Trigger });
-	addParameter({ "Permit silences", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch });
-	addParameter({ "Play Midi", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch });
+	addParameter({ "Generate new pattern", {0, 1, 1, 1, 1}, ModuleParameter::ParamType::Trigger });
+	addParameter({ "Permit silences", {0, 1, 0, 1, 1}, ModuleParameter::ParamType::Switch });
+	addParameter({ "Play Midi", {0, 1, 0, 1, 1}, ModuleParameter::ParamType::Switch });
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

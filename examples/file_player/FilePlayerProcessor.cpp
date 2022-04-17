@@ -19,10 +19,10 @@ LatticeProcessorModule::ChannelData FilePlayerProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData FilePlayerProcessor::createParameters()
 {
-    addParameter({ "Play", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch });
-    addParameter({ "Oneshot MIDI", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch });
-    addParameter({ "Load Soundfile", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::FileButton});
-    addParameter({ "Playback Rate", {0, 2, 1, 0.001, 1}, "" });
+    addParameter({ "Play", {0, 1, 0, 1, 1}, ModuleParameter::ParamType::Switch });
+    addParameter({ "Oneshot MIDI", {0, 1, 0, 1, 1}, ModuleParameter::ParamType::Switch });
+    addParameter({ "Load Soundfile", {0, 1, 0, 1, 1}, ModuleParameter::ParamType::FileButton});
+    addParameter({ "Playback Rate", {0, 2, 1, 0.001, 1}});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

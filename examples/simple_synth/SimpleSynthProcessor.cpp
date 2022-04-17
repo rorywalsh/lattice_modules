@@ -51,10 +51,7 @@ SimpleSynthProcessor::SimpleSynthProcessor()
 
 LatticeProcessorModule::ChannelData SimpleSynthProcessor::createChannels()
 {
-    addChannel({"Input 1", LatticeProcessorModule::ChannelType::input });
-    addChannel({"Input 2", LatticeProcessorModule::ChannelType::input });
-    addChannel({"Output 1", LatticeProcessorModule::ChannelType::output });
-    addChannel({ "Output 2", LatticeProcessorModule::ChannelType::output });
+    addChannel({"Output", LatticeProcessorModule::ChannelType::output });
     return ChannelData(getChannels(), getNumberOfChannels());
 }
 

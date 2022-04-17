@@ -24,7 +24,7 @@ LatticeProcessorModule::ParameterData TVConvProcessor::createParameters()
 {
     addParameter({ "Gain", {0, 1.f, .1f, .01f, 1}});
     addParameter({ "Filter Length", {0, 1.f, .5f, .01f, 1}});
-    addParameter({ "Bypass", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Switch});
+    addParameter({ "Bypass", {0, 1, 0, 1, 1}, ModuleParameter::ParamType::Switch});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

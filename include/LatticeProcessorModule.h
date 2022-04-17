@@ -77,7 +77,7 @@ public:
     ```
     */
 
-        ModuleParameter(const char* name, Range paramRange, const char* paramLabel = "", ModuleParameter::ParamType type = ParamType::Slider)
+        ModuleParameter(const char* name, Range paramRange, ModuleParameter::ParamType type = ParamType::Slider, const char* paramLabel = "")
             :parameterName(name), range(paramRange), label(paramLabel), paramType(type) {}
 
         /** Set this to use a different label than the one given to parameterName */
@@ -369,6 +369,10 @@ public:
         return false;
     }
 
+    virtual bool acceptsMidiInput()
+    { 
+        return false; 
+    }
 
     /** Called by Lattice to determine the type of module to load.
     * @return returns the type of module
@@ -494,6 +498,8 @@ public:
         return connections[index].isConnected;
     }
     
+    
+
     struct AudioFileSamples{
         const float** data;
         int numChannels;

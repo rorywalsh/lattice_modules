@@ -4,17 +4,15 @@
 #include <sstream>
 
 
-TwoPoleProcessor::TwoPoleProcessor():lpL(44100), lpR(44100)
+TwoPoleProcessor::TwoPoleProcessor():lp(44100)
 {
 
 }
 
 LatticeProcessorModule::ChannelData TwoPoleProcessor::createChannels()
 {
-   addChannel({"Input 1", LatticeProcessorModule::ChannelType::input });
-   addChannel({"Input 2", LatticeProcessorModule::ChannelType::input });
-   addChannel({"Output 1", LatticeProcessorModule::ChannelType::output });
-   addChannel({ "Output 2", LatticeProcessorModule::ChannelType::output });
+   addChannel({"Input", LatticeProcessorModule::ChannelType::input });
+   addChannel({"Output", LatticeProcessorModule::ChannelType::output });
    return ChannelData(getChannels(), getNumberOfChannels());
 }
 
@@ -31,27 +29,21 @@ LatticeProcessorModule::ParameterData TwoPoleProcessor::createParameters()
 
 void TwoPoleProcessor::prepareProcessor(int sr, std::size_t block)
 {
-  	lpL.reset(sr);
-	lpR.reset(sr);
+  	lp.reset(sr);
 }
 
 
-void TwoPoleProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData /*hostInfo*/)
+void TwoPoleProcessor::process(float** buffer, int numChannels, std::size_t blockSize, const HostData /*hostInfo*/)
 {
-    inL.resize(blockSize);
-    inR.resize(blockSize);
+    in.resize(blockSize);
 
-    std::copy(buffer[0], buffer[0] + blockSize, inL.begin());
-    std::copy(buffer[1], buffer[1] + blockSize, inR.begin());
+    std::copy(buffer[0], buffer[0] + blockSize, in.begin());
 
-	const std::vector<float>& outL = lpL(inL, getParameter("Frequency"), getParameter("Damping"), getParameter("Overdrive"));
-	const std::vector<float>& outR = lpR(inR, getParameter("Frequency"), getParameter("Damping"), getParameter("Overdrive"));
+	const std::vector<float>& out = lp(in, getParameter("Frequency"), getParameter("Damping"), getParameter("Overdrive"));
 
-    for(int i = 0; i < blockSize ; i++)
-    {
-		buffer[0][i] = outL[i];
-		buffer[1][i] = outR[i];
-    }
+    for (int i = 0; i < blockSize; i++)
+        for (int chan = 0; chan < numChannels; chan++)
+            buffer[chan][i] = out[i];
 }
 
 // the class factories

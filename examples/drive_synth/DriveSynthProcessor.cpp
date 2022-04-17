@@ -12,8 +12,7 @@ DriveSynthProcessor::DriveSynthProcessor()
 
 LatticeProcessorModule::ChannelData DriveSynthProcessor::createChannels()
 {
-    addChannel({ "Output L", LatticeProcessorModule::ChannelType::output });
-    addChannel({ "Output R", LatticeProcessorModule::ChannelType::output });
+    addChannel({ "Output", LatticeProcessorModule::ChannelType::output });
     return ChannelData(getChannels(), getNumberOfChannels());
 }
 

@@ -33,8 +33,7 @@ public:
 
 
 private:
-	Aurora::OnePole<float> lpL, lpR;
-    std::vector<float> inL;
-    std::vector<float> inR;
+    Aurora::OnePole<float> lp;
+    std::vector<float> in;
 };
 

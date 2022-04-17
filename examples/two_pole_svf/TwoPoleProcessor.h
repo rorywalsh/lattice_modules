@@ -25,8 +25,7 @@ public:
     const char* getModuleName() override {    return "State Variable Filter";     }
 
 private:
-	Aurora::TwoPole<float> lpL, lpR;
-    std::vector<float> inL;
-    std::vector<float> inR;
+	Aurora::TwoPole<float> lp;
+    std::vector<float> in;
 };
 

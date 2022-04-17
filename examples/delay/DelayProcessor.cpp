@@ -29,7 +29,7 @@ LatticeProcessorModule::ParameterData DelayProcessor::createParameters()
     addParameter({ "Delay Time Right", {0, 2, .1f, .01f, 1}});
     addParameter({ "Feedback Right", {0, 1, .5f, .01f, 1}});
     addParameter({ "Dry Mix Right", {0, 1, .5f, .01f, 1}});
-    addParameter({ "Enabled", {0, 1, 1, 1, 1}, "", LatticeProcessorModule::ModuleParameter::ParamType::Switch});
+    addParameter({ "Enabled", {0, 1, 1, 1, 1}, LatticeProcessorModule::ModuleParameter::ParamType::Switch});
     return ParameterData(getParameters(), getNumberOfParameters());
     
 }

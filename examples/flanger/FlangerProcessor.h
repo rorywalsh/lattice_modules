@@ -61,9 +61,8 @@ public:
     }
 
 private:
-    Flanger flangerL, flangerR;
-    std::vector<float> inL;
-    std::vector<float> inR;
+    Flanger flanger;
+    std::vector<float> in;
     
     
 };

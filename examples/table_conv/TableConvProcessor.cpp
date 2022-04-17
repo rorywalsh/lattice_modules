@@ -29,7 +29,7 @@ LatticeProcessorModule::ChannelData TableConvProcessor::createChannels()
 LatticeProcessorModule::ParameterData TableConvProcessor::createParameters()
 {
     addParameter({ "Gain", {0, 1, 0, 0.001, 1}});
-    addParameter({ "Update Table", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Trigger });
+    addParameter({ "Update Table", {0, 1, 0, 1, 1}, ModuleParameter::ParamType::Trigger });
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

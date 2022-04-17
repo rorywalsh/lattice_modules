@@ -27,7 +27,7 @@ LatticeProcessorModule::ChannelData TableViewerProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData TableViewerProcessor::createParameters()
 {
-    addParameter({ "Update Table", {0, 1, 0, 1, 1}, "", ModuleParameter::ParamType::Trigger });
+    addParameter({ "Update Table", {0, 1, 0, 1, 1},  ModuleParameter::ParamType::Trigger });
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

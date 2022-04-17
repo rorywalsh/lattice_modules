@@ -25,9 +25,9 @@ LatticeProcessorModule::ChannelData  FreezeProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData FreezeProcessor::createParameters()
 {
-    addParameter({ "Freeze Amplitude", {0, 1, 0, 1, 1}, "", LatticeProcessorModule::ModuleParameter::ParamType::Switch});
-    addParameter({ "Freeze Frequency", {0, 1, 0, 1, 1}, "", LatticeProcessorModule::ModuleParameter::ParamType::Switch});
-    addParameter({ "Freeze All", {0, 1, 0, 1, 1}, "", LatticeProcessorModule::ModuleParameter::ParamType::Switch});
+    addParameter({ "Freeze Amplitude", {0, 1, 0, 1, 1}, LatticeProcessorModule::ModuleParameter::ParamType::Switch});
+    addParameter({ "Freeze Frequency", {0, 1, 0, 1, 1}, LatticeProcessorModule::ModuleParameter::ParamType::Switch});
+    addParameter({ "Freeze All", {0, 1, 0, 1, 1}, LatticeProcessorModule::ModuleParameter::ParamType::Switch});
     return ParameterData(getParameters(), getNumberOfParameters());
     
 }

@@ -27,8 +27,7 @@ public:
     }
 
 private:
-	Aurora::Eq<float> eqL, eqR;
-    std::vector<float> inL;
-    std::vector<float> inR;
+	Aurora::Eq<float> eq;
+    std::vector<float> in;
 };
 

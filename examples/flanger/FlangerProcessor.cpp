@@ -4,18 +4,15 @@
 
 
 FlangerProcessor::FlangerProcessor()
-: flangerL(10, 44100),
-flangerR(10, 44100)
+: flanger(10, 44100)
 {
     
 }
 
 LatticeProcessorModule::ChannelData FlangerProcessor::createChannelLayout()
 {
-    addChannel({"Input 1", LatticeProcessorModule::ChannelType::input });
-    addChannel({ "Input 2", LatticeProcessorModule::ChannelType::input });
-    addChannel({ "Output 1", LatticeProcessorModule::ChannelType::output });
-    addChannel({ "Output 1", LatticeProcessorModule::ChannelType::output });
+    addChannel({"Input", LatticeProcessorModule::ChannelType::input });
+    addChannel({ "Output", LatticeProcessorModule::ChannelType::output });
     return ChannelData(getChannels(), getNumberOfChannels());
 }
 
@@ -32,27 +29,21 @@ LatticeProcessorModule::ParameterData FlangerProcessor::createParameters()
 
 void FlangerProcessor::prepareProcessor(int sr, std::size_t block)
 {
-	flangerL.reset(sr);
-	flangerR.reset(sr);
+	flanger.reset(sr);
 }
 
 void FlangerProcessor::process(float** buffer, int numChannels, std::size_t blockSize, const HostData)
 {
    
-    inL.resize(blockSize);
-    inR.resize(blockSize);
+    in.resize(blockSize);
     
-    std::copy(buffer[0], buffer[0] + blockSize, inL.begin());
-    std::copy(buffer[1], buffer[1] + blockSize, inR.begin());
+    std::copy(buffer[0], buffer[0] + blockSize, in.begin());
     
-    auto &l = flangerL(inL, getParameter("LFO Frequency"), getParameter("Feedback"), getParameter("Gain"), getParameter("Max Delay")/1000.f);
-    auto &r = flangerR(inL, getParameter("LFO Frequency"), getParameter("Feedback"), getParameter("Gain"), getParameter("Max Delay")/1000.f);
+    auto &out = flanger(in, getParameter("LFO Frequency"), getParameter("Feedback"), getParameter("Gain"), getParameter("Max Delay")/1000.f);
 
-    for(int i = 0; i < blockSize ; i++)
-    {
-        buffer[0][i] = l[i];
-        buffer[1][i] = r[i];
-    }
+    for (int i = 0; i < blockSize; i++)
+        for (int chan = 0; chan < numChannels; chan++)
+            buffer[chan][i] = out[i];
     
 }
 
