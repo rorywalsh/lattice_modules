@@ -19,7 +19,7 @@ LatticeProcessorModule::ChannelData OnePoleProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData OnePoleProcessor::createParameters()
 {
-    addParameter(LatticeProcessorModule::ModuleParameter("Frequency", {1, 22050, 100, 1, .5f}).withLabel("Hz."));
+    addParameter(LatticeProcessorModule::Parameter("Frequency", {1, 22050, 100, 1, .5f}).withLabel("Hz."));
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

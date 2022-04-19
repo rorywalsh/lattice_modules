@@ -33,8 +33,8 @@ LatticeProcessorModule::ParameterData PShiftProcessor::createParameters()
     addParameter({ "Shift Gain", {0, 1., 1, 0.001, 1}});
     addParameter({ "Direct Gain", {0, 1., 1, 0.001, 1}});
     addParameter({ "Stereo Width", {0, 1., 0, 0.001, 1}});
-    addParameter({ "Extract Formants", {0, 1, 0, 1, 1}, LatticeProcessorModule::ModuleParameter::ParamType::Switch});
-    addParameter({ "Lock Formants", {0, 1, 0, 1, 1}, LatticeProcessorModule::ModuleParameter::ParamType::Switch});
+    addParameter({ "Extract Formants", {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
+    addParameter({ "Lock Formants", {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
     return ParameterData(getParameters(), getNumberOfParameters());
     
 }

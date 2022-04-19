@@ -30,7 +30,7 @@ LatticeProcessorModule::ParameterData KSSynthProcessor::createParameters()
     addParameter({"Pluck Pos", {0, 1., 0.1, 0.001, 1}});
     addParameter({"Input Gain", {0, 1., 0.1, 0.001, 1}});
     addParameter({"Volume", {0, 1., 0.1, 0.001, 1}});
-    addParameter({ "Pluck", {0, 1, 1, 1, 1}, ModuleParameter::ParamType::Switch});
+    addParameter({ "Pluck", {0, 1, 1, 1, 1},  Parameter::Type::Switch});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

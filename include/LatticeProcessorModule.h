@@ -32,10 +32,10 @@ public:
     * This is the main Lattice parameter struct. As as many of these to as you need to the `std::vector<ModuleParameter>& parameters` that is passed to the `LatticeModuleProcessor::createParameters(std::vector<ModuleParameter>& parameters)` method. Each parameter added here will be accessible in the Lattice graph when you double click the processor module.
     *
     */
-    struct ModuleParameter
+    struct Parameter
     {
         /*! Parameter Type enum */
-        enum ParamType {
+        enum Type {
             Trigger = -99, /*!< A trigger button - shown only a single state button */
             Switch = -98,  /*!< A switch button - shown as an dual state button */
             Slider = -97, /*!< A slider (default) - shown as a horizontal slider */
@@ -77,19 +77,19 @@ public:
     ```
     */
 
-        ModuleParameter(const char* name, Range paramRange, ModuleParameter::ParamType type = ParamType::Slider)
+        Parameter(const char* name, Range paramRange, Parameter::Type type = Type::Slider)
             :parameterName(name), range(paramRange), paramType(type) 
         {
             
         }
 
-        ModuleParameter& withLabel(const char* l)
+        Parameter& withLabel(const char* l)
         {
             label = l;
             return *this;
         }
 
-        ModuleParameter& withHint(const char* h)
+        Parameter& withHint(const char* h)
         {
             hint = h;
             return *this;
@@ -100,7 +100,7 @@ public:
         /** Set this to add a postfix to the parameter name as it appears in the module editor window.*/
         const char* hint = "";
         /** Set the type of basic UI element to use for the parameter. If you select a a switch or trigger, many sure your parameter range is between 0 and 1, and the increment is set to 1*/
-        ParamType paramType = ParamType::Slider;
+        Type paramType = Type::Slider;
     };
 
 
@@ -194,9 +194,9 @@ public:
     };
 
     struct ParameterData {
-        ModuleParameter* data;
+        Parameter* data;
         std::size_t size;
-        ParameterData(ModuleParameter* n, std::size_t  s) : data(n), size(s) { }
+        ParameterData(Parameter* n, std::size_t  s) : data(n), size(s) { }
     };
 
     LatticeProcessorModule() {}
@@ -477,13 +477,13 @@ public:
 
     }
 
-    void addParameter(ModuleParameter p)
+    void addParameter(Parameter p)
     {
         parameters.push_back(p);
         parameterValues[p.parameterName].store(p.range.defaultValue);
     }
 
-    ModuleParameter* getParameters()
+    Parameter* getParameters()
     {
         return parameters.data();
     }
@@ -514,8 +514,6 @@ public:
     {
         return connections[index].isConnected;
     }
-    
-    
 
     struct AudioFileSamples{
         const float** data;
@@ -543,7 +541,7 @@ private:
     std::vector<Channel> channels;
     int inCount = 0;
     Connection connections[24];
-    std::vector<ModuleParameter> parameters;
+    std::vector<Parameter> parameters;
     int midiNoteNumber = 0;
     std::string nodeName;
     std::function<void(const char*, float)> paramCallback;

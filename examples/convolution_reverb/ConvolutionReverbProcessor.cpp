@@ -24,8 +24,8 @@ LatticeProcessorModule::ParameterData ConvolutionReverbProcessor::createParamete
 {
     addParameter({ "Reverb Gain", {0, 1.f, .5f, .01f, 1}});
     addParameter({ "Stereo Width", {0, 1.f, .5f, .01f, 1}});
-    addParameter({ "Bypass", {0, 1, 0, 1, 1}, ModuleParameter::ParamType::Switch});
-    addParameter({ "Load IR", {0, 1, 0, 1, 1}, ModuleParameter::ParamType::FileButton});
+    addParameter({ "Bypass", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
+    addParameter({ "Load IR", {0, 1, 0, 1, 1}, Parameter::Type::FileButton});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
