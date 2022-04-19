@@ -77,11 +77,28 @@ public:
     ```
     */
 
-        ModuleParameter(const char* name, Range paramRange, ModuleParameter::ParamType type = ParamType::Slider, const char* paramLabel = "")
-            :parameterName(name), range(paramRange), label(paramLabel), paramType(type) {}
+        ModuleParameter(const char* name, Range paramRange, ModuleParameter::ParamType type = ParamType::Slider)
+            :parameterName(name), range(paramRange), paramType(type) 
+        {
+            
+        }
+
+        ModuleParameter& withLabel(const char* l)
+        {
+            label = l;
+            return *this;
+        }
+
+        ModuleParameter& withHint(const char* h)
+        {
+            hint = h;
+            return *this;
+        }
 
         /** Set this to use a different label than the one given to parameterName */
-        const char* label = {};
+        const char* label = "";
+        /** Set this to add a postfix to the parameter name as it appears in the module editor window.*/
+        const char* hint = "";
         /** Set the type of basic UI element to use for the parameter. If you select a a switch or trigger, many sure your parameter range is between 0 and 1, and the increment is set to 1*/
         ParamType paramType = ParamType::Slider;
     };
