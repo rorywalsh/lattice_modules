@@ -53,9 +53,9 @@ void TScaleProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
     auto &spec = anal(in);
     std::size_t end;
     if(anal.framecount() > framecount) {
-     end = getParameter("Buffer Size")*fs/Aurora::def_hsize;
-     wp = wp < end  ? wp + 1 : 0;  
+     end = getParameter("Buffer Size")*fs/Aurora::def_hsize;  
      std::copy(spec.begin(), spec.end(), buf[wp].begin());
+     wp = wp < end  ? wp + 1 : 0;
     }
 
     auto &s = syn(buf[(int) rp]);
