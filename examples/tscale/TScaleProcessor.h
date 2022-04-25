@@ -35,6 +35,7 @@ private:
     float fs;
     std::vector<std::vector<Aurora::specdata<float>>> buf;
     std::vector<Aurora::specdata<float>> out;
+    float scrub;
     float rp;
     int wp;
     int framecount = 0;
