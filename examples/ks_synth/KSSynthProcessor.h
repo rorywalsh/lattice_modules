@@ -157,7 +157,12 @@ public:
     {
         return true;
     }
-
+    
+    int getNumberOfVoices() override
+    {
+        return 64;
+    }
+    
     float getTailOffTime()
     {
         return getParameter("Release Time");

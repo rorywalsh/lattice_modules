@@ -47,7 +47,7 @@ class GrSynthProcessor : public LatticeProcessorModule
 
     int getNumberOfVoices() override
     {
-        return 32;
+        return 64;
     }
 
     float getTailOffTime() override
