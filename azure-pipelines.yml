@@ -59,7 +59,7 @@ jobs:
           brew install ninja
           cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release
           cmake --build .
-          cp -rf $SYSTEM_DEFAULTWORKINGDIRECTORY/bin/Release $BUILD_ARTIFACTSTAGINGDIRECTORY
+          cp -rf $SYSTEM_DEFAULTWORKINGDIRECTORY/bin $BUILD_ARTIFACTSTAGINGDIRECTORY
     displayName: "Building..."
     env:
       COREHOST_TRACE: 0
