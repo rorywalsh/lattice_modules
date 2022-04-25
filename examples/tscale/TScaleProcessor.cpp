@@ -18,17 +18,16 @@ TScaleProcessor::TScaleProcessor():
 
 LatticeProcessorModule::ChannelData  TScaleProcessor::createChannels()
 {
-   addChannel({ "Input 1", LatticeProcessorModule::ChannelType::input });
-   addChannel({ "Input 2", LatticeProcessorModule::ChannelType::input });
-   addChannel({ "Output 1", LatticeProcessorModule::ChannelType::output });
-   addChannel({ "Output 2", LatticeProcessorModule::ChannelType::output });
+   addChannel({ "Input", LatticeProcessorModule::ChannelType::input });
+   addChannel({ "Output", LatticeProcessorModule::ChannelType::output });
    return ChannelData(getChannels(), getNumberOfChannels());
 }
 
 
 LatticeProcessorModule::ParameterData TScaleProcessor::createParameters()
 {
-    addParameter({ "Timescale", {0.1, 2, 1, 0.001, 1}});
+    addParameter({ "Input Signal", {0, 1, 1, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
+    addParameter({ "Timescale", {-2, 2, 1, 0.001, 1}});
     addParameter({ "Buffer Size", {0.5, 60, 10, 0.5, 1}});
     return ParameterData(getParameters(), getNumberOfParameters());
     
@@ -48,19 +47,20 @@ void TScaleProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
     syn.vsize(blockSize);
     
     for(std::size_t i = 0; i < blockSize ; i++) 
-      in[i] = (buffer[0][i] +  buffer[1][i])*0.333;
+      in[i] = buffer[0][i]*0.666;
 
     auto &spec = anal(in);
     std::size_t end;
     if(anal.framecount() > framecount) {
-     end = getParameter("Buffer Size")*fs/Aurora::def_hsize;  
-     std::copy(spec.begin(), spec.end(), buf[wp].begin());
+      
+     end = getParameter("Buffer Size")*fs/Aurora::def_hsize;
+     if(getParameter("Input Signal")) 
+       std::copy(spec.begin(), spec.end(), buf[wp].begin());
      wp = wp < end  ? wp + 1 : 0;
     }
 
     auto &s = syn(buf[(int) rp]);
     std::copy(s.begin(), s.end(), buffer[0]);
-    std::copy(s.begin(), s.end(), buffer[1]);
     
     if(anal.framecount() > framecount) {
      rp += getParameter("Timescale");
