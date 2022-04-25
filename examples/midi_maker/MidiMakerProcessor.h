@@ -24,7 +24,7 @@ public:
         paramValues is a list of parameter values passed from the host in order of their creation */
 	void processMidi(float** buffer, int numChannels, std::size_t blockSize, const HostData data, std::vector<LatticeMidiMessage>& midiMessages) override;
     
-	virtual std::string getNodeInformation()
+	virtual const char* getDescription() override
 	{
 		return "Midi Maker\n"
 			"\n"
