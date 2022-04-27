@@ -19,7 +19,6 @@ if len(sys.argv) == 3:
     newVersionNum = sys.argv[2]
 
 if len(sys.argv) == 3:
-    newVersionNum = sys.argv[2]
     newFileText = ""
     with open("CMakeLists.txt", "rt") as inputFile:
         for line in inputFile:
@@ -41,4 +40,4 @@ os.system('git add docs')
 os.system('git add include')
 os.system('git add README.md')
 os.system('git add CMakeLists.txt')
-os.system('git commit -m "'+sys.argv[1]+' - Version number:'+newVersionNum+'"')
+os.system('git commit -m "'+sys.argv[1]+' - Build number:'+newVersionNum+'"')
