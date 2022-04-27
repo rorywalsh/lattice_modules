@@ -10,6 +10,7 @@ if(MSVC)
     set(PLATFORM "Windows")
 else()
     set(PLATFORM "MacOS")
+    set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
 endif()
 
 add_compile_options ( -fdeclspec -fms-extensions)
