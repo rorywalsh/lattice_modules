@@ -60,6 +60,7 @@ jobs:
           cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release
           cmake --build .
           cp -rf $SYSTEM_DEFAULTWORKINGDIRECTORY/bin $BUILD_ARTIFACTSTAGINGDIRECTORY
+          cp -rf $SYSTEM_DEFAULTWORKINGDIRECTORY/validateModules.sh $BUILD_ARTIFACTSTAGINGDIRECTORY/bin
     displayName: "Building..."
     env:
       COREHOST_TRACE: 0
