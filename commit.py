@@ -3,8 +3,6 @@ import xml.etree.ElementTree as ET
 import sys
 import os
 
-
-
 def increment_ver(version):
     version = version.split('.')
     version[2] = str(int(version[2]) + 1)
@@ -14,8 +12,11 @@ newVersionNum = ""
 
 if len(sys.argv) < 2:
     print("usage:")
-    print('python commit.py "commit message" [version number]')
+    print('python commit.py "commit message" [build number]')
     exit()
+
+if len(sys.argv) == 3:
+    newVersionNum = sys.argv[2]
 
 if len(sys.argv) == 3:
     newVersionNum = sys.argv[2]
