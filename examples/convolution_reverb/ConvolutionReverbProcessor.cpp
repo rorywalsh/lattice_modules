@@ -5,7 +5,7 @@
 
 
 ConvolutionReverbProcessor::ConvolutionReverbProcessor()
-  : irTable(0), left(create_reverb(irTable)), right(create_reverb(irTable)), inL(Aurora::def_vsize), inR(Aurora::def_vsize)
+  : irTable(256), left(create_reverb(irTable)), right(create_reverb(irTable)), inL(Aurora::def_vsize), inR(Aurora::def_vsize)
 {
 	
 }
@@ -63,7 +63,8 @@ void ConvolutionReverbProcessor::prepareProcessor(int /*sr*/, std::size_t /*bloc
 
 void ConvolutionReverbProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
 {
-    if (fileLoaded && getParameter("Bypass")==0)
+     if(!fileLoaded) return;
+    if (getParameter("Bypass")==0)
     {
       inL.resize(blockSize);
       if(nchnls == 1) {
