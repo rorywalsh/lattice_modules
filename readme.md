@@ -22,21 +22,42 @@ Although the API itself is free of any dependencies, most of the example here us
 
 **`four_pole_lp`**: a resonant, four-pole low pass filter
 
-**`ks_synth`**: a simple Karplus Strong synth
+**`freeze`**: a spectral freeze
 
-**`midi_maker`**: a basic MIDI pattern generator
+**`freverb`**: a play on the popular freeverb reverb algorithm
 
-**`one_pole_lp`**: a one-pole low pass filter
+**`gain`**: a simple two channel gain module with waveform viewer
+
+**`gr_synth`**: a granular synth with optional audio rate amp and freq inputs
+
+**`ks_synth`**: a Karplus Strong synth with option audio input
+
+**`midi_maker`**: a simple generative MIDI note maker
+
+**`morph`**: a spectral morpher
+
+**`one_pole_lp`**: a simple-pole low pass filter
 
 **`param_eq`**: a single band parametric EQ
 
+**`pshift`**: a spectral pitch-shifter
+
+**`sill`**: a spectral filter
+
 **`simple_synth`**: a bare-bone synth with ADSR and selectable waveforms
+
+**`svoc`**: a spectral vocoder
+
+**`tscale`**: a spectral timescale effect
+
+**`tvconv`**: a time varying convolution reverb
 
 **`two_pole_svf`**: a two-pole state variable filter
 
 **`waveform_viewer`**: a bare-bones example of how to draw SVGs directly to a viewport on a Lattice module.
 
 To build:
+
 ```
 git clone https://github.com/rorywalsh/lattice_external
 cd lattice_external
@@ -46,3 +67,11 @@ mkdir build && cd build
 cmake .. 
 cmake --build .
 ```
+
+If accessing the modules from the Azure DevOps build, you will need to validate the modules before Lattice can load them. To do this, navigate to the binaries folder and run:
+```
+chmod +x validateModules.sh
+./validateModules.sh
+```
+
+
