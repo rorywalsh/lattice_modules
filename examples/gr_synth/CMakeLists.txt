@@ -3,8 +3,6 @@ project (GrainSynth)
 
 include_directories("../include/")
 include_directories("${CMAKE_SOURCE_DIR}/aurora/include")
-include_directories("${CMAKE_SOURCE_DIR}/aurora/examples")
-
 set(SOURCE GrSynthProcessor.cpp GrSynthProcessor.h)
 
 if(MSVC)
