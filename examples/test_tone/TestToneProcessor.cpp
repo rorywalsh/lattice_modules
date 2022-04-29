@@ -6,8 +6,7 @@
 
 TestToneProcessor::TestToneProcessor()
 : wave(4096), 
-oscL(&wave, 44100),
-oscR(&wave, 44100)
+osc(&wave, 44100)
 {
 	std::size_t n = 0;
 	for (auto& s : wave) {
@@ -17,10 +16,7 @@ oscR(&wave, 44100)
 
 LatticeProcessorModule::ChannelData TestToneProcessor::createChannels()
 {
-    addChannel({ "Input 1", ChannelType::input });
-    addChannel({ "Input 2", ChannelType::input });
-    addChannel({ "Output 2", ChannelType::output });
-    addChannel({ "Output 2", ChannelType::output });
+    addChannel({ "Output", ChannelType::output });
     return ChannelData(getChannels(), getNumberOfChannels());
 }
 
@@ -34,21 +30,35 @@ LatticeProcessorModule::ParameterData TestToneProcessor::createParameters()
 
 void TestToneProcessor::prepareProcessor(int sr, std::size_t /*block*/)
 {
-	oscL.reset(sr);
+	osc.reset(sr);
 }
 
 
 void TestToneProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData /*hostInfo*/)
 {
 
-	oscL.vsize(blockSize);
-	oscR.vsize(blockSize);
-	const std::vector<float>& outL = oscL(.5f, getParameter("Frequency"));
-	const std::vector<float>& outR = oscR(.5f, getParameter("Frequency"));
+	osc.vsize(blockSize);
+	const std::vector<float>& out = osc(.5f, getParameter("Frequency"));
 
     for(std::size_t i = 0; i < blockSize ; i++)
     {
-		buffer[0][i] = outL[i];
-		buffer[1][i] = outR[i];
+		buffer[0][i] = out[i];
     }
 }
+
+
+// the class factories
+#ifdef WIN32
+extern "C"
+{
+    __declspec(dllexport) LatticeProcessorModule* create() { return new TestToneProcessor; }
+};
+
+extern "C"
+{
+    __declspec(dllexport) void destroy(LatticeProcessorModule* p) { delete p; }
+};
+#else
+extern "C" LatticeProcessorModule* create(){             return new TestToneProcessor;         }
+extern "C" void destroy(LatticeProcessorModule* p){      delete p;                     }
+#endif

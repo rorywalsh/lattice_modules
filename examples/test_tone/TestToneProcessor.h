@@ -31,11 +31,8 @@ public:
 
 
 private:
-	Aurora::Osc<float, Aurora::lookupi<float>> oscL, oscR;
+	Aurora::Osc<float, Aurora::lookupi<float>> osc;
 	std::vector<float> wave;
 	float amp = .5f;
-    std::vector<float> inL;
-    std::vector<float> inR;
-	bool okToDraw = true;
 };
 
