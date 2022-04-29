@@ -50,6 +50,8 @@ void ChorusProcessor::process(float** buffer, int numChannels, std::size_t block
     std::copy(buffer[1], buffer[1] + blockSize, inR.begin());
     
 
+    getParameter("test");
+
     auto &l = chorus(inL, getParameter("LFO Frequency (L)"), getParameter("Delay Time (L)"), 0);
     auto &r = chorus(inR, getParameter("LFO Frequency (R)"), getParameter("Delay Time (R)"), 1);
 
