@@ -26,6 +26,7 @@ LatticeProcessorModule::ChannelData VOCSynthProcessor::createChannels()
 LatticeProcessorModule::ParameterData VOCSynthProcessor::createParameters()
 {
   addParameter({ "Keep Formants", {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
+  addParameter({ "Threshold", {-60, -6, -40, 1, 1}});
   addParameter({ "Slew Time", {0, 0.5, 0.01, 0.001, 1}});
   addParameter({ "Attack", {0, 1., 0.01, 0.001, 1}});
   addParameter({ "Decay", {0, 1., 0.01, 0.001, 1}});
@@ -74,6 +75,7 @@ void VOCSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::
     auto size = anal.size();  
     std::size_t n = 0;
     bool preserve = getParameter("Keep Formants");
+    float thresh = std::pow(10, getParameter("Threshold")/20.);
     float cps = ptrack(spec,0.01,getParameter("Slew Time"));
     float scl = 1.;
     if(cps > 0)
