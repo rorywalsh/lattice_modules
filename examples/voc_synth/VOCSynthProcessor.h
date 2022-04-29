@@ -43,7 +43,7 @@ public:
     
     int getNumberOfVoices() override
     {
-        return 1;
+        return 6;
     }
 
         float getTailOffTime() override

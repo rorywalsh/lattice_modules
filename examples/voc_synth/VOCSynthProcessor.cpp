@@ -34,8 +34,6 @@ LatticeProcessorModule::ParameterData VOCSynthProcessor::createParameters()
   return ParameterData(getParameters(), getNumberOfParameters());
 }
 
-
-
 void VOCSynthProcessor::prepareProcessor(int sr, std::size_t blockSize)
 {
   anal.reset(sr);
@@ -97,7 +95,6 @@ void VOCSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::
 	  
   	}
       }
-
     n = 0;	
     for(auto &bin : spec) {
       int k = round(scl*n);
