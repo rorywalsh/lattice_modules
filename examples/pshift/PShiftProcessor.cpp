@@ -99,7 +99,7 @@ void PShiftProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
       auto &senv = ceps.vector();
       if(k > 0  && k < spec.size() &&
 	 j > 0  && j < spec.size()) {
-	preserve == false ? buf[k].amp(bin.amp())
+	preserve == false || isnan(senv[j]) ? buf[k].amp(bin.amp())
 	  :  buf[k].amp(ftmp[n]*senv[j]);
 	buf[k].freq(bin.freq()*scl + offs);
       }	

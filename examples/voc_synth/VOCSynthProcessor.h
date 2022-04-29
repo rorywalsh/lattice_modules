@@ -3,6 +3,7 @@
 #include <iterator>
 #include "SpecStream.h"
 #include "SpecPitch.h"
+#include "Env.h"
 #include <cstdlib>
 #include <functional>
 #include <iostream>
@@ -42,13 +43,14 @@ public:
     
     int getNumberOfVoices() override
     {
-        return 64;
+        return 1;
+    }
+
+        float getTailOffTime() override
+    {
+        return 0;
     }
     
-    float getTailOffTime()
-    {
-        return getParameter("Release Time");
-    }
     
     ModuleType getModuleType() override
     {
@@ -69,7 +71,10 @@ private:
     std::vector<float> in;
     std::vector<float> ftmp;
     std::vector<Aurora::specdata<float>> buf;
+    float att, dec, sus, rel;
+    Aurora::Env<float> env;
+    float y;
     int framecount = 0;
     float fs = Aurora::def_sr;
-    bool note_on;
+    bool note_on = false;
 };
