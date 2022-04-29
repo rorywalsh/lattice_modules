@@ -73,7 +73,6 @@ private:
     std::vector<Aurora::specdata<float>> buf;
     float att, dec, sus, rel;
     Aurora::Env<float> env;
-    float y;
     int framecount = 0;
     float fs = Aurora::def_sr;
     bool note_on = false;

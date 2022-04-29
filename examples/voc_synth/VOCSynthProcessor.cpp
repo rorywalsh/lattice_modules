@@ -2,14 +2,14 @@
 #include "VOCSynthProcessor.h"
 #include <iterator>
 
-
+static const int dm = 8;
 
 //======================================================================================
 VOCSynthProcessor::VOCSynthProcessor() :
-  win(Aurora::def_fftsize), anal(win,128), syn(win,128), ptrack(200), ceps(win.size()),
+  win(Aurora::def_fftsize), anal(win,win.size()/dm), syn(win,win.size()/dm), ptrack(200, Aurora::def_sr/(win.size()/dm)), ceps(win.size()),
   in(Aurora::def_vsize), ftmp(win.size()/2 + 1), buf(win.size()/2 + 1),
   att(0.1f), dec(0.1f), sus(1.f), rel(0.1f),
-  env(att,dec,sus,rel), y(0)
+  env(att,dec,sus,rel)
 {
   std::size_t n = 0;
   for(auto &s : win)
@@ -25,7 +25,12 @@ LatticeProcessorModule::ChannelData VOCSynthProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData VOCSynthProcessor::createParameters()
 {
-  addParameter({ "Extract Formants", {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
+  addParameter({ "Keep Formants", {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
+  addParameter({ "Slew Time", {0, 0.5, 0.01, 0.001, 1}});
+  addParameter({ "Attack", {0, 1., 0.01, 0.001, 1}});
+  addParameter({ "Decay", {0, 1., 0.01, 0.001, 1}});
+  addParameter({ "Sustain", {0, 1., 1., 0.001, 1}});
+  addParameter({ "Release", {0, 1., 0.1, 0.001, 1}});
   return ParameterData(getParameters(), getNumberOfParameters());
 }
 
@@ -34,7 +39,8 @@ LatticeProcessorModule::ParameterData VOCSynthProcessor::createParameters()
 void VOCSynthProcessor::prepareProcessor(int sr, std::size_t blockSize)
 {
   anal.reset(sr);
-    syn.reset(sr);
+  syn.reset(sr);
+  ptrack.set_rate(sr/(win.size()/dm));
   fs = sr;
 }
 
@@ -42,15 +48,13 @@ void VOCSynthProcessor::startNote(int midiNoteNumber, float velocity )
 {
   setMidiNoteNumber(midiNoteNumber);
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
-  //std::cout << freq << "\n";
   note_on = true;
-  //std::cout << "note on\n";
 }
 
 void VOCSynthProcessor::stopNote (float /* velocity */)
 {
   note_on = false;
-  //std::cout << "note off\n";
+  env.release(getParameter("Release"));
 }
 
 void VOCSynthProcessor::triggerParameterUpdate(const std::string& parameterID, float newValue)
@@ -60,52 +64,24 @@ void VOCSynthProcessor::triggerParameterUpdate(const std::string& parameterID, f
 
 void VOCSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
 {
-  //if(!note_on) {
-  //std::fill(buffer[0], buffer[0]+blockSize, 0);
-  //return;
-  //}
-
-  //if(blockSize < 64){
-  //std::fill(buffer[0], buffer[0]+blockSize, 0);
-  //return;
-  //}
-    
-  
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
   in.resize(blockSize);
-
-
   syn.vsize(blockSize);
-  float check = 0;
-
-  //if(blockSize < 64)
-  //std::cout << blockSize << std::endl;
-    
-  for(std::size_t i = 0; i < blockSize ; i++) { 
-  in[i] = buffer[0][i];
-  check += fabs(in[i]);
-  }
-
-
+  att = getParameter("Attack");
+  dec = getParameter("Decay");
+  sus = getParameter("Sustain");
+  std::copy(buffer[0],buffer[0]+blockSize,in.begin());   
   auto &spec = anal(in);
   if(anal.framecount() > framecount) {
     auto size = anal.size();  
     std::size_t n = 0;
-    bool preserve = getParameter("Extract Formants");
-    float cps = ptrack(spec,0.01), scl = 1.;
-    y = cps*0.1 + y*0.9;
-    cps = y;
+    bool preserve = getParameter("Keep Formants");
+    float cps = ptrack(spec,0.01,getParameter("Slew Time"));
+    float scl = 1.;
     if(cps > 0)
       scl = freq/cps;
-
     std::fill(buf.begin(),buf.end(),Aurora::specdata<float>(0,0));
-
     n = 0;
-    //for(auto &s : spec) {
-    //buf[n++].amp(s.amp()+0.00001);
-    //}
-    //std::cout << scl << "\n"; 
-    if(check) {
     if (preserve) {
   	auto &senv = ceps(spec, 30);
   	float max = 0;
@@ -121,9 +97,7 @@ void VOCSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::
 	  
   	}
       }
-    } else preserve = false;
-   //preserve = false;
-    
+
     n = 0;	
     for(auto &bin : spec) {
       int k = round(scl*n);
@@ -139,9 +113,7 @@ void VOCSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::
   }
   auto &s = syn(buf);
   auto &e = env(s,note_on);
-  
   std::copy(e.begin(),e.end(), buffer[0]);
-
 }
 
 
