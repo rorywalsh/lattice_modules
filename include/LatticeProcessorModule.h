@@ -415,7 +415,10 @@ public:
         */
     float getParameter(std::string name)
     {
-        return parameterValues.at(name).load();
+        if(parameterValues.count(name))
+            return parameterValues.at(name).load();
+
+        return 0;
     }
 
     void updateParameter(std::string name, float newValue)
