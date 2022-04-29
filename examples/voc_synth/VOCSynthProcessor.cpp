@@ -44,13 +44,13 @@ void VOCSynthProcessor::startNote(int midiNoteNumber, float velocity )
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
   //std::cout << freq << "\n";
   note_on = true;
-  std::cout << "note on\n";
+  //std::cout << "note on\n";
 }
 
 void VOCSynthProcessor::stopNote (float /* velocity */)
 {
   note_on = false;
-  std::cout << "note off\n";
+  //std::cout << "note off\n";
 }
 
 void VOCSynthProcessor::triggerParameterUpdate(const std::string& parameterID, float newValue)
@@ -74,12 +74,8 @@ void VOCSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
   in.resize(blockSize);
 
-    for(std::size_t i = 0; i < blockSize ; i++) { 
-  in[i] = buffer[0][i];
-  
-  }
 
-  /* syn.vsize(blockSize);
+  syn.vsize(blockSize);
   float check = 0;
 
   //if(blockSize < 64)
@@ -141,10 +137,10 @@ void VOCSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::
     }
     framecount = anal.framecount();
   }
-  auto &s = syn(spec);
-  auto &e = env(in,note_on);
-  */
-  std::copy(in.begin(),in.end(), buffer[0]);
+  auto &s = syn(buf);
+  auto &e = env(s,note_on);
+  
+  std::copy(e.begin(),e.end(), buffer[0]);
 
 }
 
