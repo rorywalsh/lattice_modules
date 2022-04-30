@@ -1,6 +1,7 @@
 #pragma once
 #include "LatticeProcessorModule.h"
 #include "SpecStream.h"
+#include "SpecShift.h"
 #include "Del.h"
 #include <iterator>
 
@@ -31,11 +32,8 @@ private:
     std::vector<float> win;
     Aurora::SpecStream<float> anal;
     Aurora::SpecSynth<float> syn;
-    Aurora::Ceps<float> ceps;
+    Aurora::SpecShift<float> shift;
     Aurora::Del<float> delay;
     std::vector<float> in;
-    std::vector<float> ftmp;
-    std::vector<Aurora::specdata<float>> buf;
-    int framecount = 0;
     float fs = Aurora::def_sr;
 };

@@ -3,6 +3,7 @@
 #include <iterator>
 #include "SpecStream.h"
 #include "SpecPitch.h"
+#include "SpecShift.h"
 #include "Env.h"
 #include <cstdlib>
 #include <functional>
@@ -66,14 +67,11 @@ private:
     std::vector<float> win;
     Aurora::SpecStream<float> anal;
     Aurora::SpecSynth<float> syn;
-    Aurora::Ceps<float> ceps;
+    Aurora::SpecShift<float> shift;
     Aurora::SpecPitch<float> ptrack;
     std::vector<float> in;
-    std::vector<float> ftmp;
-    std::vector<Aurora::specdata<float>> buf;
     float att, dec, sus, rel;
     Aurora::Env<float> env;
-    int framecount = 0;
     float fs = Aurora::def_sr;
     bool note_on = false;
 };

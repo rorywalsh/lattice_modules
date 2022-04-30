@@ -6,9 +6,9 @@ static const int dm = 8;
 
 //======================================================================================
 VOCSynthProcessor::VOCSynthProcessor() :
-  win(Aurora::def_fftsize), anal(win,win.size()/dm), syn(win,win.size()/dm), ptrack(200, Aurora::def_sr/(win.size()/dm)), ceps(win.size()),
-  in(Aurora::def_vsize), ftmp(win.size()/2 + 1), buf(win.size()/2 + 1),
-  att(0.1f), dec(0.1f), sus(1.f), rel(0.1f),
+  win(Aurora::def_fftsize), anal(win,win.size()/dm), syn(win,win.size()/dm),
+  ptrack(200, Aurora::def_sr/(win.size()/dm)), shift(Aurora::def_sr,win.size(),win.size()/dm),
+  in(Aurora::def_vsize), att(0.1f), dec(0.1f), sus(1.f), rel(0.1f),
   env(att,dec,sus,rel)
 {
   std::size_t n = 0;
@@ -40,6 +40,7 @@ void VOCSynthProcessor::prepareProcessor(int sr, std::size_t blockSize)
   anal.reset(sr);
   syn.reset(sr);
   ptrack.set_rate(sr/(win.size()/dm));
+  shift.reset(sr);
   fs = sr;
 }
 
@@ -64,53 +65,20 @@ void VOCSynthProcessor::triggerParameterUpdate(const std::string& parameterID, f
 void VOCSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
 {
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
+  float thresh = std::pow(10, getParameter("Threshold")/20.), cps, scl = 1.;
   in.resize(blockSize);
   syn.vsize(blockSize);
   att = getParameter("Attack");
   dec = getParameter("Decay");
   sus = getParameter("Sustain");
   std::copy(buffer[0],buffer[0]+blockSize,in.begin());   
-  auto &spec = anal(in);
-  if(anal.framecount() > framecount) {
-    auto size = anal.size();  
-    std::size_t n = 0;
-    bool preserve = getParameter("Keep Formants");
-    float thresh = std::pow(10, getParameter("Threshold")/20.);
-    float cps = ptrack(spec,0.01,getParameter("Slew Time"));
-    float scl = 1.;
-    if(cps > 0)
+  auto &a = anal(in);
+  cps = ptrack(anal,thresh,getParameter("Slew Time"));
+  if(cps > 0)
       scl = freq/cps;
-    std::fill(buf.begin(),buf.end(),Aurora::specdata<float>(0,0));
-    n = 0;
-    if (preserve) {
-  	auto &senv = ceps(spec, 30);
-  	float max = 0;
-  	for(auto &m : senv) 
-  	  if(m > max) max = m;
-	n = 0;
-  	for(auto &amp : ftmp) {
-  	  float cf = n/float(size);
-  	  amp = spec[n].amp();
-  	  if(senv[n] > 0)	
-  	    amp *= max/senv[n++];
-	  else amp = 1.;
-	  
-  	}
-      }
-    n = 0;	
-    for(auto &bin : spec) {
-      int k = round(scl*n);
-      auto &senv = ceps.vector();
-      if(k > 0  && k < spec.size()) {
-  	preserve == false || isnan(senv[k]) ? buf[k].amp(bin.amp())
-  	  :  buf[k].amp(ftmp[n]*senv[k]);
-  	buf[k].freq(bin.freq()*scl);
-      }	
-      n++;
-    }
-    framecount = anal.framecount();
-  }
-  auto &s = syn(buf);
+  shift.lock_formants(getParameter("Keep Formants"));
+  auto &spec = shift(anal,scl);
+  auto &s = syn(spec);
   auto &e = env(s,note_on);
   std::copy(e.begin(),e.end(), buffer[0]);
 }
