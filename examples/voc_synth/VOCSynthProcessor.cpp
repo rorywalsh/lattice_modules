@@ -7,7 +7,7 @@ static const int dm = 8;
 //======================================================================================
 VOCSynthProcessor::VOCSynthProcessor() :
   win(Aurora::def_fftsize), anal(win,win.size()/dm), syn(win,win.size()/dm),
-  ptrack(200, Aurora::def_sr/(win.size()/dm)), shift(Aurora::def_sr,win.size(),win.size()/dm),
+  ptrack(200, Aurora::def_sr/(win.size()/dm)), shift(Aurora::def_sr,win.size()),
   in(Aurora::def_vsize), att(0.1f), dec(0.1f), sus(1.f), rel(0.1f),
   env(att,dec,sus,rel)
 {

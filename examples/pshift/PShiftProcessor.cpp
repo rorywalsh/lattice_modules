@@ -5,7 +5,7 @@
 
 PShiftProcessor::PShiftProcessor():
   win(Aurora::def_fftsize), anal(win,128), syn(win,128),
-  shift(Aurora::def_sr, win.size(), 128),
+  shift(Aurora::def_sr, win.size()),
   delay(Aurora::def_fftsize), in(Aurora::def_vsize)
 {
   std::size_t n = 0;
