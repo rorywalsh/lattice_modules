@@ -6,7 +6,8 @@
 ATuneProcessor::ATuneProcessor():
   win(Aurora::def_fftsize), anal(win,128), syn(win,128),
   shift(Aurora::def_sr, win.size()), ptrack(200, Aurora::def_sr/128),
-  on(128,true), in(Aurora::def_vsize)
+  on(128,true), in(Aurora::def_vsize),
+  labels({"C","C#","D","Eb","E","F","F#","G","Ab","A","Bb","B"})
 {
   std::size_t n = 0;
   for(auto &s : win)
@@ -24,14 +25,11 @@ LatticeProcessorModule::ChannelData  ATuneProcessor::createChannels()
 }
 
 
-void ATuneProcessor::hostParameterChanged(const char* parameterID, const char* newValue)
+void ATuneProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
     const std::string paramName = getParameterNameFromId(parameterID);
-    char str[3];
-    std::cout << paramName << "\n";	
     for(int n = 0; n < 12; n++) {
-      if(!strcmp(paramName.c_str(), labels[n])) {
-	
+      if(paramName == labels[n]) {
       for(int i = 0; i < 128; i++) 
         if(i%12 == n) on[i] = !on[i];
       }
@@ -46,12 +44,9 @@ LatticeProcessorModule::ParameterData ATuneProcessor::createParameters()
     addParameter({ "Keep Formants", {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
     addParameter({ "Threshold", {-60, -6, -40, 1, 1}});
     addParameter({ "Slew Time", {0, 0.5, 0.01, 0.001, 1}});
-    char str[4];
+    
     for(int n = 0; n < 12; n++)
-    {
-      std::snprintf(labels[n],3,"%d",n);
-      addParameter({labels[n], {0, 1, 1, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
-    }
+      addParameter({labels[n].c_str(), {0, 1, 1, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
     return ParameterData(getParameters(), getNumberOfParameters());
     
 }

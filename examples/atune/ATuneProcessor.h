@@ -16,7 +16,7 @@ public:
     /* This function is called by he host to populate the parameter vector */
     ParameterData createParameters() override;
 
-    void hostParameterChanged(const char* parameterID, const char* newValue) override;
+    void hostParameterChanged(const char* parameterID, float newValue) override;
 
     /*  This function is called by the host before playback/performance */
     void prepareProcessor(int sr, std::size_t block) override;
@@ -41,5 +41,5 @@ private:
     float ocps = 0.;
     float scl = 1.;
     float fs = Aurora::def_sr;
-    char labels[12][4];
+    std::vector<std::string> labels;
 };
