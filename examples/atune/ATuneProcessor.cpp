@@ -17,10 +17,8 @@ ATuneProcessor::ATuneProcessor():
 
 LatticeProcessorModule::ChannelData  ATuneProcessor::createChannels()
 {
-   addChannel({ "Input 1", LatticeProcessorModule::ChannelType::input });
-   addChannel({ "Input 2", LatticeProcessorModule::ChannelType::input });
-   addChannel({ "Left", LatticeProcessorModule::ChannelType::output });
-   addChannel({ "Right", LatticeProcessorModule::ChannelType::output });
+   addChannel({ "Input", LatticeProcessorModule::ChannelType::input });
+   addChannel({ "Output", LatticeProcessorModule::ChannelType::output });
    return ChannelData(getChannels(), getNumberOfChannels());
 }
 
