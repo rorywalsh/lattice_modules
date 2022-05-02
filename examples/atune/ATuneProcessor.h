@@ -38,7 +38,7 @@ private:
     Aurora::SpecPitch<float> ptrack;
     std::vector<float> in;
     std::vector<bool> on;
-    float ocps = 0.;
+    std::size_t framecount = 0;
     float scl = 1.;
     float fs = Aurora::def_sr;
     std::vector<std::string> labels;
