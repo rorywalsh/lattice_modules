@@ -294,7 +294,7 @@ public:
     * the module's vectors size. It defaults to false, but can be important for synths that take
     * audio input.
     */
-    virtual bool restrictBlocksize()
+    virtual bool restrictBlockSize()
     {
         return false;
     }
