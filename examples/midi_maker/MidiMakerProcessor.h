@@ -12,7 +12,7 @@ public:
     ParameterData createParameters() override;
     
     /*  This function is called by the host whenever a parameter changes */
-    void hostParameterChanged(const std::string& parameterID, float newValue);
+    void hostParameterChanged(const char* parameterID, float newValue) override;
     
     /*  This function is called by the host before playback/performance */
     void prepareProcessor(int sr, std::size_t block) override;
@@ -24,7 +24,7 @@ public:
         paramValues is a list of parameter values passed from the host in order of their creation */
 	void processMidi(float** buffer, int numChannels, std::size_t blockSize, const HostData data, std::vector<LatticeMidiMessage>& midiMessages) override;
     
-	virtual const char* getDescription() override
+	const char* getDescription() override
 	{
 		return "Midi Maker\n"
 			"\n"

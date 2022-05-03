@@ -31,7 +31,7 @@ LatticeProcessorModule::ParameterData MidiMakerProcessor::createParameters()
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
-void MidiMakerProcessor::hostParameterChanged(const std::string& parameterID, float /*newValue*/)
+void MidiMakerProcessor::hostParameterChanged(const char* parameterID, float /*newValue*/)
 {
     if(getParameterNameFromId(parameterID) == "Generate new pattern")
     {
