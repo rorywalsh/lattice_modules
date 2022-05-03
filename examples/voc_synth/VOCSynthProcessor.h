@@ -51,6 +51,8 @@ public:
     {
         return 0;
     }
+
+    bool restrictBlockSize() override { return true; }
     
     
     ModuleType getModuleType() override

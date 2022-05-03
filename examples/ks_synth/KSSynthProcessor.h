@@ -163,7 +163,7 @@ public:
         return 64;
     }
     
-    float getTailOffTime()
+    float getTailOffTime() override 
     {
         return getParameter("Release Time");
     }
@@ -172,6 +172,8 @@ public:
     {
         return ModuleType::synthProcessor;
     }
+
+    bool restrictBlockSize() override { return true; }
 
     const char* getModuleName() override
     {
