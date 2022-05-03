@@ -92,7 +92,7 @@ public:
         return "Bandlimited Synth";
     }
 
-    float getTailOffTime()
+    float getTailOffTime() override 
     {
         return getParameter("Release");
     }
