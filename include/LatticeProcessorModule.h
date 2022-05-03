@@ -423,6 +423,7 @@ public:
 
     void updateParameter(std::string name, float newValue)
     {
+
         parameterValues.at(name) = newValue;
     }
 

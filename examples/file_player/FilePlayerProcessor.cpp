@@ -22,7 +22,7 @@ LatticeProcessorModule::ParameterData FilePlayerProcessor::createParameters()
     addParameter({ "Play", {0, 1, 0, 1, 1},  Parameter::Type::Switch });
     addParameter({ "Oneshot MIDI", {0, 1, 0, 1, 1},  Parameter::Type::Switch });
     addParameter({ "Load Soundfile", {0, 1, 0, 1, 1},  Parameter::Type::FileButton});
-    addParameter({ "Playback Rate", {0, 2, 1, 0.001, 1}});
+    addParameter({ "Playback Rate", {-2, 2, 1, 0.001, 1}});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
@@ -45,7 +45,7 @@ void FilePlayerProcessor::hostParameterChanged(const char* parameterID, const ch
 void FilePlayerProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
     const std::string paramName = getParameterNameFromId(parameterID);
-    updateParameter(paramName, newValue);
+    //updateParameter(paramName, newValue); can't call this when one of the parameters is a filebutton type..
 
     if(paramName == "Play")
     {
@@ -79,7 +79,11 @@ void FilePlayerProcessor::process(float** buffer, int /*numChannels*/, std::size
         {
             buffer[0][i] = soundfileSamples[static_cast<int>(sampleIndex)];
             buffer[1][i] = soundfileSamples[static_cast<int>(sampleIndex)];
-            sampleIndex = sampleIndex < soundfileSamples.size()-1 ? sampleIndex+sampleIncrement : 0;
+            if(sampleIncrement < 0)
+                sampleIndex = sampleIndex > 0 ? sampleIndex+sampleIncrement : soundfileSamples.size() - 1;
+            else
+                sampleIndex = sampleIndex < soundfileSamples.size() - 1 ? sampleIndex + sampleIncrement : 0;
+
             if ( noteOff == true || getParameter("Oneshot MIDI") == 1 )
                 releaseSegment--;
         }
@@ -88,8 +92,6 @@ void FilePlayerProcessor::process(float** buffer, int /*numChannels*/, std::size
             buffer[0][i] = 0;
             buffer[1][i] = 0;
         }
-        
-        
     }
 
 }
