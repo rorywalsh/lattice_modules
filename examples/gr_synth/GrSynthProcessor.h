@@ -183,6 +183,8 @@ class GrSynthProcessor : public LatticeProcessorModule
     {
         return getParameter("release");
     }
+
+    bool restrictBlockSize() override { return true; }
     
     const char* getModuleName() override
     {
