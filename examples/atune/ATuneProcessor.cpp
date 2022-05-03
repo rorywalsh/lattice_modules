@@ -28,7 +28,6 @@ void ATuneProcessor::hostParameterChanged(const char* parameterID, float newValu
   const std::string paramName = getParameterNameFromId(parameterID);
   for(int n = 0; n < 12; n++) {
     if(paramName == labels[n]) {
-      std::cout << paramName << " : " << newValue << " : " << n << "\n";
       for(int i = 0; i < 128; i++) {
 	if(i%12 == n) {
 	  on[i] = newValue;
