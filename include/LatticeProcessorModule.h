@@ -290,6 +290,15 @@ public:
         return 32;
     }
 
+    /** Called by Lattice to determine if blocks sizes in synths should always match those of
+    * the module's vectors size. It defaults to false, but can be important for synths that take
+    * audio input.
+    */
+    virtual bool restrictBlocksize()
+    {
+        return false;
+    }
+    
     /** Called by the host when a float paremeter changes. The parameterID in this instance is a combination of the unique name for the module, assigned by the host, and the parameter name itself, i.e, 'Super Synth 11 - Attack'. Use the getParameterName() method to extract the parameter name - note that in the case of audio FX, you can just called getParameter() from your process block.
     * @param[in] parameterID The name of the parameter that has been update. This will also contain information about the module instance, so use getParameterName() to extract the actual module parameter name.
      * @param[in] newValue  The parameter value sent by the host.
