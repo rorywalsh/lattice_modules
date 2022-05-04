@@ -49,7 +49,7 @@ public:
 
         float getTailOffTime() override
     {
-        return 0;
+      return 0;
     }
 
     bool restrictBlockSize() override { return true; }
