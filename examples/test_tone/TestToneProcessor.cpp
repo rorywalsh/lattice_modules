@@ -23,7 +23,8 @@ LatticeProcessorModule::ChannelData TestToneProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData TestToneProcessor::createParameters()
 {
-    addParameter({ "Frequency", {0, 22050, 1000.f, 1.f, .5f}});
+    addParameter({ "Amplitude", {0, 1, 0.5f, 0.001f, 1.f}});
+    addParameter({ "Frequency", {0, 1000, 100.f, 0.001f, .5f}});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
@@ -36,9 +37,16 @@ void TestToneProcessor::prepareProcessor(int sr, std::size_t /*block*/)
 
 void TestToneProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData /*hostInfo*/)
 {
-
+    float amp = getParameter("Amplitude");
+    
+    if(isInputConnected(0))
+    {
+        amp =  (buffer[0][0]+1.f)/2.f;
+    }
+        
+       
 	osc.vsize(blockSize);
-	const std::vector<float>& out = osc(.5f, getParameter("Frequency"));
+    const std::vector<float>& out = osc(amp, getParameter("Frequency"));
 
     for(std::size_t i = 0; i < blockSize ; i++)
     {
