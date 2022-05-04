@@ -20,9 +20,10 @@ LatticeProcessorModule::ChannelData FilePlayerProcessor::createChannels()
 LatticeProcessorModule::ParameterData FilePlayerProcessor::createParameters()
 {
     addParameter({ "Play", {0, 1, 0, 1, 1},  Parameter::Type::Switch });
-    addParameter({ "Oneshot MIDI", {0, 1, 0, 1, 1},  Parameter::Type::Switch });
+    addParameter({ "Oneshot Midi", {0, 1, 0, 1, 1},  Parameter::Type::Switch });
     addParameter({ "Load Soundfile", {0, 1, 0, 1, 1},  Parameter::Type::FileButton});
     addParameter({ "Playback Rate", {-2, 2, 1, 0.001, 1}});
+    addParameter({ "Gain", {0, 1, .6, 0.001, 1}});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
@@ -45,17 +46,20 @@ void FilePlayerProcessor::hostParameterChanged(const char* parameterID, const ch
 void FilePlayerProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
     const std::string paramName = getParameterNameFromId(parameterID);
-    //updateParameter(paramName, newValue); can't call this when one of the parameters is a filebutton type..
+    updateParameter(paramName, newValue);
 
     if(paramName == "Play")
     {
-        isPlaying =! isPlaying;
-        if (!isPlaying)
+        isPlaying = (newValue == 1 ? true : false);
+        if (newValue == 1)
+        {
+            releaseSegment = numSamples;
             sampleIndex = 0;
+        }
     }
-    else if (paramName == "Oneshot MIDI")
+    else if (paramName == "Oneshot Midi")
     {
-        if (newValue == 0 && isPlaying == getParameter("Play") == 0)
+        if (newValue == 0)
             releaseSegment = 0;
     }
     else if (paramName == "Playback Rate")
@@ -77,14 +81,14 @@ void FilePlayerProcessor::process(float** buffer, int /*numChannels*/, std::size
     {
         if(isPlaying && fileLoaded && releaseSegment > 0)
         {
-            buffer[0][i] = soundfileSamples[static_cast<int>(sampleIndex)];
-            buffer[1][i] = soundfileSamples[static_cast<int>(sampleIndex)];
+            buffer[0][i] = soundfileSamples[static_cast<int>(sampleIndex)] * getParameter("Gain");
+            buffer[1][i] = soundfileSamples[static_cast<int>(sampleIndex)] * getParameter("Gain");
             if(sampleIncrement < 0)
                 sampleIndex = sampleIndex > 0 ? sampleIndex+sampleIncrement : soundfileSamples.size() - 1;
             else
                 sampleIndex = sampleIndex < soundfileSamples.size() - 1 ? sampleIndex + sampleIncrement : 0;
 
-            if ( noteOff == true || getParameter("Oneshot MIDI") == 1 )
+            if ( noteOff == true || getParameter("Oneshot Midi") == 1 )
                 releaseSegment--;
         }
         else
@@ -107,8 +111,8 @@ void FilePlayerProcessor::startNote(int noteNumber, float velocity)
 void FilePlayerProcessor::stopNote(float velocity)
 {
     noteOff = true;
-    if (getParameter("Oneshot MIDI") == 0)
-        releaseSegment = 0;
+    if (getParameter("Oneshot Midi") == 0)
+        releaseSegment = 0; //apply short fade out on release
 }
 
 const char* FilePlayerProcessor::getSVGXml()
