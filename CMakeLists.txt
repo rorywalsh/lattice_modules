@@ -50,4 +50,5 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/examples/tscale)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/voc_synth)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/test_tone)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/atune)
+add_subdirectory(${CMAKE_SOURCE_DIR}/examples/specsampler)
 
