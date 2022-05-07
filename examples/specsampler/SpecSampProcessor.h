@@ -51,7 +51,7 @@ public:
 
         float getTailOffTime() override
     {
-      return 0;
+      return getParameter("Release");
     }
 
     bool restrictBlockSize() override { return true; }
