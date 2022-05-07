@@ -7,7 +7,7 @@
 #include <cstdlib>
 #include <functional>
 #include <iostream>
-
+#include <atomic>
 
 class SpecSampProcessor : public LatticeProcessorModule
 {
@@ -46,7 +46,7 @@ public:
     
     int getNumberOfVoices() override
     {
-        return 1;
+        return 16;
     }
 
         float getTailOffTime() override
@@ -68,11 +68,14 @@ public:
     }
 
 private:
+    static std::atomic<bool> loading;
+    static std::atomic<bool> ready;
+    static std::vector<std::vector<Aurora::specdata<float>>> samp;
     std::vector<float> win;
     Aurora::SpecStream<float> anal;
     Aurora::SpecSynth<float> syn;
     Aurora::SpecShift<float> shift;
-    std::vector<std::vector<Aurora::specdata<float>>> samp;
+    std::vector<Aurora::specdata<float>> out;
     float att, dec, sus, rel;
     Aurora::Env<float> env;
     std::size_t hcnt;

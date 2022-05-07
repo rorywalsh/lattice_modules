@@ -3,12 +3,16 @@
 #include <iterator>
 
 static const int dm = 8;
+std::atomic<bool> SpecSampProcessor::loading = false;
+std::atomic<bool> SpecSampProcessor::ready = true;
+std::vector<std::vector<Aurora::specdata<float>>>
+SpecSampProcessor::samp(1, std::vector<Aurora::specdata<float>>(Aurora::def_fftsize));
 
 //======================================================================================
 SpecSampProcessor::SpecSampProcessor() :
   win(Aurora::def_fftsize), anal(win,win.size()/dm), syn(win,win.size()/dm),
-  shift(Aurora::def_sr,win.size()),
-  samp(1, std::vector<Aurora::specdata<float>>(win.size())), att(0.1f), dec(0.1f),
+  shift(Aurora::def_sr,win.size()), out(win.size()/2 + 1),
+   att(0.1f), dec(0.1f),
   sus(1.f), rel(0.1f), env(att,dec,sus,rel), hcnt(anal.hsize())
 {
   std::size_t n = 0;
@@ -39,12 +43,14 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID,
 						  const char* newValue)
 {
     const std::string paramName = getParameterNameFromId(parameterID);
-    if(paramName == "Load Sample")
+    if(paramName == "Load Sample" && ready)
     {
+        ready = false;
         std::cout << "File to load" << newValue << std::endl;
         auto samples = getSamplesFromFile(newValue);
 	//std::cout << samples.numSamples << std::endl;
 	if(samples.numSamples > 0) {
+	  loading = true;
 	  samp.resize(samples.numSamples/anal.hsize());
 	  std::cout << "frames: " << samp.size() << " : " << samples.numSamples
 		  << " : " << anal.hsize() << std::endl;
@@ -65,7 +71,8 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID,
 	        lfr.begin()); 
 	    samp.push_back(anal(lfr));
 	    } 
-	  } 
+	  }
+	loading = false;
 	}
 }
 
@@ -73,6 +80,7 @@ void SpecSampProcessor::prepareProcessor(int sr, std::size_t blockSize)
 {
   anal.reset(sr);
   syn.reset(sr);
+  hcnt = anal.hsize();
   shift.reset(sr);
   fs = sr;
 }
@@ -83,12 +91,14 @@ void SpecSampProcessor::startNote(int midiNoteNumber, float velocity )
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
   att = getParameter("Attack");
   dec = getParameter("Decay");
+  rp = 0;
   note_on = true;
 }
 
 void SpecSampProcessor::stopNote (float /* velocity */)
 {
   note_on = false;
+  ready = true;
   env.release(getParameter("Release"));
 }
 
@@ -100,18 +110,24 @@ void SpecSampProcessor::triggerParameterUpdate(const std::string& parameterID, f
 void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
 {
   syn.vsize(blockSize);
+  env.vsize(blockSize);
   sus = getParameter("Sustain");
-  if(hcnt >= anal.hsize()) {
+  auto &e = env(note_on);
+  if(hcnt >= anal.hsize() && !loading) {
     const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
     const float base = getMidiNoteInHertz(getParameter("Base Note"), 440);
     shift.lock_formants(getParameter("Keep Formants"));
     shift(samp[rp++],freq/base);
     rp = rp != samp.size() ? rp : 0; 
     hcnt -= anal.hsize();
+    std::size_t n = 0;
+    for(auto &bin : shift.frame()) {
+      out[n].freq(bin.freq());
+      out[n++].amp(bin.amp()*e[0]);
+  }  
   }
-  auto &s = syn(shift.frame());
-  auto &e = env(s,note_on);
-  std::copy(e.begin(),e.end(), buffer[0]);
+  auto &s = syn(out);
+  std::copy(s.begin(),s.end(), buffer[0]);
   hcnt += blockSize;
 }
 
