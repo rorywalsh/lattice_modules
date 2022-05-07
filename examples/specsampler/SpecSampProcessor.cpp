@@ -12,12 +12,12 @@ SpecSampProcessor::samp(1, std::vector<Aurora::specdata<float>>(Aurora::def_ffts
 SpecSampProcessor::SpecSampProcessor() :
   win(Aurora::def_fftsize), anal(win,win.size()/dm), syn(win,win.size()/dm),
   shift(Aurora::def_sr,win.size()), out(win.size()/2 + 1),
-   att(0.1f), dec(0.1f),
+  att(0.1f), dec(0.1f),
   sus(1.f), rel(0.1f), env(att,dec,sus,rel), hcnt(anal.hsize())
 {
   std::size_t n = 0;
   for(auto &s : win)
-  s = 0.5 - 0.5*cos((Aurora::twopi*n++)/Aurora::def_fftsize);
+    s = 0.5 - 0.5*cos((Aurora::twopi*n++)/Aurora::def_fftsize);
 }
 
 LatticeProcessorModule::ChannelData SpecSampProcessor::createChannels()
@@ -30,6 +30,10 @@ LatticeProcessorModule::ChannelData SpecSampProcessor::createChannels()
 LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
 {
   addParameter({ "Base Note", {0, 127, 60, 1, 1}});
+  addParameter({ "Fine Tune", {0.9439,1.0594, 1, 0.0001, 1}});
+  addParameter({ "Loop Start", {0, 1, 0, 0.001, 1}});
+  addParameter({ "Loop End", {0,1, 1, 0.001, 1}});
+  addParameter({ "Timescale", {0, 2, 1, 0.001, 1}});
   addParameter({ "Attack", {0, 1., 0.01, 0.001, 1}});
   addParameter({ "Decay", {0, 1., 0.01, 0.001, 1}});
   addParameter({ "Sustain", {0, 1., 1., 0.001, 1}});
@@ -40,40 +44,40 @@ LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
 }
 
 void SpecSampProcessor::hostParameterChanged(const char* parameterID,
-						  const char* newValue)
+					     const char* newValue)
 {
-    const std::string paramName = getParameterNameFromId(parameterID);
-    if(paramName == "Load Sample" && ready)
+  const std::string paramName = getParameterNameFromId(parameterID);
+  if(paramName == "Load Sample" && ready)
     {
-        ready = false;
-        std::cout << "File to load" << newValue << std::endl;
-        auto samples = getSamplesFromFile(newValue);
-	//std::cout << samples.numSamples << std::endl;
-	if(samples.numSamples > 0) {
-	  loading = true;
-	  samp.resize(samples.numSamples/anal.hsize());
-	  std::cout << "frames: " << samp.size() << " : " << samples.numSamples
+      ready = false;
+      std::cout << "File to load" << newValue << std::endl;
+      auto samples = getSamplesFromFile(newValue);
+      //std::cout << samples.numSamples << std::endl;
+      if(samples.numSamples > 0) {
+	loading = true;
+	samp.resize(samples.numSamples/anal.hsize());
+	std::cout << "frames: " << samp.size() << " : " << samples.numSamples
 		  << " : " << anal.hsize() << std::endl;
-	  std::size_t n = 0;
-	  std::vector<float> lfr(anal.hsize());
-	  for(auto &frame : samp) {
-	    std::copy(samples.data[0] + n,
-		      samples.data[0] + n + anal.hsize(),
-		      lfr.begin());
-	    frame = anal(lfr);
-            n += anal.hsize();
-	  }
-	  std::cout << "samples: " << n << "\n";
-	  if(n < samples.numSamples) {
-	    std::fill(lfr.begin(), lfr.end(), 0);
-	    std::copy(samples.data[0] + n,
-	    	      samples.data[0] + samples.numSamples,
-	        lfr.begin()); 
-	    samp.push_back(anal(lfr));
-	    } 
-	  }
-	loading = false;
+	std::size_t n = 0;
+	std::vector<float> lfr(anal.hsize());
+	for(auto &frame : samp) {
+	  std::copy(samples.data[0] + n,
+		    samples.data[0] + n + anal.hsize(),
+		    lfr.begin());
+	  frame = anal(lfr);
+	  n += anal.hsize();
 	}
+	std::cout << "samples: " << n << "\n";
+	if(n < samples.numSamples) {
+	  std::fill(lfr.begin(), lfr.end(), 0);
+	  std::copy(samples.data[0] + n,
+		    samples.data[0] + samples.numSamples,
+		    lfr.begin()); 
+	  samp.push_back(anal(lfr));
+	} 
+      }
+      loading = false;
+    }
 }
 
 void SpecSampProcessor::prepareProcessor(int sr, std::size_t blockSize)
@@ -117,14 +121,18 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
     const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
     const float base = getMidiNoteInHertz(getParameter("Base Note"), 440);
     shift.lock_formants(getParameter("Keep Formants"));
-    shift(samp[rp++],freq/base);
-    rp = rp != samp.size() ? rp : 0; 
+    shift(samp[(int)rp],freq*getParameter("Fine Tune")/base);
+    float beg = getParameter("Loop Start")*samp.size();
+    float end = getParameter("Loop End")*samp.size();
+    if(end <= beg) beg = end;
+    rp += getParameter("Timescale");
+    rp = rp < end ? rp : beg; 
     hcnt -= anal.hsize();
     std::size_t n = 0;
     for(auto &bin : shift.frame()) {
       out[n].freq(bin.freq());
       out[n++].amp(bin.amp()*e[0]);
-  }  
+    }  
   }
   auto &s = syn(out);
   std::copy(s.begin(),s.end(), buffer[0]);

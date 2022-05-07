@@ -49,7 +49,7 @@ public:
         return 16;
     }
 
-        float getTailOffTime() override
+    float getTailOffTime() override
     {
       return getParameter("Release");
     }
@@ -80,6 +80,6 @@ private:
     Aurora::Env<float> env;
     std::size_t hcnt;
     float fs = Aurora::def_sr;
-    std::size_t rp = 0;
+    float rp = 0;
     bool note_on = false;
 };
