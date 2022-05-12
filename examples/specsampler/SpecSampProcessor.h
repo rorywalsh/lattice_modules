@@ -24,6 +24,8 @@ public:
 
     void hostParameterChanged(const char* parameterID,
 						 const char* newValue) override;
+
+    void hostParameterChanged(const char* parameterID, float newValue) override;
     
     /* Call this method to trigger host callback */
     void triggerParameterUpdate(const std::string& parameterID, float newValue);
@@ -75,10 +77,13 @@ private:
     Aurora::SpecStream<float> anal;
     Aurora::SpecSynth<float> syn;
     Aurora::SpecShift<float> shift;
+    std::vector<Aurora::specdata<float>> del;
     std::vector<Aurora::specdata<float>> out;
     float att, dec, sus, rel;
     Aurora::Env<float> env;
     std::size_t hcnt;
+    float ta;
+    double cfa = 0 , cff = 0;
     float fs = Aurora::def_sr;
     float rp = 0;
     bool note_on = false;

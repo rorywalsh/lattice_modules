@@ -11,9 +11,9 @@ SpecSampProcessor::samp(1, std::vector<Aurora::specdata<float>>(Aurora::def_ffts
 //======================================================================================
 SpecSampProcessor::SpecSampProcessor() :
   win(Aurora::def_fftsize), anal(win,win.size()/dm), syn(win,win.size()/dm),
-  shift(Aurora::def_sr,win.size()), out(win.size()/2 + 1),
+  shift(Aurora::def_sr,win.size()), del(win.size()/2 + 1),  out(win.size()/2 + 1),
   att(0.1f), dec(0.1f),
-  sus(1.f), rel(0.1f), env(att,dec,sus,rel), hcnt(anal.hsize())
+  sus(1.f), rel(0.1f), env(att,dec,sus,rel), hcnt(anal.hsize()), ta(win.size()/(dm*Aurora::def_sr))
 {
   std::size_t n = 0;
   for(auto &s : win)
@@ -34,6 +34,8 @@ LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
   addParameter({ "Loop Start", {0, 1, 0, 0.001, 1}});
   addParameter({ "Loop End", {0,1, 1, 0.001, 1}});
   addParameter({ "Timescale", {0, 2, 1, 0.001, 1}});
+  addParameter({ "Amp Smear", {0, 1., 0, 0.001, 1}});
+  addParameter({ "Freq Smear", {0, 1., 0, 0.001, 1}});
   addParameter({ "Attack", {0, 1., 0.01, 0.001, 1}});
   addParameter({ "Decay", {0, 1., 0.01, 0.001, 1}});
   addParameter({ "Sustain", {0, 1., 1., 0.001, 1}});
@@ -80,6 +82,21 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID,
     }
 }
 
+void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newValue)
+{
+  const std::string paramName = getParameterNameFromId(parameterID);
+  //
+    if(paramName == "Amp Smear") {
+      float par = getParameter(paramName);
+      cfa = par > 0 ? std::pow(0.5, ta/par) : 0 ;
+      //std::cout << ta << std::endl;
+    } else if(paramName == "Freq Smear") {
+      float par = getParameter(paramName);
+      cff = par  > 0 ? std::pow(0.5, ta/par) : 0 ;
+  }
+  updateParameter(paramName, newValue);
+}
+
 void SpecSampProcessor::prepareProcessor(int sr, std::size_t blockSize)
 {
   anal.reset(sr);
@@ -87,6 +104,7 @@ void SpecSampProcessor::prepareProcessor(int sr, std::size_t blockSize)
   hcnt = anal.hsize();
   shift.reset(sr);
   fs = sr;
+  ta = win.size()/(dm*fs);
 }
 
 void SpecSampProcessor::startNote(int midiNoteNumber, float velocity )
@@ -113,6 +131,7 @@ void SpecSampProcessor::triggerParameterUpdate(const std::string& parameterID, f
 
 void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
 {
+  if(samp.size() > 1) {
   syn.vsize(blockSize);
   env.vsize(blockSize);
   sus = getParameter("Sustain");
@@ -130,13 +149,17 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
     hcnt -= anal.hsize();
     std::size_t n = 0;
     for(auto &bin : shift.frame()) {
-      out[n].freq(bin.freq());
-      out[n++].amp(bin.amp()*e[0]);
+      del[n].freq(bin.freq()*(1 - cff) + del[n].freq()*cff);
+      out[n].freq(del[n].freq());
+      del[n].amp(bin.amp()*(1 - cfa) + del[n].amp()*cfa);
+      out[n].amp(del[n].amp()*e[0]);
+      n++;
     }  
   }
   auto &s = syn(out);
   std::copy(s.begin(),s.end(), buffer[0]);
   hcnt += blockSize;
+  }
 }
 
 
