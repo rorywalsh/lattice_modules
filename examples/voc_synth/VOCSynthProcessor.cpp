@@ -48,6 +48,8 @@ void VOCSynthProcessor::startNote(int midiNoteNumber, float velocity )
 {
   setMidiNoteNumber(midiNoteNumber);
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
+  att = getParameter("Attack");
+  dec = getParameter("Decay");
   note_on = true;
 }
 
@@ -68,8 +70,6 @@ void VOCSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::
   float thresh = std::pow(10, getParameter("Threshold")/20.), cps, scl = 1.;
   in.resize(blockSize);
   syn.vsize(blockSize);
-  att = getParameter("Attack");
-  dec = getParameter("Decay");
   sus = getParameter("Sustain");
   std::copy(buffer[0],buffer[0]+blockSize,in.begin());   
   auto &a = anal(in);
