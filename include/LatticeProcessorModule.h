@@ -6,6 +6,7 @@
 #include <map>
 #include <atomic>
 #include <functional>
+#include <algorithm>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -78,7 +79,7 @@ public:
     */
 
         Parameter(const char* name, Range paramRange, Parameter::Type type = Type::Slider)
-            :parameterName(name), range(paramRange), paramType(type) 
+            :parameterName(name), range(paramRange), paramType(type)
         {
             
         }
@@ -396,8 +397,8 @@ public:
     }
 
     virtual bool acceptsMidiInput()
-    { 
-        return false; 
+    {
+        return false;
     }
 
     /** Called by Lattice to determine the type of module to load.
@@ -432,10 +433,26 @@ public:
 
     void updateParameter(std::string name, float newValue)
     {
-
         parameterValues.at(name) = newValue;
     }
 
+    void addAutomationToParameters(float** buffer, int numChannels)
+    {
+        int inputs = getNumberOfInputChannels();
+        for(int i = inputs ; i < numChannels ; i++)
+        {
+            if(isInputConnected(i-inputs))
+            {
+                const auto parameterName = parameters[i-inputs].parameterName;
+                auto currentValue = getParameter(parameterName);
+                auto range = parameters[i-inputs].range.max - parameters[i-inputs].range.min;
+//                auto newValue = std::clamp(currentValue + buffer[i][0]*range, parameters[i-inputs].range.min, parameters[i-inputs].range.max);
+//                newValue = buffer[i][0]*range;
+                parameterValues.at(parameterName) = buffer[i][0]*range;
+            }
+        }
+    }
+    
     /** this method will extract the parameter name, as defined in createParameters(), from the unique
      paramaterId assigned to each parameter by the host
     * @param [in] parameterId The long version of the parameter typically in the form of 'module parameter[ModuleName (NodeNum)]'
@@ -473,6 +490,26 @@ public:
         return channels.size();
     }
 
+    std::size_t getNumberOfInputChannels()
+    {
+        int numInputs = 0;
+        for(auto& c : channels)
+            if(c.type == ChannelType::input)
+                numInputs++;
+        
+        return numInputs;
+    }
+    
+    std::size_t getNumberOfOutputChannels()
+    {
+        int numOutputs = 0;
+        for(auto& c : channels)
+            if(c.type == ChannelType::output)
+                numOutputs++;
+        
+        return numOutputs;
+    }
+    
     std::size_t getNumberOfParameters()
     {
         return parameters.size();
@@ -480,11 +517,26 @@ public:
 
     void addChannel(Channel c)
     {
-        channels.push_back(c);
-        if (c.type == ChannelType::input)
+        bool channelExists = false;
+        for(auto& chan : channels)
         {
-            connections[inCount] = { inCount , false };
-            inCount++;
+            if(chan.name == c.name)
+            {
+                channelExists = true;
+                std::cout << "Can't add duplicate channels";
+            }
+        }
+        
+        
+        if(channelExists == false)
+        {
+            channels.push_back(c);
+            
+            if (c.type == ChannelType::input)
+            {
+                connections[inCount] = { inCount , false };
+                inCount++;
+            }
         }
             
 
@@ -516,11 +568,7 @@ public:
     
     void setConnection(int index, bool isConnected)
     {
-        for(auto& connection : connections)
-        {
-            if(connection.index == index)
-                connection.isConnected = isConnected;
-        }
+            connections[index].isConnected = isConnected;
     }
     
     bool isInputConnected(std::size_t index)

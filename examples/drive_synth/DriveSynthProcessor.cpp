@@ -47,10 +47,6 @@ void DriveSynthProcessor::hostParameterChanged(const char* parameterID, float ne
     {
         synth.setRelease(newValue);
     }
-    else if (parameterName == "Drive")
-    {
-        drive = newValue;
-    }
 
 }
 
@@ -80,7 +76,7 @@ void DriveSynthProcessor::processSynthVoice(float** buffer, int numChannels, std
     const float freq = static_cast<float>(getMidiNoteInHertz(getMidiNoteNumber(), 440));
     synth.setBlockSize(blockSize);
 
-    auto &out = synth(amp, freq, drive, isNoteOn);
+    auto &out = synth(amp, freq, getParameter("Drive"), isNoteOn);
 
     for(int i = 0; i < blockSize ; i++)
       for(int chan = 0 ;  chan < numChannels; chan++)

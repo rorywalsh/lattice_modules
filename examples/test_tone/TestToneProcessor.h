@@ -25,14 +25,17 @@ public:
         description = "";
     }
 
+    void hostParameterChanged(const char* parameterID, float newValue) override;
     
-    const char* getModuleName() override {    return "TestTone";     }
+    const char* getModuleName() override {    return "Test Tone";     }
 
 
 
 private:
 	Aurora::Osc<float, Aurora::lookupi<float>> osc;
 	std::vector<float> wave;
+    std::vector<float> ampVector;
+    std::vector<float> freqVector;
 	float amp = .5f;
 };
 

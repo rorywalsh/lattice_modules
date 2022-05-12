@@ -29,28 +29,31 @@ LatticeProcessorModule::ParameterData TestToneProcessor::createParameters()
 }
 
 
-void TestToneProcessor::prepareProcessor(int sr, std::size_t /*block*/)
+void TestToneProcessor::prepareProcessor(int sr, std::size_t block)
 {
 	osc.reset(sr);
+    ampVector.resize(block);
+    freqVector.resize(block);
+    
 }
 
 
-void TestToneProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData /*hostInfo*/)
+void TestToneProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
-    float amp = getParameter("Amplitude");
-    
-    if(isInputConnected(0))
-    {
-        amp =  (buffer[0][0]+1.f)/2.f;
-    }
-        
-       
-	osc.vsize(blockSize);
-    const std::vector<float>& out = osc(amp, getParameter("Frequency"));
+    const std::string paramName = getParameterNameFromId(parameterID);
+    updateParameter(paramName, newValue);
+}
 
+
+void TestToneProcessor::process(float** buffer, int numChannels, std::size_t blockSize, const HostData /*hostInfo*/)
+{
+    osc.vsize(blockSize);
+    std::cout << getParameter("Frequency") << std::endl;
+    auto& out = osc(getParameter("Amplitude"), getParameter("Frequency"));
+    
     for(std::size_t i = 0; i < blockSize ; i++)
     {
-		buffer[0][i] = out[i];
+        buffer[0][i] = out[i];
     }
 }
 
