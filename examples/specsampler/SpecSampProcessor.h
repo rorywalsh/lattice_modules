@@ -8,6 +8,7 @@
 #include <functional>
 #include <iostream>
 #include <atomic>
+#include "simple_svg_1.0.0.hpp"
 
 class SpecSampProcessor : public LatticeProcessorModule
 {
@@ -69,6 +70,13 @@ public:
         return "Spec Sampler";
     }
 
+   const char* getSVGXml() override;
+   bool canDraw() override {
+     auto draw = okToDraw;
+     okToDraw = false;
+     return draw;
+  }
+
 private:
     static std::atomic<bool> loading;
     static std::atomic<bool> ready;
@@ -87,4 +95,6 @@ private:
     float fs = Aurora::def_sr;
     float rp = 0;
     bool note_on = false;
+    bool okToDraw = true;
+    std::string svgText;
 };

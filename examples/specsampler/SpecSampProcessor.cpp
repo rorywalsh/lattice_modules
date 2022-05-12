@@ -78,7 +78,8 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID,
 		    samples.data[0] + samples.numSamples,
 		    lfr.begin()); 
 	  samp.push_back(anal(lfr));
-	} 
+	}
+	okToDraw = true;
       }
       loading = false;
     }
@@ -88,13 +89,13 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
 {
   const std::string paramName = getParameterNameFromId(parameterID);
   //
-    if(paramName == "Amp Smear") {
-      float par = getParameter(paramName);
-      cfa = par > 0 ? std::pow(0.5, ta/par) : 0 ;
-      //std::cout << ta << std::endl;
-    } else if(paramName == "Freq Smear") {
-      float par = getParameter(paramName);
-      cff = par  > 0 ? std::pow(0.5, ta/par) : 0 ;
+  if(paramName == "Amp Smear") {
+    float par = getParameter(paramName);
+    cfa = par > 0 ? std::pow(0.5, ta/par) : 0 ;
+    //std::cout << ta << std::endl;
+  } else if(paramName == "Freq Smear") {
+    float par = getParameter(paramName);
+    cff = par  > 0 ? std::pow(0.5, ta/par) : 0 ;
   }
   updateParameter(paramName, newValue);
 }
@@ -135,43 +136,74 @@ void SpecSampProcessor::triggerParameterUpdate(const std::string& parameterID, f
 void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
 {
   if(samp.size() > 1) {
-  syn.vsize(blockSize);
-  env.vsize(blockSize);
-  sus = getParameter("Sustain");
-  auto &e = env(note_on);
-  if(hcnt >= anal.hsize()) {
-    for(auto &bin : out) bin.amp(0);
-  }
+    syn.vsize(blockSize);
+    env.vsize(blockSize);
+    sus = getParameter("Sustain");
+    auto &e = env(note_on);
+    if(hcnt >= anal.hsize()) {
+      for(auto &bin : out) bin.amp(0);
+    }
     
-  const float decim = getParameter("Granulation");
-  const float hops = anal.hsize()*decim;
+    const float decim = getParameter("Granulation");
+    const float hops = anal.hsize()*decim;
   
-  if(hcnt >= hops && !loading) {
-    const float afac = decim < 4 ? decim : 4;
-    const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
-    const float base = getMidiNoteInHertz(getParameter("Base Note"), 440);
-    shift.lock_formants(getParameter("Keep Formants"));
-    shift(samp[(int)rp],freq*getParameter("Fine Tune")/base);
-    float beg = getParameter("Loop Start")*samp.size();
-    float end = getParameter("Loop End")*samp.size();
-    if(end <= beg) beg = end;
-    rp += getParameter("Timescale")*decim;
-    rp = rp < end ? rp : beg; 
-    hcnt -= hops;
-    std::size_t n = 0;
-    for(auto &bin : shift.frame()) {
-      del[n].freq(bin.freq()*(1 - cff) + del[n].freq()*cff);
-      out[n].freq(del[n].freq());
-      del[n].amp(bin.amp()*(1 - cfa) + del[n].amp()*cfa);
-      out[n].amp(del[n].amp()*e[0]*afac);
-      n++;
-    }  
-  }
-  auto &s = syn(out);
-  std::copy(s.begin(),s.end(), buffer[0]);
-  hcnt += blockSize;
+    if(hcnt >= hops && !loading) {
+      const float afac = decim < 4 ? decim : 4;
+      const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
+      const float base = getMidiNoteInHertz(getParameter("Base Note"), 440);
+      shift.lock_formants(getParameter("Keep Formants"));
+      shift(samp[(int)rp],freq*getParameter("Fine Tune")/base);
+      float beg = getParameter("Loop Start")*samp.size();
+      float end = getParameter("Loop End")*samp.size();
+      if(end <= beg) beg = end;
+      rp += getParameter("Timescale")*decim;
+      rp = rp < end ? rp : beg; 
+      hcnt -= hops;
+      std::size_t n = 0;
+      for(auto &bin : shift.frame()) {
+	del[n].freq(bin.freq()*(1 - cff) + del[n].freq()*cff);
+	out[n].freq(del[n].freq());
+	del[n].amp(bin.amp()*(1 - cfa) + del[n].amp()*cfa);
+	out[n].amp(del[n].amp()*e[0]*afac);
+	n++;
+      }  
+    }
+    auto &s = syn(out);
+    std::copy(s.begin(),s.end(), buffer[0]);
+    hcnt += blockSize;
   }
 }
+
+
+const char* SpecSampProcessor::getSVGXml()
+{
+  const float width = 256;
+  const float height = 40;
+  svg::Dimensions dimensions(width, height);
+  svg::Document doc("specsamp.svg", svg::Layout(dimensions, svg::Layout::TopLeft));
+  svg::Polyline svgPath(svg::Fill(), svg::Stroke(2, svg::Color("#00ABD1"), 1));
+
+  std::cout << "drawing \n";
+  std::vector<float> amps(win.size()/2 + 1);
+  for(auto &frame : samp) {
+    std::size_t n = 0;
+    for(auto &bin : frame) {
+      amps[n++] += bin.amp();
+    }
+  }
+  std::size_t n = 0;
+  for(auto &amp : amps) {
+    amp /= samp.size();
+    svgPath << svg::Point(n++,amp*height);
+    if(n == width) break;
+  }	  
+
+  doc << svgPath;
+  svgText = doc.toString();
+  return svgText.c_str();
+
+}
+
 
 
 // the class factories
