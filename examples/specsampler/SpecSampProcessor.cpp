@@ -36,6 +36,7 @@ LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
   addParameter({ "Timescale", {0, 2, 1, 0.001, 1}});
   addParameter({ "Amp Smear", {0, 1., 0, 0.001, 1}});
   addParameter({ "Freq Smear", {0, 1., 0, 0.001, 1}});
+  addParameter({ "Granulation", {1, 100, 1, 0.1, 1}});
   addParameter({ "Attack", {0, 1., 0.01, 0.001, 1}});
   addParameter({ "Decay", {0, 1., 0.01, 0.001, 1}});
   addParameter({ "Sustain", {0, 1., 1., 0.001, 1}});
@@ -136,7 +137,15 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
   env.vsize(blockSize);
   sus = getParameter("Sustain");
   auto &e = env(note_on);
-  if(hcnt >= anal.hsize() && !loading) {
+  if(hcnt >= anal.hsize()) {
+    for(auto &bin : out) bin.amp(0);
+  }
+    
+  const float decim = getParameter("Granulation");
+  const float end = anal.hsize()*decim;
+  
+  if(hcnt >= end && !loading) {
+    const float afac = decim < 4 ? decim : 4;
     const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
     const float base = getMidiNoteInHertz(getParameter("Base Note"), 440);
     shift.lock_formants(getParameter("Keep Formants"));
@@ -144,15 +153,15 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
     float beg = getParameter("Loop Start")*samp.size();
     float end = getParameter("Loop End")*samp.size();
     if(end <= beg) beg = end;
-    rp += getParameter("Timescale");
+    rp += getParameter("Timescale")*decim;
     rp = rp < end ? rp : beg; 
-    hcnt -= anal.hsize();
+    hcnt -= end;
     std::size_t n = 0;
     for(auto &bin : shift.frame()) {
       del[n].freq(bin.freq()*(1 - cff) + del[n].freq()*cff);
       out[n].freq(del[n].freq());
       del[n].amp(bin.amp()*(1 - cfa) + del[n].amp()*cfa);
-      out[n].amp(del[n].amp()*e[0]);
+      out[n].amp(del[n].amp()*e[0]*afac);
       n++;
     }  
   }
