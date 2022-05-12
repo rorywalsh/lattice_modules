@@ -31,6 +31,7 @@ LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
 {
   addParameter({ "Base Note", {0, 127, 60, 1, 1}});
   addParameter({ "Fine Tune", {0.9439,1.0594, 1, 0.0001, 1}});
+  addParameter({ "Start Pos", {0, 1, 0, 0.001, 1}});
   addParameter({ "Loop Start", {0, 1, 0, 0.001, 1}});
   addParameter({ "Loop End", {0,1, 1, 0.001, 1}});
   addParameter({ "Timescale", {0, 2, 1, 0.001, 1}});
@@ -114,7 +115,8 @@ void SpecSampProcessor::startNote(int midiNoteNumber, float velocity )
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
   att = getParameter("Attack");
   dec = getParameter("Decay");
-  rp = 0;
+  rp = (getParameter("Start Pos") < getParameter("Loop End") ?
+	getParameter("Start Pos") : getParameter("Loop End"))*samp.size();
   note_on = true;
 }
 
@@ -142,9 +144,9 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
   }
     
   const float decim = getParameter("Granulation");
-  const float end = anal.hsize()*decim;
+  const float hops = anal.hsize()*decim;
   
-  if(hcnt >= end && !loading) {
+  if(hcnt >= hops && !loading) {
     const float afac = decim < 4 ? decim : 4;
     const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
     const float base = getMidiNoteInHertz(getParameter("Base Note"), 440);
@@ -155,7 +157,7 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
     if(end <= beg) beg = end;
     rp += getParameter("Timescale")*decim;
     rp = rp < end ? rp : beg; 
-    hcnt -= end;
+    hcnt -= hops;
     std::size_t n = 0;
     for(auto &bin : shift.frame()) {
       del[n].freq(bin.freq()*(1 - cff) + del[n].freq()*cff);
