@@ -93,11 +93,9 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID,
 void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
     const std::string paramName = getParameterNameFromId(parameterID);
-    //
     if(paramName == "Amp Smear") {
         float par = getParameter(paramName);
         cfa = par > 0 ? std::pow(0.5, ta/par) : 0 ;
-        //std::cout << ta << std::endl;
     } else if(paramName == "Freq Smear") {
         float par = getParameter(paramName);
         cff = par  > 0 ? std::pow(0.5, ta/par) : 0 ;
@@ -105,9 +103,10 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
     std::size_t n = 0;  
     for(auto &p : sparams.pnames) {
       float par = getParameter(paramName);
-      //std::cout << paramName << " : " << par << std::endl;
-      if(paramName == p[0])
+      if(paramName == p[0]) {
 	players[n].bn = getMidiNoteInHertz(par, 440);
+	std::cout << par << std::endl;
+      }
       else if(paramName == p[1])	  
         players[n].fine = par;
       else if(paramName == p[2])	  
@@ -121,7 +120,7 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
       n++;
     }
     }
-    updateParameter(paramName, newValue);
+    else updateParameter(paramName, newValue);
 }
 
 void SpecSampProcessor::prepareProcessor(int sr, std::size_t blockSize)
@@ -137,7 +136,6 @@ void SpecSampProcessor::prepareProcessor(int sr, std::size_t blockSize)
 void SpecSampProcessor::startNote(int midiNoteNumber, float velocity )
 {
     setMidiNoteNumber(midiNoteNumber);
-    std::cout << players[0].tscal  << std::endl;
     att = getParameter("Attack");
     dec = getParameter("Decay");
     players[0].set_size(samp.size());
