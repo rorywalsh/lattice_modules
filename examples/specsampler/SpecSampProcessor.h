@@ -10,6 +10,42 @@
 #include <atomic>
 #include "simple_svg_1.0.0.hpp"
 
+
+namespace Aurora {
+template <typename S>
+struct SpecPlay {
+  SpecShift<S> shift;
+  S rp;
+  S size;
+
+  SpecPlay(S fs, std::size_t fftsize) : shift(fs,fftsize), rp(0) { }
+
+  void set_start(S st) { rp = st*size; }
+  void reset(S fs) {
+    shift.reset(fs);
+    rp = 0;
+  }
+
+  void set_size(std::size_t sz) { size = sz; }
+
+  const std::vector<specdata<S>>
+   &operator() (const std::vector<std::vector<specdata<S>>> &samp,
+                      S fscal, S tscal, S beg,S end, bool keep) {
+      shift.lock_formants(keep);
+      shift(samp[(int)rp],fscal);
+      if(end <= beg) beg = end;
+      rp += tscal;
+      rp = rp < end*size ? rp : beg*size;
+      return shift.frame();
+      }
+  
+
+};
+
+}
+
+
+
 class SpecSampProcessor : public LatticeProcessorModule
 {
     
@@ -84,7 +120,7 @@ private:
     std::vector<float> win;
     Aurora::SpecStream<float> anal;
     Aurora::SpecSynth<float> syn;
-    Aurora::SpecShift<float> shift;
+    Aurora::SpecPlay<float> player;
     std::vector<Aurora::specdata<float>> del;
     std::vector<Aurora::specdata<float>> out;
     float att, dec, sus, rel;
@@ -93,7 +129,6 @@ private:
     float ta;
     double cfa = 0 , cff = 0;
     float fs = Aurora::def_sr;
-    float rp = 0;
     bool note_on = false;
     bool okToDraw = true;
     std::string svgText;

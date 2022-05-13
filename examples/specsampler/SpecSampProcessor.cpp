@@ -11,9 +11,9 @@ SpecSampProcessor::samp(1, std::vector<Aurora::specdata<float>>(Aurora::def_ffts
 //======================================================================================
 SpecSampProcessor::SpecSampProcessor() :
 win(Aurora::def_fftsize), anal(win,win.size()/dm), syn(win,win.size()/dm),
-shift(Aurora::def_sr,win.size()), del(win.size()/2 + 1),  out(win.size()/2 + 1),
-att(0.1f), dec(0.1f),
-sus(1.f), rel(0.1f), env(att,dec,sus,rel), hcnt(anal.hsize()), ta(win.size()/(dm*Aurora::def_sr))
+player(Aurora::def_sr,win.size()), del(win.size()/2 + 1),  out(win.size()/2 + 1),
+att(0.1f), dec(0.1f), sus(1.f), rel(0.1f), env(att,dec,sus,rel), hcnt(anal.hsize()),
+ta(win.size()/(dm*Aurora::def_sr))
 {
     std::size_t n = 0;
     for(auto &s : win)
@@ -108,7 +108,7 @@ void SpecSampProcessor::prepareProcessor(int sr, std::size_t blockSize)
     anal.reset(sr);
     syn.reset(sr);
     hcnt = anal.hsize();
-    shift.reset(sr);
+    player.reset(sr);
     fs = sr;
     ta = win.size()/(dm*fs);
 }
@@ -119,8 +119,9 @@ void SpecSampProcessor::startNote(int midiNoteNumber, float velocity )
     const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
     att = getParameter("Attack");
     dec = getParameter("Decay");
-    rp = (getParameter("Start Pos") < getParameter("Loop End") ?
-          getParameter("Start Pos") : getParameter("Loop End"))*samp.size();
+    player.set_size(samp.size());
+    player.set_start(getParameter("Start Pos") < getParameter("Loop End") ?
+          getParameter("Start Pos") : getParameter("Loop End"));
     note_on = true;
 }
 
@@ -154,16 +155,14 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
             const float afac = decim < 4 ? decim : 4;
             const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
             const float base = getMidiNoteInHertz(getParameter("Base Note"), 440);
-            shift.lock_formants(getParameter("Keep Formants"));
-            shift(samp[(int)rp],freq*getParameter("Fine Tune")/base);
-            float beg = getParameter("Loop Start")*samp.size();
-            float end = getParameter("Loop End")*samp.size();
-            if(end <= beg) beg = end;
-            rp += getParameter("Timescale")*decim;
-            rp = rp < end ? rp : beg;
+	    auto &frame = player(samp,freq*getParameter("Fine Tune")/base,
+				 getParameter("Timescale")*decim,
+				 getParameter("Loop Start"),
+				 getParameter("Loop End"),
+				 getParameter("Keep Formants"));
             hcnt -= hops;
             std::size_t n = 0;
-            for(auto &bin : shift.frame()) {
+            for(auto &bin : frame) {
                 del[n].freq(bin.freq()*(1 - cff) + del[n].freq()*cff);
                 out[n].freq(del[n].freq());
                 del[n].amp(bin.amp()*(1 - cfa) + del[n].amp()*cfa);
@@ -199,7 +198,6 @@ const char* SpecSampProcessor::getSVGXml()
     for(auto &amp : amps)
       if(amp > max) max = amp;  
     float scal = 1./max;
-    //std::cout << scal << std::endl;
     for(auto &amp : amps) {
         amp *= scal;
 	amp = 20*std::log10(amp);
