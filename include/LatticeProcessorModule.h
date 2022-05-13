@@ -37,8 +37,8 @@ public:
     {
         /*! Parameter Type enum */
         enum Type {
-            Trigger = -99, /*!< A trigger button - shown only a single state button */
-            Switch = -98,  /*!< A switch button - shown as an dual state button */
+        Trigger = -99, /*!< A trigger button - shown only a single state button */
+            Switch =  -98,  /*!< A switch button - shown as an dual state button */
             Slider = -97, /*!< A slider (default) - shown as a horizontal slider */
             FileButton = -96 /*!< A non-automatable button that launches a file browser dialogue */
         };
@@ -167,7 +167,8 @@ public:
     {
         synthProcessor = 0,/** a module that will form part of a polyphonic or monophonic synth. This type of module can not only generate audio, but can also process incoming. See LatticeProcessorModule::getNumberOfVoices() for details on how to limit the number of voices. */
         audioProcessor,/** an audio processor. This can be used to process or generate audio */
-        midiProcessor /** a Midi based processor - can parse and modify incoming Midi data or generate new Midi streams on the fly*/
+        midiProcessor, /** a Midi based processor - can parse and modify incoming Midi data or generate new Midi streams on the fly*/
+        automator /** an automation processor. */
     };
 
     enum ChannelType {
@@ -178,7 +179,7 @@ public:
     struct Channel {
         const char* name;
         ChannelType type;
-        Channel() = default;
+        Channel(const Channel &c) : name(c.name), type (c.type) {}
         Channel(const char* n, ChannelType t) :name(n), type(t) {}
         Channel& operator=(Channel other)
         {
@@ -426,7 +427,7 @@ public:
     float getParameter(std::string name)
     {
         if(parameterValues.count(name))
-            return parameterValues.at(name).load();
+            return parameterValues.at(name).load() + automationValues.at(name).load();
 
         return 0;
     }
@@ -436,7 +437,7 @@ public:
         parameterValues.at(name) = newValue;
     }
 
-    void addAutomationToParameters(float** buffer, int numChannels)
+    void updateAutomationForParameters(float** buffer, int numChannels)
     {
         int inputs = getNumberOfInputChannels();
         for(int i = inputs ; i < numChannels ; i++)
@@ -444,11 +445,7 @@ public:
             if(isInputConnected(i-inputs))
             {
                 const auto parameterName = parameters[i-inputs].parameterName;
-                auto currentValue = getParameter(parameterName);
-                auto range = parameters[i-inputs].range.max - parameters[i-inputs].range.min;
-//                auto newValue = std::clamp(currentValue + buffer[i][0]*range, parameters[i-inputs].range.min, parameters[i-inputs].range.max);
-//                newValue = buffer[i][0]*range;
-                parameterValues.at(parameterName) = buffer[i][0]*range;
+                automationValues.at(parameterName) = buffer[i][0];
             }
         }
     }
@@ -546,6 +543,7 @@ public:
     {
         parameters.push_back(p);
         parameterValues[p.parameterName].store(p.range.defaultValue);
+        automationValues[p.parameterName].store(p.range.defaultValue);
     }
 
     Parameter* getParameters()
@@ -606,9 +604,8 @@ private:
     int midiNoteNumber = 0;
     std::string nodeName;
     std::function<void(const char*, float)> paramCallback;
-    std::vector<std::string> parameterNames;
-    std::vector<float> paramValues;
     std::map<std::string, std::atomic<float>> parameterValues;
+    std::map<std::string, std::atomic<float>> automationValues;
     AudioFileSamples(*audioFileSamplesCallback)(const char* channel);
 };
 
