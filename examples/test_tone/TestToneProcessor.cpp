@@ -48,7 +48,7 @@ void TestToneProcessor::hostParameterChanged(const char* parameterID, float newV
 void TestToneProcessor::process(float** buffer, int numChannels, std::size_t blockSize, const HostData /*hostInfo*/)
 {
     osc.vsize(blockSize);
-    std::cout << getParameter("Frequency") << std::endl;
+
     auto& out = osc(getParameter("Amplitude"), getParameter("Frequency"));
     
     for(std::size_t i = 0; i < blockSize ; i++)
