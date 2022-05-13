@@ -18,7 +18,7 @@ LatticeProcessorModule::ChannelData RandomProcessor::createChannels()
 LatticeProcessorModule::ParameterData RandomProcessor::createParameters()
 {
     addParameter({ "Frequency", {0, 1000, 1.f, 0.001f, 0.5f}});
-    addParameter(LatticeProcessorModule::Parameter("Strength", {0, 100, 1.0f, 0.001f, 1.f}).withHint("%"));
+    addParameter(LatticeProcessorModule::Parameter("Range", {0, 1000, 1.0f, 0.001f, 1.f}));
     addParameter({ "Increment", {0, 1, 0.01f, 0.001f, 1.f}});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
@@ -46,8 +46,8 @@ void RandomProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
         if(static_cast<int>((1 / getParameter("Frequency")) * samplingRate) == sampleIndex)
         {
             auto increment = (getParameter("Increment") > 0 ? getParameter("Increment") : 0.001f);
-            auto randVal = static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.f)));
-            returnValue = (round(randVal / increment) * increment) * (getParameter("Strength") / 100.f);
+            auto randVal = static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.f))) * getParameter("Range");
+            returnValue = (round(randVal / increment) * increment);
             sampleIndex = 0;
         }
         
