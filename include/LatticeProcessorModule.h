@@ -543,7 +543,7 @@ public:
     {
         parameters.push_back(p);
         parameterValues[p.parameterName].store(p.range.defaultValue);
-        automationValues[p.parameterName].store(p.range.defaultValue);
+        automationValues[p.parameterName].store(0.f);
     }
 
     Parameter* getParameters()
