@@ -3,10 +3,6 @@
 #include <iterator>
 
 static const int dm = 8;
-std::atomic<bool> SpecSampProcessor::loading = false;
-std::atomic<bool> SpecSampProcessor::ready = true;
-std::vector<std::vector<Aurora::specdata<float>>>
-SpecSampProcessor::samp(1, std::vector<Aurora::specdata<float>>(Aurora::def_fftsize));
 
 //======================================================================================
 SpecSampProcessor::SpecSampProcessor() :
@@ -57,15 +53,15 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID,
     const std::string paramName = getParameterNameFromId(parameterID);
     if(paramName == "Load Sample")
     {
+      loading = true;
         if(!getVoiceNum())
         {
-            ready = false;
 	    std::cout << getVoiceNum()  << std::endl;
             std::cout << "File to load" << newValue << std::endl;
             auto samples = getSamplesFromFile(newValue);
             //std::cout << samples.numSamples << std::endl;
             if(samples.numSamples > 0) {
-                loading = true;
+
                 samp.resize(samples.numSamples/anal.hsize());
                 std::cout << "frames: " << samp.size() << " : " << samples.numSamples
                 << " : " << anal.hsize() << std::endl;
@@ -87,8 +83,8 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID,
                     samp.push_back(anal(lfr));
                 }
             }
-            loading = false;
         }
+	loading = false;
         okToDraw = true;
     }
 }
@@ -142,7 +138,7 @@ void SpecSampProcessor::startNote(int midiNoteNumber, float velocity )
     setMidiNoteNumber(midiNoteNumber);
     att = getParameter("Attack");
     dec = getParameter("Decay");
-    players[0].set_size(samp.size());
+    players[0].set_size(getSamp().size());
     players[0].onset();
     note_on = true;
 }
@@ -150,7 +146,6 @@ void SpecSampProcessor::startNote(int midiNoteNumber, float velocity )
 void SpecSampProcessor::stopNote (float /* velocity */)
 {
     note_on = false;
-    ready = true;
     env.release(getParameter("Release"));
 }
 
@@ -161,7 +156,8 @@ void SpecSampProcessor::triggerParameterUpdate(const std::string& parameterID, f
 
 void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
 {
-    if(samp.size() > 1) {
+    const std::vector<std::vector<Aurora::specdata<float>>> &smp = getSamp();
+    if(smp.size() > 0) {
         syn.vsize(blockSize);
         env.vsize(blockSize);
         sus = getParameter("Sustain");
@@ -176,7 +172,7 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
         if(hcnt >= hops && !loading) {
             const float afac = decim < 4 ? decim : 4;
             const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
-            auto &frame = players[0](samp,freq);
+            auto &frame = players[0](smp,freq);
             hcnt -= hops;
             std::size_t n = 0;
             for(auto &bin : frame) {
