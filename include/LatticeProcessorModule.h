@@ -543,7 +543,7 @@ public:
     {
         parameters.push_back(p);
         parameterValues[p.parameterName].store(p.range.defaultValue);
-        automationValues[p.parameterName].store(p.range.defaultValue);
+        automationValues[p.parameterName].store(0.f);
     }
 
     Parameter* getParameters()
@@ -595,6 +595,15 @@ public:
         
         return AudioFileSamples();
     }
+
+    void setVoiceNum(int vn) {
+      voiceNum = vn;
+    }
+
+    int getVoiceNum() {
+      return voiceNum;
+    }
+		    
     
 private:
     std::vector<Channel> channels;
@@ -607,6 +616,7 @@ private:
     std::map<std::string, std::atomic<float>> parameterValues;
     std::map<std::string, std::atomic<float>> automationValues;
     AudioFileSamples(*audioFileSamplesCallback)(const char* channel);
+    int voiceNum = -1;
 };
 
 #ifdef JUCE_MAC

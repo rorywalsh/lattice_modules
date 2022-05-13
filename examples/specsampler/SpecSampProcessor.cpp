@@ -18,6 +18,8 @@ ta(win.size()/(dm*Aurora::def_sr)), sparams(1)
     std::size_t n = 0;
     for(auto &s : win)
         s = 0.5 - 0.5*cos((Aurora::twopi*n++)/Aurora::def_fftsize);
+
+   
 }
 
 LatticeProcessorModule::ChannelData SpecSampProcessor::createChannels()
@@ -55,9 +57,10 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID,
     const std::string paramName = getParameterNameFromId(parameterID);
     if(paramName == "Load Sample")
     {
-        if(ready)
+        if(!getVoiceNum())
         {
             ready = false;
+	    std::cout << getVoiceNum()  << std::endl;
             std::cout << "File to load" << newValue << std::endl;
             auto samples = getSamplesFromFile(newValue);
             //std::cout << samples.numSamples << std::endl;
@@ -120,7 +123,7 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
       n++;
     }
     }
-    else updateParameter(paramName, newValue);
+    updateParameter(paramName, newValue);
 }
 
 void SpecSampProcessor::prepareProcessor(int sr, std::size_t blockSize)
