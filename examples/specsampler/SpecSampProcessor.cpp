@@ -29,14 +29,14 @@ LatticeProcessorModule::ChannelData SpecSampProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
 {
-  for(auto &p : sparams.pnames) {
-    addParameter({ p[0].c_str(), {0, 127, 60, 1, 1}});
-    addParameter({ p[1].c_str(), {0.9439,1.0594, 1, 0.0001, 1}});
-    addParameter({ p[2].c_str(), {0, 1, 0, 0.001, 1}});
-    addParameter({ p[3].c_str(), {0, 1, 0, 0.001, 1}});
-    addParameter({ p[4].c_str(), {0,1, 1, 0.001, 1}});
-    addParameter({ p[5].c_str(), {0, 2, 1, 0.001, 1}});
-  }
+    for(auto &p : sparams.pnames) {
+        addParameter({ p[0].c_str(), {0, 127, 60, 1, 1}});
+        addParameter({ p[1].c_str(), {0.9439,1.0594, 1, 0.0001, 1}});
+        addParameter({ p[2].c_str(), {0, 1, 0, 0.001, 1}});
+        addParameter({ p[3].c_str(), {0, 1, 0, 0.001, 1}});
+        addParameter({ p[4].c_str(), {0,1, 1, 0.001, 1}});
+        addParameter({ p[5].c_str(), {0, 2, 1, 0.001, 1}});
+    }
     addParameter({ "Amp Smear", {0, 1., 0, 0.001, 1}});
     addParameter({ "Freq Smear", {0, 1., 0, 0.001, 1}});
     addParameter({ "Granulation", {1, 100, 1, 0.1, 1}});
@@ -93,6 +93,8 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID,
 void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
     const std::string paramName = getParameterNameFromId(parameterID);
+    updateParameter(paramName, newValue);
+    
     if(paramName == "Amp Smear") {
         float par = getParameter(paramName);
         cfa = par > 0 ? std::pow(0.5, ta/par) : 0 ;
@@ -100,27 +102,26 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
         float par = getParameter(paramName);
         cff = par  > 0 ? std::pow(0.5, ta/par) : 0 ;
     } else {
-    std::size_t n = 0;  
-    for(auto &p : sparams.pnames) {
-      float par = getParameter(paramName);
-      if(paramName == p[0]) {
-	players[n].bn = getMidiNoteInHertz(par, 440);
-	std::cout << par << std::endl;
-      }
-      else if(paramName == p[1])	  
-        players[n].fine = par;
-      else if(paramName == p[2])	  
-        players[n].st = par;
-      else if(paramName == p[3])	  
-        players[n].beg = par;
-      else if(paramName == p[4])	  
-        players[n].end = par; 
-      else if(paramName == p[5])	  
-        players[n].tscal = par;
-      n++;
+        std::size_t n = 0;
+        for(auto &p : sparams.pnames) {
+            float par = getParameter(paramName);
+            if(paramName == p[0]) {
+                players[n].bn = getMidiNoteInHertz(par, 440);
+                std::cout << par << std::endl;
+            }
+            else if(paramName == p[1])
+                players[n].fine = par;
+            else if(paramName == p[2])
+                players[n].st = par;
+            else if(paramName == p[3])
+                players[n].beg = par;
+            else if(paramName == p[4])
+                players[n].end = par;
+            else if(paramName == p[5])
+                players[n].tscal = par;
+            n++;
+        }
     }
-    }
-    else updateParameter(paramName, newValue);
 }
 
 void SpecSampProcessor::prepareProcessor(int sr, std::size_t blockSize)
@@ -172,7 +173,7 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
         if(hcnt >= hops && !loading) {
             const float afac = decim < 4 ? decim : 4;
             const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
-	    auto &frame = players[0](samp,freq);
+            auto &frame = players[0](samp,freq);
             hcnt -= hops;
             std::size_t n = 0;
             for(auto &bin : frame) {
@@ -209,11 +210,11 @@ const char* SpecSampProcessor::getSVGXml()
     std::size_t n = 0;
     float max = 0;
     for(auto &amp : amps)
-      if(amp > max) max = amp;  
+        if(amp > max) max = amp;
     float scal = 1./max;
     for(auto &amp : amps) {
         amp *= scal;
-	amp = 20*std::log10(amp);
+        amp = 20*std::log10(amp);
         svgPath << svg::Point(n++,-(amp+96));
         if(n == width) break;
     }

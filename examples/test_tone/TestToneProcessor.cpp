@@ -42,6 +42,7 @@ void TestToneProcessor::hostParameterChanged(const char* parameterID, float newV
 {
     const std::string paramName = getParameterNameFromId(parameterID);
     updateParameter(paramName, newValue);
+    std::cout << getParameter(paramName) << std::endl;
 }
 
 
