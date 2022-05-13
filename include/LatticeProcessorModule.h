@@ -604,17 +604,12 @@ public:
     int getVoiceNum() {
       return voiceNum;
     }
-<<<<<<< HEAD
-            
-=======
 
 
     std::vector<LatticeProcessorModule *> &getVoices() {
       return voices;
     } 
-      
->>>>>>> 2dc62ee0533aa3a883325cc5d9441d8a45bc410c
-    
+     
 private:
     std::vector<Channel> channels;
     int inCount = 0;
