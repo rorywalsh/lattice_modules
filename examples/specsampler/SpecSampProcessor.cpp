@@ -53,7 +53,6 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID,
     const std::string paramName = getParameterNameFromId(parameterID);
     if(paramName == "Load Sample")
     {
-        okToDraw = true;
         if(ready)
         {
             ready = false;
@@ -85,6 +84,7 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID,
             }
             loading = false;
         }
+        okToDraw = true;
     }
 }
 
@@ -181,12 +181,12 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
 const char* SpecSampProcessor::getSVGXml()
 {
     const float width = 256;
-    const float height = 40;
+    const float height = 96;
     svg::Dimensions dimensions(width, height);
     svg::Document doc("specsamp.svg", svg::Layout(dimensions, svg::Layout::TopLeft));
     svg::Polyline svgPath(svg::Fill(), svg::Stroke(2, svg::Color("#00ABD1"), 1));
     
-    std::cout << "drawing \n";
+    
     std::vector<float> amps(win.size()/2 + 1);
     for(auto &frame : samp) {
         std::size_t n = 0;
@@ -195,9 +195,15 @@ const char* SpecSampProcessor::getSVGXml()
         }
     }
     std::size_t n = 0;
+    float max = 0;
+    for(auto &amp : amps)
+      if(amp > max) max = amp;  
+    float scal = 1./max;
+    //std::cout << scal << std::endl;
     for(auto &amp : amps) {
-        amp /= samp.size();
-        svgPath << svg::Point(n++,amp*height);
+        amp *= scal;
+	amp = 20*std::log10(amp);
+        svgPath << svg::Point(n++,-(amp+96));
         if(n == width) break;
     }
     
