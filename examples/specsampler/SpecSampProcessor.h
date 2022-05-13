@@ -8,6 +8,7 @@
 #include <functional>
 #include <iostream>
 #include <atomic>
+#include <array>
 #include "simple_svg_1.0.0.hpp"
 
 
@@ -17,10 +18,15 @@ struct SpecPlay {
   SpecShift<S> shift;
   S rp;
   S size;
+  S bn, fine, tscal, beg, end, st;
+  bool keep;
 
-  SpecPlay(S fs, std::size_t fftsize) : shift(fs,fftsize), rp(0) { }
+  SpecPlay(S fs, std::size_t fftsize) : shift(fs,fftsize), rp(0),
+    bn(261), fine(1), tscal(1), beg(0), end(1), st(0), keep(0){ }
 
-  void set_start(S st) { rp = st*size; }
+  void onset() {
+    rp = (st < end? st : end)*size;
+  }
   void reset(S fs) {
     shift.reset(fs);
     rp = 0;
@@ -29,20 +35,38 @@ struct SpecPlay {
   void set_size(std::size_t sz) { size = sz; }
 
   const std::vector<specdata<S>>
-   &operator() (const std::vector<std::vector<specdata<S>>> &samp,
-                      S fscal, S tscal, S beg,S end, bool keep) {
+  &operator() (const std::vector<std::vector<specdata<S>>> &samp, S cps) {
       shift.lock_formants(keep);
-      shift(samp[(int)rp],fscal);
+      shift(samp[(int)rp],cps*fine/bn);
       if(end <= beg) beg = end;
       rp += tscal;
       rp = rp < end*size ? rp : beg*size;
       return shift.frame();
       }
-  
-
 };
 
 }
+
+struct SampParam {
+  std::array<const char *, 6> params;
+  std::vector<std::vector<std::string>> pnames;
+  
+  SampParam(std::size_t np) : params({ "Base Note ", "Fine Tune ", "Start Pos ",
+	"Loop Start ", "Loop End ", "Timescale " }), pnames(np) {
+    std::size_t n = 0;
+    char mem[4];
+    for(auto &names : pnames) {
+    std::size_t j = 0;
+    names.resize(params.size());
+    for(auto &name : names) {
+       sprintf(mem,"%lu", n+1);
+       std::string cc = mem;
+      name = params[j++] + cc;
+    }
+    n++;
+    }
+  }
+};
 
 
 
@@ -120,13 +144,14 @@ private:
     std::vector<float> win;
     Aurora::SpecStream<float> anal;
     Aurora::SpecSynth<float> syn;
-    Aurora::SpecPlay<float> player;
+    std::vector<Aurora::SpecPlay<float>> players;
     std::vector<Aurora::specdata<float>> del;
     std::vector<Aurora::specdata<float>> out;
     float att, dec, sus, rel;
     Aurora::Env<float> env;
     std::size_t hcnt;
     float ta;
+    SampParam sparams;
     double cfa = 0 , cff = 0;
     float fs = Aurora::def_sr;
     bool note_on = false;

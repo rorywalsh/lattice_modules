@@ -11,9 +11,9 @@ SpecSampProcessor::samp(1, std::vector<Aurora::specdata<float>>(Aurora::def_ffts
 //======================================================================================
 SpecSampProcessor::SpecSampProcessor() :
 win(Aurora::def_fftsize), anal(win,win.size()/dm), syn(win,win.size()/dm),
-player(Aurora::def_sr,win.size()), del(win.size()/2 + 1),  out(win.size()/2 + 1),
+players(1,Aurora::SpecPlay<float>(Aurora::def_sr,win.size())), del(win.size()/2 + 1),  out(win.size()/2 + 1),
 att(0.1f), dec(0.1f), sus(1.f), rel(0.1f), env(att,dec,sus,rel), hcnt(anal.hsize()),
-ta(win.size()/(dm*Aurora::def_sr))
+ta(win.size()/(dm*Aurora::def_sr)), sparams(1)
 {
     std::size_t n = 0;
     for(auto &s : win)
@@ -23,18 +23,20 @@ ta(win.size()/(dm*Aurora::def_sr))
 LatticeProcessorModule::ChannelData SpecSampProcessor::createChannels()
 {
     addChannel({"input", ChannelType::input });
-    addChannel({"ouput", ChannelType::output });
+    addChannel({"output", ChannelType::output });
     return ChannelData(getChannels(), getNumberOfChannels());
 }
 
 LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
 {
-    addParameter({ "Base Note", {0, 127, 60, 1, 1}});
-    addParameter({ "Fine Tune", {0.9439,1.0594, 1, 0.0001, 1}});
-    addParameter({ "Start Pos", {0, 1, 0, 0.001, 1}});
-    addParameter({ "Loop Start", {0, 1, 0, 0.001, 1}});
-    addParameter({ "Loop End", {0,1, 1, 0.001, 1}});
-    addParameter({ "Timescale", {0, 2, 1, 0.001, 1}});
+  for(auto &p : sparams.pnames) {
+    addParameter({ p[0].c_str(), {0, 127, 60, 1, 1}});
+    addParameter({ p[1].c_str(), {0.9439,1.0594, 1, 0.0001, 1}});
+    addParameter({ p[2].c_str(), {0, 1, 0, 0.001, 1}});
+    addParameter({ p[3].c_str(), {0, 1, 0, 0.001, 1}});
+    addParameter({ p[4].c_str(), {0,1, 1, 0.001, 1}});
+    addParameter({ p[5].c_str(), {0, 2, 1, 0.001, 1}});
+  }
     addParameter({ "Amp Smear", {0, 1., 0, 0.001, 1}});
     addParameter({ "Freq Smear", {0, 1., 0, 0.001, 1}});
     addParameter({ "Granulation", {1, 100, 1, 0.1, 1}});
@@ -99,6 +101,25 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
     } else if(paramName == "Freq Smear") {
         float par = getParameter(paramName);
         cff = par  > 0 ? std::pow(0.5, ta/par) : 0 ;
+    } else {
+    std::size_t n = 0;  
+    for(auto &p : sparams.pnames) {
+      float par = getParameter(paramName);
+      //std::cout << paramName << " : " << par << std::endl;
+      if(paramName == p[0])
+	players[n].bn = getMidiNoteInHertz(par, 440);
+      else if(paramName == p[1])	  
+        players[n].fine = par;
+      else if(paramName == p[2])	  
+        players[n].st = par;
+      else if(paramName == p[3])	  
+        players[n].beg = par;
+      else if(paramName == p[4])	  
+        players[n].end = par; 
+      else if(paramName == p[5])	  
+        players[n].tscal = par;
+      n++;
+    }
     }
     updateParameter(paramName, newValue);
 }
@@ -108,7 +129,7 @@ void SpecSampProcessor::prepareProcessor(int sr, std::size_t blockSize)
     anal.reset(sr);
     syn.reset(sr);
     hcnt = anal.hsize();
-    player.reset(sr);
+    players[0].reset(sr);
     fs = sr;
     ta = win.size()/(dm*fs);
 }
@@ -116,12 +137,11 @@ void SpecSampProcessor::prepareProcessor(int sr, std::size_t blockSize)
 void SpecSampProcessor::startNote(int midiNoteNumber, float velocity )
 {
     setMidiNoteNumber(midiNoteNumber);
-    const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
+    std::cout << players[0].tscal  << std::endl;
     att = getParameter("Attack");
     dec = getParameter("Decay");
-    player.set_size(samp.size());
-    player.set_start(getParameter("Start Pos") < getParameter("Loop End") ?
-          getParameter("Start Pos") : getParameter("Loop End"));
+    players[0].set_size(samp.size());
+    players[0].onset();
     note_on = true;
 }
 
@@ -154,12 +174,7 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
         if(hcnt >= hops && !loading) {
             const float afac = decim < 4 ? decim : 4;
             const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
-            const float base = getMidiNoteInHertz(getParameter("Base Note"), 440);
-	    auto &frame = player(samp,freq*getParameter("Fine Tune")/base,
-				 getParameter("Timescale")*decim,
-				 getParameter("Loop Start"),
-				 getParameter("Loop End"),
-				 getParameter("Keep Formants"));
+	    auto &frame = players[0](samp,freq);
             hcnt -= hops;
             std::size_t n = 0;
             for(auto &bin : frame) {
