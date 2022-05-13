@@ -603,7 +603,12 @@ public:
     int getVoiceNum() {
       return voiceNum;
     }
-		    
+
+
+    std::vector<LatticeProcessorModule *> &getVoices() {
+      return voices;
+    } 
+      
     
 private:
     std::vector<Channel> channels;
@@ -617,6 +622,7 @@ private:
     std::map<std::string, std::atomic<float>> automationValues;
     AudioFileSamples(*audioFileSamplesCallback)(const char* channel);
     int voiceNum = -1;
+    std::vector<LatticeProcessorModule *> voices;
 };
 
 #ifdef JUCE_MAC

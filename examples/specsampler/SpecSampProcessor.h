@@ -137,10 +137,16 @@ public:
      return draw;
   }
 
+  const std::vector<std::vector<Aurora::specdata<float>>> &getSamp() {
+    SpecSampProcessor *p = dynamic_cast<SpecSampProcessor *>(getVoices()[0]);
+    return p->samp;
+  }
+
+  
+
+  
 private:
-    static std::atomic<bool> loading;
-    static std::atomic<bool> ready;
-    static std::vector<std::vector<Aurora::specdata<float>>> samp;
+    std::vector<std::vector<Aurora::specdata<float>>> samp;
     std::vector<float> win;
     Aurora::SpecStream<float> anal;
     Aurora::SpecSynth<float> syn;
@@ -157,4 +163,5 @@ private:
     bool note_on = false;
     bool okToDraw = true;
     std::string svgText;
+    bool loading = false;
 };
