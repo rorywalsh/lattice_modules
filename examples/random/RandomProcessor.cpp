@@ -21,6 +21,7 @@ LatticeProcessorModule::ParameterData RandomProcessor::createParameters()
     addParameter({ "Range Min", {-1000, 0, -10.f, 0.001f, 0.5f}});
     addParameter({ "Range Max", {0, 1000, 10.f, 0.001f, 0.5f}});
     addParameter({ "Increment", {0, 1, 0.01f, 0.001f, 1.f}});
+    addParameter({ "Keep Formants", {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Momentary});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
@@ -33,7 +34,9 @@ void RandomProcessor::prepareProcessor(int sr, std::size_t block)
 void RandomProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
     const std::string paramName = getParameterNameFromId(parameterID);
-    updateParameter(paramName, newValue);
+    //updateParameter(paramName, newValue);
+    
+    std::cout << paramName << " : " << getParameter(paramName)<< std::endl;
     
     if(paramName == "Frequency")
         sampleIndex = 0;

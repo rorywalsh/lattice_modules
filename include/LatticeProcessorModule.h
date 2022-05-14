@@ -40,7 +40,8 @@ public:
         Trigger = -99, /*!< A trigger button - shown only a single state button */
             Switch =  -98,  /*!< A switch button - shown as an dual state button */
             Slider = -97, /*!< A slider (default) - shown as a horizontal slider */
-            FileButton = -96 /*!< A non-automatable button that launches a file browser dialogue */
+            FileButton = -96, /*!< A non-automatable button that launches a file browser dialogue */
+            Momentary = -95 /*!< A momentary button - shown only a single state button - will return a value of 1 for as long as the button is being pressed */
         };
 
         /** Name of your module parameter - this is the name that will appear in the module editor in Lattice */
@@ -608,8 +609,7 @@ public:
     std::vector<LatticeProcessorModule *> &getVoices() {
       return voices;
     } 
-      
-    
+     
 private:
     std::vector<Channel> channels;
     int inCount = 0;

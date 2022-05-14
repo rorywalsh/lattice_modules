@@ -92,7 +92,7 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID,
 void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
     const std::string paramName = getParameterNameFromId(parameterID);
-    updateParameter(paramName, newValue);
+
     
     if(paramName == "Amp Smear") {
         float par = getParameter(paramName);
