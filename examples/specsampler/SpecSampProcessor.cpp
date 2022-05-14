@@ -168,6 +168,7 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
   if(doReset) {
         players[0].reset(fs);
         syn.reset(fs);
+	doReset = false;
   }
   
     const std::vector<std::vector<Aurora::specdata<float>>> &smp = getSamp();
