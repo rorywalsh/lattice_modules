@@ -35,8 +35,10 @@ private:
     std::vector<Aurora::specdata<float>> del;
     std::vector<Aurora::specdata<float>> out;
     float caf, cff;
+    float ya, yf;
+    float aa = 0 , af = 0;
     float smootha = 0.001, smoothf = 0.001;
-    size_t timea = 0 , timef = 0;
+    size_t timea = 0 , timef = 0, dtimea = 0 , dtimef = 0;
     bool freeza = 0 , freezf = 0;
     float ar;
     
