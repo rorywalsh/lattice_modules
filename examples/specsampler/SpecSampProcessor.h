@@ -38,9 +38,14 @@ struct SpecPlay {
   &operator() (const std::vector<std::vector<specdata<S>>> &samp, S cps) {
       shift.lock_formants(keep);
       shift(samp[(int)rp],cps*fine/bn);
-      if(end <= beg) beg = end;
       rp += tscal;
-      rp = rp < end*size ? rp : beg*size;
+      if(end <= beg) beg = end;
+      if(tscal >= 0) {
+	 rp = rp < end*size ? rp : beg*size;
+      } else {
+        while(rp < 0) rp += size;
+        rp = rp > beg*size ? rp : end*size - 1;
+      }	 
       return shift.frame();
       }
 };

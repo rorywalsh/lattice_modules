@@ -33,7 +33,7 @@ LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
         addParameter({ p[2].c_str(), {0, 1, 0, 0.001, 1}});
         addParameter({ p[3].c_str(), {0, 1, 0, 0.001, 1}});
         addParameter({ p[4].c_str(), {0,1, 1, 0.001, 1}});
-        addParameter({ p[5].c_str(), {0, 2, 1, 0.001, 1}});
+        addParameter({ p[5].c_str(), {-2, 2, 1, 0.001, 1}});
     }
     addParameter({ "Amp Smear", {0, 1., 0, 0.001, 1}});
     addParameter({ "Freq Smear", {0, 1., 0, 0.001, 1}});
@@ -92,8 +92,6 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID,
 void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
     const std::string paramName = getParameterNameFromId(parameterID);
-
-    
     if(paramName == "Amp Smear") {
         float par = getParameter(paramName);
         cfa = par > 0 ? std::pow(0.5, ta/par) : 0 ;
