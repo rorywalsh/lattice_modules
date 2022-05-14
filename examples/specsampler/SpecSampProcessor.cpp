@@ -27,14 +27,6 @@ LatticeProcessorModule::ChannelData SpecSampProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
 {
-    for(auto &p : sparams.pnames) {
-        addParameter({ p[0].c_str(), {0, 127, 60, 1, 1}});
-        addParameter({ p[1].c_str(), {0.9439,1.0594, 1, 0.0001, 1}});
-        addParameter({ p[2].c_str(), {0, 1, 0, 0.001, 1}});
-        addParameter({ p[3].c_str(), {0, 1, 0, 0.001, 1}});
-        addParameter({ p[4].c_str(), {0,1, 1, 0.001, 1}});
-        addParameter({ p[5].c_str(), {-2, 2, 1, 0.001, 1}});
-    }
     addParameter({ "Amp Smear", {0, 1., 0, 0.001, 1}});
     addParameter({ "Freq Smear", {0, 1., 0, 0.001, 1}});
     addParameter({ "Granulation", {1, 100, 1, 0.1, 1}});
@@ -42,8 +34,21 @@ LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
     addParameter({ "Decay", {0, 1., 0.01, 0.001, 1}});
     addParameter({ "Sustain", {0, 1., 1., 0.001, 1}});
     addParameter({ "Release", {0, 1., 0.1, 0.001, 1}});
-    addParameter({ "Keep Formants", {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
-    addParameter({ "Load Sample", {0, 1, 0, 1, 1}, Parameter::Type::FileButton});
+    addParameter({ "Reset", {0, 1, 0, 1, 1}, Parameter::Type::Momentary});
+ 
+    
+    for(auto &p : sparams.pnames) {
+        addParameter({ p[0].c_str(), {0, 127, 60, 1, 1}});
+        addParameter({ p[1].c_str(), {0.9439,1.0594, 1, 0.0001, 1}});
+        addParameter({ p[2].c_str(), {0, 1, 0, 0.001, 1}});
+        addParameter({ p[3].c_str(), {0, 1, 0, 0.001, 1}});
+        addParameter({ p[4].c_str(), {0,1, 1, 0.001, 1}});
+        addParameter({ p[5].c_str(), {-2, 2, 1, 0.001, 1}});
+	addParameter({ p[6].c_str(), {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
+	addParameter({ p[7].c_str(), {0, 1, 0, 1, 1}, Parameter::Type::FileButton});
+    }
+
+  
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
@@ -51,7 +56,7 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID,
                                              const char* newValue)
 {
     const std::string paramName = getParameterNameFromId(parameterID);
-    if(paramName == "Load Sample")
+    if(paramName == "Load Sample 1")
     {
       loading = true;
         if(!getVoiceNum())
@@ -98,7 +103,11 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
     } else if(paramName == "Freq Smear") {
         float par = getParameter(paramName);
         cff = par  > 0 ? std::pow(0.5, ta/par) : 0 ;
-    } else {
+    } else if(paramName == "Reset") {
+       float par = getParameter(paramName);
+       if(par) doReset = true;
+    }
+    else {
         std::size_t n = 0;
         for(auto &p : sparams.pnames) {
             float par = getParameter(paramName);
@@ -116,6 +125,8 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
                 players[n].end = par;
             else if(paramName == p[5])
                 players[n].tscal = par;
+	    else if(paramName == p[6])
+                players[n].keep = par;
             n++;
         }
     }
@@ -154,6 +165,11 @@ void SpecSampProcessor::triggerParameterUpdate(const std::string& parameterID, f
 
 void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
 {
+  if(doReset) {
+        players[0].reset(fs);
+        syn.reset(fs);
+  }
+  
     const std::vector<std::vector<Aurora::specdata<float>>> &smp = getSamp();
     if(smp.size() > 0) {
         syn.vsize(blockSize);
@@ -191,7 +207,7 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
 const char* SpecSampProcessor::getSVGXml()
 {
     const float width = 256;
-    const float height = 96;
+    const float height = 48;
     svg::Dimensions dimensions(width, height);
     svg::Document doc("specsamp.svg", svg::Layout(dimensions, svg::Layout::TopLeft));
     svg::Polyline svgPath(svg::Fill(), svg::Stroke(2, svg::Color("#00ABD1"), 1));
@@ -212,7 +228,7 @@ const char* SpecSampProcessor::getSVGXml()
     for(auto &amp : amps) {
         amp *= scal;
         amp = 20*std::log10(amp);
-        svgPath << svg::Point(n++,-(amp+96));
+        svgPath << svg::Point(n++,-(amp+96)/2);
         if(n == width) break;
     }
     

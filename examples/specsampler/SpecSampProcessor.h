@@ -53,11 +53,12 @@ struct SpecPlay {
 }
 
 struct SampParam {
-  std::array<const char *, 6> params;
+  std::array<const char *, 8> params;
   std::vector<std::vector<std::string>> pnames;
   
   SampParam(std::size_t np) : params({ "Base Note ", "Fine Tune ", "Start Pos ",
-	"Loop Start ", "Loop End ", "Timescale " }), pnames(np) {
+	"Loop Start ", "Loop End ", "Timescale ", "Keep Formants ",
+	"Load Sample "}), pnames(np) {
     std::size_t n = 0;
     char mem[4];
     for(auto &names : pnames) {
@@ -166,4 +167,5 @@ private:
     bool okToDraw = true;
     std::string svgText;
     bool loading = false;
+    bool doReset = false;
 };
