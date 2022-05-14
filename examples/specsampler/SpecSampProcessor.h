@@ -142,9 +142,6 @@ public:
     return p->samp;
   }
 
-  
-
-  
 private:
     std::vector<std::vector<Aurora::specdata<float>>> samp;
     std::vector<float> win;

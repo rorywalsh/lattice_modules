@@ -32,5 +32,13 @@ private:
     Aurora::SpecSynth<float> syn;
     std::vector<float> in;
     std::vector<Aurora::specdata<float>> buf;
+    std::vector<Aurora::specdata<float>> del;
+    std::vector<Aurora::specdata<float>> out;
+    float caf, cff;
+    float smootha = 0.001, smoothf = 0.001;
+    size_t timea = 0 , timef = 0;
+    bool freeza = 0 , freezf = 0;
+    float ar;
+    
     int framecount = 0;
 };
