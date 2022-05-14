@@ -126,7 +126,6 @@ void FreezeProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
       }  
     ya = aa*(1-caf) + ya*caf;
     yf = af*(1-cff) + yf*cff;
-    std::cout << ya << std::endl;
     for(auto &bin : spec) {
       if(!freeza) buf[n].amp(bin.amp());
       if(!freezf) buf[n].freq(bin.freq());
