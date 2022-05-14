@@ -16,12 +16,13 @@ namespace Aurora {
 template <typename S>
 struct SpecPlay {
   SpecShift<S> shift;
+  S sr;
   S rp;
   S size;
   S bn, fine, tscal, beg, end, st;
   bool keep;
 
-  SpecPlay(S fs, std::size_t fftsize) : shift(fs,fftsize), rp(0),
+SpecPlay(S fs, std::size_t fftsize) : shift(fs,fftsize), sr(fs), rp(0),
     bn(261), fine(1), tscal(1), beg(0), end(1), st(0), keep(0){ }
 
   void onset() {
@@ -29,6 +30,7 @@ struct SpecPlay {
   }
   void reset(S fs) {
     shift.reset(fs);
+    sr  = fs;
     rp = 0;
   }
 
@@ -36,6 +38,10 @@ struct SpecPlay {
 
   const std::vector<specdata<S>>
   &operator() (const std::vector<std::vector<specdata<S>>> &samp, S cps) {
+    if(samp.size() != size || samp.size() == 0){
+       shift.reset(sr);
+       return shift.frame();
+      } 	
       shift.lock_formants(keep);
       shift(samp[(int)rp],cps*fine/bn);
       rp += tscal;

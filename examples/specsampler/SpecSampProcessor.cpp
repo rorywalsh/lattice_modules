@@ -172,7 +172,6 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
   }
   
     const std::vector<std::vector<Aurora::specdata<float>>> &smp = getSamp();
-    if(smp.size() > 0) {
         syn.vsize(blockSize);
         env.vsize(blockSize);
         sus = getParameter("Sustain");
@@ -201,7 +200,6 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
         auto &s = syn(out);
         std::copy(s.begin(),s.end(), buffer[0]);
         hcnt += blockSize;
-    }
 }
 
 
