@@ -28,8 +28,10 @@ LatticeProcessorModule::ChannelData SpecSampProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
 {
-  addParameter({ "Morph X", {0, 1., 0, 0.001, 1}});
-  addParameter({ "Morph Y", {0, 1., 0, 0.001, 1}});
+  addParameter({ "Amp Morph X", {0, 1., 0, 0.001, 1}});
+  addParameter({ "Freq Morph X", {0, 1., 0, 0.001, 1}});
+  addParameter({ "Amp Morph Y", {0, 1., 0, 0.001, 1}});
+  addParameter({ "Freq Morph Y", {0, 1., 0, 0.001, 1}});
   addParameter({ "Amp Smear", {0, 1., 0, 0.001, 1}});
   addParameter({ "Freq Smear", {0, 1., 0, 0.001, 1}});
   addParameter({ "Granulation", {1, 100, 1, 0.1, 1}});
@@ -204,17 +206,19 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
     auto &frame1 = players[1](getSamp(1),freq);
     auto &frame2 = players[2](getSamp(2),freq);
     auto &frame3 = players[3](getSamp(3),freq);
-    const float x = getParameter("Morph X");
-    const float y = getParameter("Morph Y");
+    const float xa = getParameter("Amp Morph X");
+    const float ya = getParameter("Amp Morph Y");
+    const float xf = getParameter("Freq Morph X");
+    const float yf = getParameter("Freq Morph Y");
     
     hcnt -= hops;
     for(auto &bin : out) {
-      bin.freq((frame0[n].freq()*(1-x) + frame1[n].freq()*x)*(1-y) +
-	       (frame2[n].freq()*(1-x) + frame3[n].freq()*x)*y);
+      bin.freq((frame0[n].freq()*(1-xf) + frame1[n].freq()*xf)*(1-yf) +
+	       (frame2[n].freq()*(1-xf) + frame3[n].freq()*xf)*yf);
       del[n].freq(bin.freq()*(1 - cff) + del[n].freq()*cff);
       bin.freq(del[n].freq());
-      bin.amp((frame0[n].amp()*(1-x)*g[0] + frame1[n].amp()*x*g[1])*(1-y) +
-	      (frame2[n].amp()*(1-x)*g[2] + frame3[n].amp()*x*g[3])*y);
+      bin.amp((frame0[n].amp()*(1-xa)*g[0] + frame1[n].amp()*xa*g[1])*(1-ya) +
+	      (frame2[n].amp()*(1-xa)*g[2] + frame3[n].amp()*xa*g[3])*ya);
       del[n].amp(bin.amp()*(1 - cfa) + del[n].amp()*cfa);
       bin.amp(del[n].amp()*e[0]*afac);
       n++;
