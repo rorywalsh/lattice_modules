@@ -428,14 +428,13 @@ public:
     float getParameter(std::string name)
     {
         if(parameterValues.count(name))
-            return parameterValues.at(name).load() + automationValues.at(name).load();
+        {
+            
+            auto value = parameterValues.at(name).load() + automationValues.at(name).load();
+            return std::clamp(value, parameterRanges.at(name).load().min, parameterRanges.at(name).load().max);
+        }
 
         return 0;
-    }
-
-    void updateParameter(std::string name, float newValue)
-    {
-        parameterValues.at(name) = newValue;
     }
 
     void updateAutomationForParameters(float** buffer, int numChannels)
@@ -443,12 +442,17 @@ public:
         int inputs = getNumberOfInputChannels();
         for(int i = inputs ; i < numChannels ; i++)
         {
-            if(isInputConnected(i-inputs))
+            if(isInputConnected(i))
             {
                 const auto parameterName = parameters[i-inputs].parameterName;
                 automationValues.at(parameterName) = buffer[i][0];
             }
         }
+    }
+    
+    void updateParameter(std::string name, float newValue)
+    {
+        parameterValues.at(name) = newValue;
     }
     
     /** this method will extract the parameter name, as defined in createParameters(), from the unique
@@ -545,6 +549,7 @@ public:
         parameters.push_back(p);
         parameterValues[p.parameterName].store(p.range.defaultValue);
         automationValues[p.parameterName].store(0.f);
+        parameterRanges[p.parameterName].store(p.range);
     }
 
     Parameter* getParameters()
@@ -567,7 +572,7 @@ public:
     
     void setConnection(int index, bool isConnected)
     {
-            connections[index].isConnected = isConnected;
+        connections[index].isConnected = isConnected;
     }
     
     bool isInputConnected(std::size_t index)
@@ -608,7 +613,7 @@ public:
 
     std::vector<LatticeProcessorModule *> &getVoices() {
       return voices;
-    } 
+    }
      
 private:
     std::vector<Channel> channels;
@@ -620,6 +625,7 @@ private:
     std::function<void(const char*, float)> paramCallback;
     std::map<std::string, std::atomic<float>> parameterValues;
     std::map<std::string, std::atomic<float>> automationValues;
+    std::map<std::string, std::atomic<Parameter::Range>> parameterRanges;
     AudioFileSamples(*audioFileSamplesCallback)(const char* channel);
     int voiceNum = -1;
     std::vector<LatticeProcessorModule *> voices;

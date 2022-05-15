@@ -21,7 +21,7 @@ LatticeProcessorModule::ParameterData RandomProcessor::createParameters()
     addParameter({ "Range Min", {-1000, 0, -10.f, 0.001f, 0.5f}});
     addParameter({ "Range Max", {0, 1000, 10.f, 0.001f, 0.5f}});
     addParameter({ "Increment", {0, 1, 0.01f, 0.001f, 1.f}});
-    addParameter({ "Keep Formants", {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Momentary});
+    addParameter({ "Act as switch", {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
@@ -49,9 +49,17 @@ void RandomProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
     {
         if(static_cast<int>((1 / getParameter("Frequency")) * samplingRate) == sampleIndex)
         {
-            auto increment = (getParameter("Increment") > 0 ? getParameter("Increment") : 0.001f);
-            auto randVal = static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.f))) * (getParameter("Range Max") - getParameter("Range Min")) + getParameter("Range Min") ;
-            returnValue = (round(randVal / increment) * increment);
+            if ( getParameter("Act as switch") == 1)
+            {
+                auto randVal = static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.f)));
+                returnValue = randVal > 0.5f ? 1 : -1;
+            }
+            else
+            {
+                auto increment = (getParameter("Increment") > 0 ? getParameter("Increment") : 0.001f);
+                auto randVal = static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(1.f))) * (getParameter("Range Max") - getParameter("Range Min")) + getParameter("Range Min") ;
+                returnValue = (round(randVal / increment) * increment);
+            }
             sampleIndex = 0;
         }
         
