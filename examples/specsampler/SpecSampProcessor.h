@@ -59,10 +59,10 @@ SpecPlay(S fs, std::size_t fftsize) : shift(fs,fftsize), sr(fs), rp(0),
 }
 
 struct SampParam {
-  std::array<const char *, 8> params;
+  std::array<const char *, 9> params;
   std::vector<std::vector<std::string>> pnames;
   
-  SampParam(std::size_t np) : params({ "Base Note ", "Fine Tune ", "Start Pos ",
+SampParam(std::size_t np) : params({ "Base Note ", "Fine Tune ", "Gain", "Start Pos ",
 	"Loop Start ", "Loop End ", "Timescale ", "Keep Formants ",
 	"Load Sample "}), pnames(np) {
     std::size_t n = 0;
@@ -149,19 +149,33 @@ public:
      return draw;
   }
 
-  const std::vector<std::vector<Aurora::specdata<float>>> &getSamp() {
+  const std::vector<std::vector<Aurora::specdata<float>>> &getSamp(int n) {
     SpecSampProcessor *p = dynamic_cast<SpecSampProcessor *>(getVoices()[0]);
-    return p->samp;
+    if(n == 3) return p->samp3;
+    else if(n == 2) return p->samp2;
+    else if(n == 1) return p->samp1;
+    else return p->samp0;
   }
 
+  
+
 private:
-    std::vector<std::vector<Aurora::specdata<float>>> samp;
+
+  void loadSpec(std::vector<std::vector<Aurora::specdata<float>>> &samp,
+		const char* newValue);
+
+  
+    std::vector<std::vector<Aurora::specdata<float>>> samp0;
+    std::vector<std::vector<Aurora::specdata<float>>> samp1;
+    std::vector<std::vector<Aurora::specdata<float>>> samp2;
+    std::vector<std::vector<Aurora::specdata<float>>> samp3;
     std::vector<float> win;
     Aurora::SpecStream<float> anal;
     Aurora::SpecSynth<float> syn;
     std::vector<Aurora::SpecPlay<float>> players;
     std::vector<Aurora::specdata<float>> del;
     std::vector<Aurora::specdata<float>> out;
+    std::array<float,4> g;
     float att, dec, sus, rel;
     Aurora::Env<float> env;
     std::size_t hcnt;
@@ -174,4 +188,5 @@ private:
     std::string svgText;
     bool loading = false;
     bool doReset = false;
+ 
 };
