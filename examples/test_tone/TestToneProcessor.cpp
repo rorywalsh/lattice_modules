@@ -41,8 +41,7 @@ void TestToneProcessor::prepareProcessor(int sr, std::size_t block)
 void TestToneProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
     const std::string paramName = getParameterNameFromId(parameterID);
-    updateParameter(paramName, newValue);
-    std::cout << getParameter(paramName) << std::endl;
+
 }
 
 
@@ -56,6 +55,25 @@ void TestToneProcessor::process(float** buffer, int numChannels, std::size_t blo
     {
         buffer[0][i] = out[i];
     }
+    
+    
+//    blockCnt = blockCnt > 10 ? 0 : blockCnt+1;
+//    if (blockCnt == 0)
+//    {
+//        if(isInputConnected(0) && amp != getParameter("Amplitude"))
+//        {
+//            amp = getParameter("Amplitude");
+//            updateHostParameter("Amplitude", getParameter("Amplitude"));
+//        }
+//        if(isInputConnected(1)&& amp != getParameter("Frequency"))
+//        {
+//            freq = getParameter("Frequency");
+//            updateHostParameter("Frequency", getParameter("Frequency"));
+//        }
+//    }
+//
+//    freq = getParameter("Frequency");
+//    amp = getParameter("Amplitude");
 }
 
 

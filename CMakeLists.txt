@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project (LatticeModules)
 
 if(NOT DEFINED BUILD_VERSION)
-	set(BUILD_VERSION 0.1.148)
+	set(BUILD_VERSION 0.1.149)
 endif()
 
 
@@ -51,5 +51,6 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/examples/voc_synth)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/test_tone)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/atune)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/random)
+add_subdirectory(${CMAKE_SOURCE_DIR}/examples/random_toggles)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/specsampler)
 

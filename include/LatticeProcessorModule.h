@@ -41,7 +41,8 @@ public:
             Switch =  -98,  /*!< A switch button - shown as an dual state button */
             Slider = -97, /*!< A slider (default) - shown as a horizontal slider */
             FileButton = -96, /*!< A non-automatable button that launches a file browser dialogue */
-            Momentary = -95 /*!< A momentary button - shown only a single state button - will return a value of 1 for as long as the button is being pressed */
+            Momentary = -95, /*!< A momentary button - shown only a single state button - will return a value of 1 for as long as the button is being pressed */
+            AutomationMode = -94
         };
 
         /** Name of your module parameter - this is the name that will appear in the module editor in Lattice */
@@ -410,16 +411,7 @@ public:
     {
         return ModuleType::audioProcessor;
     }
-    /** Call this to inform the host that a parameter has been updated.
-       Be careful that you don't call this too often!
-    * @param [in] parameterID The parameter in the host you wish to update
-    * @param [in] newValue The value you wish to set the parameter to.
-    */
-    void updateHostParameter(const char* parameterID, float newValue)
-    {
-        if (paramCallback != nullptr)
-            paramCallback(parameterID, newValue);
-    }
+
 
     /** Used to query the current value of a parameter - the names correspond to the names used
         in the createParameters() function
@@ -429,7 +421,6 @@ public:
     {
         if(parameterValues.count(name))
         {
-            
             auto value = parameterValues.at(name).load() + automationValues.at(name).load();
             return std::clamp(value, parameterRanges.at(name).load().min, parameterRanges.at(name).load().max);
         }
@@ -448,6 +439,23 @@ public:
                 automationValues.at(parameterName) = buffer[i][0];
             }
         }
+    }
+    
+    /** Call this to inform the host that a parameter has been updated.
+       Be careful that you don't call this too often!
+    * @param [in] parameterID The parameter in the host you wish to update
+    * @param [in] newValue The value you wish to set the parameter to.
+    */
+    void updateHostParameter(const char* parameterID, float newValue)
+    {
+        if (hostParamCallback)
+            hostParamCallback(parameterID, newValue);
+    }
+    
+
+    void registerHostParameterCallback(const std::function<void(const char*, float)>& func)
+    {
+        hostParamCallback = func;
     }
     
     void updateParameter(std::string name, float newValue)
@@ -593,6 +601,7 @@ public:
     {
         audioFileSamplesCallback = func;
     }
+
     
     AudioFileSamples getSamplesFromFile(const char* filename)
     {
@@ -622,11 +631,12 @@ private:
     std::vector<Parameter> parameters;
     int midiNoteNumber = 0;
     std::string nodeName;
-    std::function<void(const char*, float)> paramCallback;
     std::map<std::string, std::atomic<float>> parameterValues;
     std::map<std::string, std::atomic<float>> automationValues;
     std::map<std::string, std::atomic<Parameter::Range>> parameterRanges;
     AudioFileSamples(*audioFileSamplesCallback)(const char* channel);
+    //std::function<void(const std::string& parameterID, float newValue)> paramCallback;
+    std::function<void(const char*, float)> hostParamCallback;
     int voiceNum = -1;
     std::vector<LatticeProcessorModule *> voices;
 };

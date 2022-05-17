@@ -1,12 +1,11 @@
 #pragma once
 #include "LatticeProcessorModule.h"
-#include "Osc.h"
 #include <iterator>
 
-class TestToneProcessor : public LatticeProcessorModule
+class RandomToggleProcessor : public LatticeProcessorModule
 {
 public:
-    TestToneProcessor();
+    RandomToggleProcessor();
     
     ChannelData createChannels() override;
     
@@ -25,19 +24,28 @@ public:
         description = "";
     }
 
+    
     void hostParameterChanged(const char* parameterID, float newValue) override;
     
-    const char* getModuleName() override {    return "Test Tone";     }
+    ModuleType getModuleType() override
+    {
+        return ModuleType::automator;
+    }
+    
+    const char* getModuleName() override {    return "Random Toggles";     }
 
 
 
 private:
-	Aurora::Osc<float, Aurora::lookupi<float>> osc;
-	std::vector<float> wave;
-    std::vector<float> ampVector;
-    std::vector<float> freqVector;
-	float amp = .5f;
-    float freq = 100;
-    int blockCnt = 0;
+    float samplingRate = 44100;
+	int returnValue1 = 0;
+    int returnValue2 = 0;
+    int returnValue3 = 0;
+    int returnValue4 = 0;
+    int sampleIndexTgl1 = 0;
+    int sampleIndexTgl2 = 0;
+    int sampleIndexTgl3 = 0;
+    int sampleIndexTgl4 = 0;
+    float randVal = 0;
 };
 

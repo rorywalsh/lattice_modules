@@ -22,6 +22,7 @@ LatticeProcessorModule::ParameterData RandomProcessor::createParameters()
     addParameter({ "Range Max", {0, 1000, 10.f, 0.001f, 0.5f}});
     addParameter({ "Increment", {0, 1, 0.01f, 0.001f, 1.f}});
     addParameter({ "Act as switch", {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
+    
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
