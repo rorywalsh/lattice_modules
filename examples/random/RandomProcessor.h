@@ -32,7 +32,7 @@ public:
         return ModuleType::automator;
     }
     
-    const char* getModuleName() override {    return "Random Values";     }
+    const char* getModuleName() override {    return "Random Generator (!)";     }
 
 
 
