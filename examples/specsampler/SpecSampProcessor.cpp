@@ -45,13 +45,15 @@ LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
   for(auto &p : sparams.pnames) {
     addParameter({ p[0].c_str(), {0, 127, 60, 1, 1}});
     addParameter({ p[1].c_str(), {0.9439,1.0594, 1, 0.0001, 1}});
-    addParameter({ p[2].c_str(), {0, 1, 1, 0.001, 1}});
-    addParameter({ p[3].c_str(), {0, 1, 0, 0.001, 1}});
-    addParameter({ p[4].c_str(), {0, 1, 0, 0.001, 1}});
-    addParameter({ p[5].c_str(), {0,1, 1, 0.001, 1}});
-    addParameter({ p[6].c_str(), {-2, 2, 1, 0.001, 1}});
-    addParameter({ p[7].c_str(), {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
-    addParameter({ p[8].c_str(), {0, 1, 0, 1, 1}, Parameter::Type::FileButton});
+    addParameter({ p[2].c_str(),  {-1000, 1000, 0, 1, 1}});
+    addParameter({ p[3].c_str(), {0.01, 2, 1, 0.001, 1}});
+    addParameter({ p[4].c_str(), {0, 1, 1, 0.001, 1}});
+    addParameter({ p[5].c_str(), {0, 1, 0, 0.001, 1}});
+    addParameter({ p[6].c_str(), {0, 1, 0, 0.001, 1}});
+    addParameter({ p[7].c_str(), {0,1, 1, 0.001, 1}});
+    addParameter({ p[8].c_str(), {-2, 2, 1, 0.001, 1}});
+    addParameter({ p[9].c_str(), {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
+    addParameter({ p[10].c_str(), {0, 1, 0, 1, 1}, Parameter::Type::FileButton});
   }
 
   
@@ -129,16 +131,20 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
       else if(paramName == p[1])
 	players[n].fine = par;
       else if(paramName == p[2])
-	g[n] = par;
+	players[n].shft = par;
       else if(paramName == p[3])
-	players[n].st = par;
+	players[n].fscal = par;
       else if(paramName == p[4])
-	players[n].beg = par;
+	g[n] = par;
       else if(paramName == p[5])
-	players[n].end = par;
+	players[n].st = par;
       else if(paramName == p[6])
-	players[n].tscal = par;
+	players[n].beg = par;
       else if(paramName == p[7])
+	players[n].end = par;
+      else if(paramName == p[8])
+	players[n].tscal = par;
+      else if(paramName == p[9])
 	players[n].keep = par;
       n++;
     }
