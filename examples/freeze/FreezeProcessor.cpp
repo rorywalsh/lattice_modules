@@ -35,6 +35,16 @@ LatticeProcessorModule::ParameterData FreezeProcessor::createParameters()
     
 }
 
+void FreezeProcessor::hostParameterChanged(const char* parameterID, float newValue)
+{
+    const std::string paramName = getParameterNameFromId(parameterID);
+    if(paramName == "Freeze All")
+    {
+        updateHostParameter("Freeze Amplitude", newValue);
+        updateHostParameter("Freeze Frequency", newValue);
+    }
+}
+
 void FreezeProcessor::prepareProcessor(int sr, std::size_t/*block*/)
 {
   anal.reset(sr);
