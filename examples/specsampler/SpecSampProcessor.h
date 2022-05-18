@@ -18,12 +18,12 @@ struct SpecPlay {
   SpecShift<S> shift;
   S sr;
   S rp;
-  S size;
+  S size, shft, fscal;
   S bn, fine, tscal, beg, end, st;
   bool keep;
 
-SpecPlay(S fs, std::size_t fftsize) : shift(fs,fftsize), sr(fs), rp(0),
-    bn(261), fine(1), tscal(1), beg(0), end(1), st(0), keep(0){ }
+SpecPlay(S fs, std::size_t fftsize) : shift(fs,fftsize), sr(fs), rp(0), size(0),
+    shft(0), fscal(1), bn(261), fine(1), tscal(1), beg(0), end(1), st(0), keep(0){ }
 
   void onset() {
     rp = (st < end? st : end)*size;
@@ -43,7 +43,7 @@ SpecPlay(S fs, std::size_t fftsize) : shift(fs,fftsize), sr(fs), rp(0),
        return shift.frame();
       } 	
       shift.lock_formants(keep);
-      shift(samp[(int)rp],cps*fine/bn);
+      shift(samp[(int)rp],cps*fine/bn, shft, fscal);
       rp += tscal;
       if(end <= beg) beg = end;
       if(tscal >= 0) {
@@ -59,12 +59,11 @@ SpecPlay(S fs, std::size_t fftsize) : shift(fs,fftsize), sr(fs), rp(0),
 }
 
 struct SampParam {
-  std::array<const char *, 9> params;
+  std::array<const char *, 11> params;
   std::vector<std::vector<std::string>> pnames;
   
-SampParam(std::size_t np) : params({ "Base Note ", "Fine Tune ", "Gain", "Start Pos ",
-	"Loop Start ", "Loop End ", "Timescale ", "Keep Formants ",
-	"Load Sample "}), pnames(np) {
+SampParam(std::size_t np) : params({ "Base Note ", "Fine Tune ", "Freq Shift", "Spec Warp", "Gain", "Start Pos ",
+	"Loop Start ", "Loop End ", "Timescale ", "Keep Formants ", "Load Sample "}), pnames(np) {
     std::size_t n = 0;
     char mem[4];
     for(auto &names : pnames) {
