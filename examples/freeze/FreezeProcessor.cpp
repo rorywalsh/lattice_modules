@@ -40,9 +40,37 @@ void FreezeProcessor::hostParameterChanged(const char* parameterID, float newVal
     const std::string paramName = getParameterNameFromId(parameterID);
     if(paramName == "Freeze All")
     {
+      if(newValue) {
         updateHostParameter("Freeze Amplitude", newValue);
         updateHostParameter("Freeze Frequency", newValue);
+      } else {
+        if (getParameter("Freeze Frequency") &&
+	    getParameter("Freeze Amplitude")
+	    ) {
+        updateHostParameter("Freeze Amplitude", newValue);
+        updateHostParameter("Freeze Frequency", newValue);
+	}
+	
+      }
     }
+     if(paramName == "Freeze Amplitude")
+    {
+      if(newValue == 0)
+        updateHostParameter("Freeze All", newValue);
+      else {
+	if(getParameter("Freeze Frequency"))
+        updateHostParameter("Freeze All", newValue);
+      }
+    }
+     if(paramName == "Freeze Frequency")
+    {
+      if(newValue == 0)
+        updateHostParameter("Freeze All", newValue);
+      else {
+	if(getParameter("Freeze Amplitude"))
+        updateHostParameter("Freeze All", newValue);
+      }
+    } 
 }
 
 void FreezeProcessor::prepareProcessor(int sr, std::size_t/*block*/)
@@ -65,8 +93,7 @@ void FreezeProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
   if(anal.framecount() > framecount) {
     std::size_t n = 0;
 
-    if(!freeza && (getParameter("Freeze Amplitude") ||
-		   getParameter("Freeze All"))) // freeze 
+    if(!freeza && getParameter("Freeze Amplitude")) // freeze 
       {
 	if(!timea) {
 	  smootha = getParameter("Smooth Amplitude");
@@ -83,8 +110,7 @@ void FreezeProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
         else timea++;
       }      
     
-    if(!(getParameter("Freeze Amplitude") ||
-	 getParameter("Freeze All"))) // unfreeze
+    if(!getParameter("Freeze Amplitude")) // unfreeze
       {
 	if(freeza) {	  smootha = getParameter("Smooth Amplitude");
 	  caf = std::pow(0.5, 1/(ar*smootha));
@@ -99,8 +125,7 @@ void FreezeProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
 	else dtimea++;
       } 
 
-    if(!freezf && (getParameter("Freeze Frequency") ||
-		   getParameter("Freeze All"))) // freeze 
+    if(!freezf && getParameter("Freeze Frequency")) // freeze 
       {
 	if(!timef) {
 	  smoothf = getParameter("Smooth Frequency");
@@ -118,8 +143,7 @@ void FreezeProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
         else timef++;
       }      
     
-    if(!(getParameter("Freeze Frequency") ||
-	 getParameter("Freeze All"))) // unfreeze
+    if(!getParameter("Freeze Frequency")) // unfreeze
       {
 	if(freezf) {
 	  smoothf = getParameter("Smooth Frequency");
