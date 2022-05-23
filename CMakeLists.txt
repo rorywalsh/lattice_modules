@@ -53,4 +53,4 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/examples/atune)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/random)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/random_toggles)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/specsampler)
-
+add_subdirectory(${CMAKE_SOURCE_DIR}/examples/lfo)
