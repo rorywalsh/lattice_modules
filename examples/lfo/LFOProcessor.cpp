@@ -29,7 +29,7 @@ LatticeProcessorModule::ChannelData LFOProcessor::createChannels()
 	addChannel({ "bipolar triangle", ChannelType::output });
 	addChannel({ "down saw", ChannelType::output });
         addChannel({ "up saw", ChannelType::output });
-	addChannel({ "S & H", ChannelType::output });	
+	addChannel({ "S&H", ChannelType::output });	
 	return {getChannels(), getNumberOfChannels()};
 }
 
@@ -45,6 +45,7 @@ LatticeProcessorModule::ParameterData LFOProcessor::createParameters()
     addParameter({"Bipolar Triangle Amount", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f)});
     addParameter({"Up Saw Amount", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f)});
     addParameter({"Down Saw Amount", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f)});
+    addParameter({"S&H Amount", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f)});
     return {getParameters(), getNumberOfParameters()};
 }
 
@@ -65,7 +66,8 @@ void LFOProcessor::process(float** buffer, int /*numChannels*/, std::size_t bloc
 		      getParameter("Unipolar Triangle Amount"),
 		      getParameter("Bipolar Triangle Amount"),
 		      getParameter("Up Saw Amount"),
-		      getParameter("Down Saw Amount")
+		      getParameter("Down Saw Amount"),
+		      getParameter("S&H Amount")
   };
  
   for (auto &s : saw) {
@@ -82,7 +84,7 @@ void LFOProcessor::process(float** buffer, int /*numChannels*/, std::size_t bloc
       smp = true;
     }
     if(!test) smp = false;
-    buffer[7][n++] = rnd;
+    buffer[7][n++] = rnd*g[7];
   }
 }
 
