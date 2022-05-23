@@ -39,13 +39,21 @@ LatticeProcessorModule::ParameterData LFOProcessor::createParameters()
 {
     addParameter({"Rate", LatticeProcessorModule::Parameter::Range(0.001f, 100.f, 1.f, 0.01f, 1.f)});
     addParameter({"Sine Amount", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f)});
+    addParameter({"Sine Max", LatticeProcessorModule::Parameter::Range(1.f, 20000.f, 1.f, 0.001f, 1.f)});
     addParameter({"Unipolar Square Amount", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f)});
+    addParameter({"Unipolar Square Max", LatticeProcessorModule::Parameter::Range(1.f, 20000.f, 1.f, 0.001f, 1.f)});
     addParameter({"Bipolar Square Amount", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f)});
+    addParameter({"Bipolar Square Max", LatticeProcessorModule::Parameter::Range(1.f, 20000.f, 1.f, 0.001f, 1.f)});
     addParameter({"Unipolar Triangle Amount", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f)});
+    addParameter({"Unipolar Triangle Max", LatticeProcessorModule::Parameter::Range(1.f, 20000.f, 1.f, 0.001f, 1.f)});
     addParameter({"Bipolar Triangle Amount", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f)});
+    addParameter({"Bipolar Triangle Max", LatticeProcessorModule::Parameter::Range(1.f, 20000.f, 1.f, 0.001f, 1.f)});
     addParameter({"Up Saw Amount", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f)});
+    addParameter({"Up Saw Max", LatticeProcessorModule::Parameter::Range(1.f, 1.f, 20000.f, 0.001f, 1.f)});
     addParameter({"Down Saw Amount", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f)});
+    addParameter({"Down Saw Max", LatticeProcessorModule::Parameter::Range(1.f, 1.f, 20000.f, 0.001f, 1.f)});
     addParameter({"S&H Amount", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f)});
+    addParameter({"S&H Max", LatticeProcessorModule::Parameter::Range(1.f, 1.f, 20000.f, 0.001f, 1.f)});
     return {getParameters(), getNumberOfParameters()};
 }
 
@@ -60,14 +68,14 @@ void LFOProcessor::process(float** buffer, int /*numChannels*/, std::size_t bloc
   lfo.vsize(blockSize);
   auto &saw = lfo(1,getParameter("Rate"));
   std::size_t n = 0;
-  const float g[] = { getParameter("Sine Amount"),
-		      getParameter("Unipolar Square Amount"),
-		      getParameter("Bipolar Square Amount"),
-		      getParameter("Unipolar Triangle Amount"),
-		      getParameter("Bipolar Triangle Amount"),
-		      getParameter("Up Saw Amount"),
-		      getParameter("Down Saw Amount"),
-		      getParameter("S&H Amount")
+  const float g[] = { getParameter("Sine Amount")*getParameter("Sine Max"),
+		      getParameter("Unipolar Square Amount")*getParameter("Unipolar Square Max"),
+		      getParameter("Bipolar Square Amount")*getParameter("Bipolar Square Max"),
+		      getParameter("Unipolar Triangle Amount")*getParameter("Unipolar Triangle Max"),
+		      getParameter("Bipolar Triangle Amount")*getParameter("Bipolar Triangle Max"),
+		      getParameter("Up Saw Amount")*getParameter("Up Saw Max"),
+		      getParameter("Down Saw Amount")*getParameter("Down Saw Max"),
+		      getParameter("S&H Amount")*getParameter("S&H Max")
   };
  
   for (auto &s : saw) {
