@@ -40,7 +40,7 @@ class FlangerProcessor : public LatticeProcessorModule
 public:
     FlangerProcessor();
     
-    ChannelData createChannelLayout();
+    ChannelData createChannels() override;
     
     /* This function is called by he host to populate the parameter vector */
     ParameterData createParameters() override;

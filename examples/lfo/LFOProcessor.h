@@ -23,6 +23,11 @@ public:
 
     const char* getModuleName() override {    return "LFO";     }   
     
+    ModuleType getModuleType() override
+    {
+        return ModuleType::automator;
+    }
+    
 private:
     Aurora::Osc<float, Aurora::phase> lfo;
     std::vector<float> utri;

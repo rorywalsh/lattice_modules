@@ -9,7 +9,7 @@ FlangerProcessor::FlangerProcessor()
     
 }
 
-LatticeProcessorModule::ChannelData FlangerProcessor::createChannelLayout()
+LatticeProcessorModule::ChannelData FlangerProcessor::createChannels()
 {
     addChannel({"Input", LatticeProcessorModule::ChannelType::input });
     addChannel({ "Output", LatticeProcessorModule::ChannelType::output });
