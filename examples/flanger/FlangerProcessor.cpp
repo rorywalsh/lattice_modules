@@ -34,16 +34,10 @@ void FlangerProcessor::prepareProcessor(int sr, std::size_t block)
 
 void FlangerProcessor::process(float** buffer, int numChannels, std::size_t blockSize, const HostData)
 {
-   
     in.resize(blockSize);
-    
     std::copy(buffer[0], buffer[0] + blockSize, in.begin());
-    
     auto &out = flanger(in, getParameter("LFO Frequency"), getParameter("Feedback"), getParameter("Gain"), getParameter("Max Delay")/1000.f);
-
-    for (int i = 0; i < blockSize; i++)
-        for (int chan = 0; chan < numChannels; chan++)
-            buffer[chan][i] = out[i];
+    std::copy(out.begin(),out.end(),buffer[0]);
     
 }
 

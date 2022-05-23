@@ -8,9 +8,6 @@
 #include <iostream>
 #include <vector>
 
-
-
-
 class FlangerProcessor : public LatticeProcessorModule
 {
 	static float scl(float a, float b) { return a * b; }
