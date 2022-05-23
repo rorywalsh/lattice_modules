@@ -28,6 +28,7 @@ private:
     std::vector<float> utri;
     std::vector<float> btri;
     std::vector<float> sine;
+    std::vector<float> cosine;
     bool smp = false;
     float rnd  = 0;
 };
