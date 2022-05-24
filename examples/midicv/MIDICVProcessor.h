@@ -24,8 +24,12 @@ public:
 
     void stopNote(float velocity) override;
 
-    const char* getModuleName() override {    return "MIDI converter";     }   
-    
+    const char* getModuleName() override {    return "Midi converter";     }   
+
+    ModuleType getModuleType() override
+    {
+        return ModuleType::midiProcessor;
+    }
     
 private:
     ParamSmooth smf;
