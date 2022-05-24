@@ -40,7 +40,7 @@ LatticeProcessorModule::ChannelData LFOProcessor::createChannels()
 LatticeProcessorModule::ParameterData LFOProcessor::createParameters()
 {
     addParameter({"Rate", LatticeProcessorModule::Parameter::Range(0.001f, 100.f, 1.f, 0.01f, 1.f)});
-     addParameter({"Cosine Amount", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f)});
+    addParameter({"Cosine Amount", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f)});
     addParameter({"Cosine Max", LatticeProcessorModule::Parameter::Range(1.f, 20000.f, 1.f, 0.001f, 1.f)});
     addParameter({"Sine Amount", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f)});
     addParameter({"Sine Max", LatticeProcessorModule::Parameter::Range(1.f, 20000.f, 1.f, 0.001f, 1.f)});
