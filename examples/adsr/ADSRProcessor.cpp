@@ -7,7 +7,7 @@
 const double twopi = 2*M_PI;
 
 ADSRProcessor::ADSRProcessor()
-  :LatticeProcessorModule(), att(0), dec(0), sus(1), env(att,dec,sus,0.1,Aurora::def_sr), retrig(false)
+  :LatticeProcessorModule(), att(0), dec(0), sus(1), env(att,dec,sus,0.1,Aurora::def_sr)
 {
 }
 
@@ -42,10 +42,8 @@ void ADSRProcessor::hostParameterChanged(const char* parameterID, float newValue
    else if(paramName == "Sustain") sus = getParameter(paramName);
    else if(paramName == "Release") env.release(getParameter(paramName));
    else if(paramName == "Retrigger") {
-     if(getParameter(paramName) || !retrig) {
+     if(getParameter(paramName)) 
        env.retrigger();
-       retrig = true;
-     } else if(!getParameter(paramName)) retrig = false;
    }    
 }
 
