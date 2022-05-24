@@ -105,8 +105,8 @@ public:
     ```
     */
 
-        Parameter(const char* name, Range paramRange, Parameter::Type type = Type::Slider)
-            :parameterName(name), range(paramRange), paramType(type)
+        Parameter(const char* name, Range paramRange, Parameter::Type type = Type::Slider, bool visible = false)
+            :parameterName(name), range(paramRange), paramType(type), showInputPin(visible)
         {
             
         }
@@ -129,6 +129,8 @@ public:
         const char* hint = "";
         /** Set the type of basic UI element to use for the parameter. If you select a a switch or trigger, many sure your parameter range is between 0 and 1, and the increment is set to 1*/
         Type paramType = Type::Slider;
+        
+        bool showInputPin = false;
     };
 
 
@@ -606,6 +608,12 @@ public:
     void setConnection(int index, bool isConnected)
     {
         connections[index].isConnected = isConnected;
+        if(!isConnected)
+        {
+            auto it = automationValues.begin();
+            std::advance(it, index-getNumberOfInputChannels());
+            automationValues.at(it->first) = 0;
+        }
     }
     
     bool isInputConnected(std::size_t index)

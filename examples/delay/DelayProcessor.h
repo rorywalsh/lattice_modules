@@ -31,4 +31,6 @@ private:
     Aurora::Del<float, Aurora::vdelay> delayR;
     std::vector<float> inL;
     std::vector<float> inR;
+    ParamSmooth timeL, timeR;
+    int samplingRate;
 };
