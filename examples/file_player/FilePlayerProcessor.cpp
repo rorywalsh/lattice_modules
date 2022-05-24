@@ -35,6 +35,9 @@ void FilePlayerProcessor::hostParameterChanged(const char* parameterID, const ch
     {
         auto samples = getSamplesFromFile(newValue);
         numSamples = samples.numSamples;
+        if(numSamples == 0)
+            return;
+        
         releaseSegment = numSamples;
         soundfileSamples.resize(samples.numSamples);
         std::copy(samples.data[0], samples.data[0] + samples.numSamples, soundfileSamples.begin());
