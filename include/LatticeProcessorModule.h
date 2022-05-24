@@ -16,6 +16,31 @@
 template <typename... Types>
 void unused(Types&&...) noexcept {}
 
+class ParamSmooth {
+  float y;
+  float t;
+  float cf;
+  float sr;
+
+ public:
+ ParamSmooth() : y(0), t(0), cf(0), sr(0) {};
+
+  /** smoothing function \m
+   *   x - input \n
+   *   ti - smooth time in secs \n
+   *   rate - signal processing rate
+   */
+  float operator() (float x, float ti, float rate = 44100/64) {
+    if(ti != t || rate != sr) {
+      t = ti;
+      sr = rate;
+      if(t > 0 && sr > 0)
+       cf = std::pow(2, 1./(t*sr));
+      else cf = 0;
+    }
+    return (y = x*(1-cf) + y*cf);
+  }
+};
 
 /** @class LatticeProcessorModule
  * @brief Base class for all modules

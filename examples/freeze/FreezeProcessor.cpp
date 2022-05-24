@@ -81,8 +81,7 @@ void FreezeProcessor::prepareProcessor(int sr, std::size_t/*block*/)
 }
 
 void FreezeProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
-{
-    
+{    
     in.resize(blockSize);
     syn.vsize(blockSize);
     
