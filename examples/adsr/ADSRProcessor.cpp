@@ -7,7 +7,7 @@
 const double twopi = 2*M_PI;
 
 ADSRProcessor::ADSRProcessor()
-  :LatticeProcessorModule(), att(0), dec(0), sus(1), env(att,dec,sus,0.1,Aurora::def_sr), retrig(false), smooth()
+  :LatticeProcessorModule(), att(0), dec(0), sus(1), env(att,dec,sus,0.1,Aurora::def_sr), retrig(false)
 {
 }
 
@@ -52,10 +52,7 @@ void ADSRProcessor::hostParameterChanged(const char* parameterID, float newValue
 void ADSRProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
 {
   env.vsize(blockSize);
-  
   auto &e = env(getParameter("Gate"));
-
-  std::cout << smooth(e[0], 0.01, 4410) << std::endl;
   std::copy(e.begin(),e.end(), buffer[0]);  
 }
 

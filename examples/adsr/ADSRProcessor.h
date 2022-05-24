@@ -34,6 +34,5 @@ private:
     float att, dec, sus;
     Aurora::Env<float> env;
     bool retrig;
-    ParamSmooth smooth;
 };
 

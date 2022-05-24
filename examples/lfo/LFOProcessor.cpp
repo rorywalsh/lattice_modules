@@ -26,9 +26,13 @@ LatticeProcessorModule::ChannelData LFOProcessor::createChannels()
   addChannel({ "sine", ChannelType::output });
   addChannel({ "cosine", ChannelType::output });
   addChannel({ "unipolar square", ChannelType::output });
+  addChannel({ "inverted unipolar square", ChannelType::output });
   addChannel({ "bipolar square", ChannelType::output });
+  addChannel({ "inverted bipolar square", ChannelType::output });
   addChannel({ "unipolar triangle", ChannelType::output });
+  addChannel({ "inverted unipolar triangle", ChannelType::output });
   addChannel({ "bipolar triangle", ChannelType::output });
+  addChannel({ "inverted bipolar triangle", ChannelType::output });
   addChannel({ "down saw", ChannelType::output });
   addChannel({ "up saw", ChannelType::output });
   addChannel({ "S&H", ChannelType::output });	
@@ -108,17 +112,21 @@ void LFOProcessor::process(float** buffer, int /*numChannels*/, std::size_t bloc
     buffer[0][n] = Aurora::lookup<float>(s, &cosine)*g[0];
     buffer[1][n] = Aurora::lookup<float>(s, &sine)*g[1];
     buffer[2][n] = test =  s < 0.5 ? g[2] : 0;
-    buffer[3][n] =  s < 0.5 ? g[3]: -g[3];		  
-    buffer[4][n] =  Aurora::lookup<float>(s, &utri)*g[4];
-    buffer[5][n] =  Aurora::lookup<float>(s, &btri)*g[5];
-    buffer[6][n] = (2*s - 1)*g[6];
-    buffer[7][n] = (2 - 2*s)*g[7];
+    buffer[3][n] = s < 0.5 ? 0 : g[2];
+    buffer[4][n] =  s < 0.5 ? g[3]: -g[3];
+    buffer[5][n] =  s < 0.5 ? -g[3]: g[3];
+    buffer[6][n] =  Aurora::lookup<float>(s, &utri)*g[4];
+    buffer[7][n] =  (1 - Aurora::lookup<float>(s, &utri))*g[4];
+    buffer[8][n] =  Aurora::lookup<float>(s, &btri)*g[5];
+    buffer[9][n] =  -Aurora::lookup<float>(s, &btri)*g[5];
+    buffer[10][n] = (2*s - 1)*g[6];
+    buffer[11][n] = (2 - 2*s)*g[7];
     if(!smp && test) {
       rnd =  (2.f*rand())/RAND_MAX - 1.;
       smp = true;
     }
     if(!test) smp = false;
-    buffer[8][n++] = rnd*g[8];
+    buffer[12][n++] = rnd*g[8];
   }
 }
 
