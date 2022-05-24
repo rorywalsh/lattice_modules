@@ -30,12 +30,12 @@ class ParamSmooth {
    *   ti - smooth time in secs \n
    *   rate - signal processing rate
    */
-  float operator() (float x, float ti, float rate = 44100/64) {
+  float operator() (float x, float ti, float rate = 44100/64.f) {
     if(ti != t || rate != sr) {
       t = ti;
       sr = rate;
       if(t > 0 && sr > 0)
-       cf = std::pow(2, 1./(t*sr));
+       cf = std::pow(0.5, 1./(t*sr));
       else cf = 0;
     }
     return (y = x*(1-cf) + y*cf);
