@@ -23,10 +23,10 @@ LatticeProcessorModule::ParameterData ADSRProcessor::createParameters()
 {
   addParameter({ "Gate", {0, 1, 0, 1, 1}, Parameter::Type::Momentary});
   addParameter({ "Retrigger", {0, 1, 0, 1, 1}, Parameter::Type::Momentary});
-  addParameter({"attack", {0.f, 1.f, 0.01f, 0.001f, 1.f}});
-  addParameter({"decay", {0.f, 1.f, 0.01f, 0.001f, 1.f}});
-  addParameter({"sustain",{0.f, 1.f, 1.f, 0.001f, 1.f}});
-  addParameter({"release",{0.f, 1.f, 0.1f, 0.001f, 1.f}});;
+  addParameter({"Attack", {0.f, 1.f, 0.01f, 0.001f, 1.f}});
+  addParameter({"Decay", {0.f, 1.f, 0.01f, 0.001f, 1.f}});
+  addParameter({"Sustain",{0.f, 1.f, 1.f, 0.001f, 1.f}});
+  addParameter({"Release",{0.f, 1.f, 0.1f, 0.001f, 1.f}});;
   return {getParameters(), getNumberOfParameters()};
 }
 
@@ -37,11 +37,11 @@ void ADSRProcessor::prepareProcessor(int sr, std::size_t block)
 
 void ADSRProcessor::hostParameterChanged(const char* parameterID, float newValue) {
    const std::string paramName = getParameterNameFromId(parameterID);
-   if(paramName == "attack") att = getParameter(paramName);
-   else if(paramName == "decay") dec = getParameter(paramName);
-   else if(paramName == "sustain") sus = getParameter(paramName);
-   else if(paramName == "release") env.release(getParameter(paramName));
-   else if(paramName == "retrigger") {
+   if(paramName == "Attack") att = getParameter(paramName);
+   else if(paramName == "Decay") dec = getParameter(paramName);
+   else if(paramName == "Sustain") sus = getParameter(paramName);
+   else if(paramName == "Release") env.release(getParameter(paramName));
+   else if(paramName == "Retrigger") {
      if(getParameter(paramName) || !retrig) {
        env.retrigger();
        retrig = true;
