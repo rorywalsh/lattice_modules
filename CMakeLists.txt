@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project (LatticeModules)
 
 if(NOT DEFINED BUILD_VERSION)
-	set(BUILD_VERSION 0.1.154)
+	set(BUILD_VERSION 0.1.155)
 endif()
 
 
@@ -12,6 +12,8 @@ else()
     set(PLATFORM "MacOS")
     set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
 endif()
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 add_compile_options ( -fdeclspec -fms-extensions)
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)

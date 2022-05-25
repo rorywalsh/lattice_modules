@@ -639,7 +639,7 @@ public:
         if(!isConnected)
         {
             auto it = automationValues.begin();
-            std::advance(it, index-getNumberOfInputChannels());
+            std::advance(it, std::max(0, int(index-getNumberOfInputChannels())));
             automationValues.at(it->first) = 0;
         }
     }
