@@ -26,6 +26,7 @@ public:
     /* override this method and return true if you wish to enable drawing on the generic editor viewport */
     bool canDraw() override { return true; }
     
+    
     const char* getModuleName() override {    return "Gain";     }
     
 private:

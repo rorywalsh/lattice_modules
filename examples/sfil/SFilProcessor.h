@@ -26,6 +26,11 @@ public:
         return "Spectral Filter";
     }
 
+    int getModuleType() override
+    {
+        return ModuleType::AudioProcessor::spectral;
+    }
+    
 private:
     std::vector<float> win;
     Aurora::SpecStream<float> anal1, anal2;

@@ -26,7 +26,11 @@ public:
         description = "";
     }
 
-
+    virtual int getModuleType() override
+    {
+        return ModuleType::AudioProcessor::filters;
+    }
+    
     const char* getModuleName() override {    return "One Pole Lowpass";     }
     
 

@@ -168,9 +168,9 @@ public:
         return getParameter("Release Time");
     }
     
-    ModuleType getModuleType() override
+    int getModuleType() override
     {
-        return ModuleType::synthProcessor;
+        return ModuleType::SynthProcessor::uncategorised;
     }
 
     bool restrictBlockSize() override { return true; }

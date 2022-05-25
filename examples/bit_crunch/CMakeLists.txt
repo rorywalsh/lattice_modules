@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.15)
-project (TableConv)
+project (BitCrunch)
 
-include_directories("../include/")
-include_directories("${CMAKE_SOURCE_DIR}/aurora/include")
+include_directories("../src/")
 
-set(SOURCE TableConvProcessor.cpp TableConvProcessor.h)
+set(SOURCE BitCrunchProcessor.cpp BitCrunchProcessor.h)
 
 if(MSVC)
     set(PLATFORM "Windows")

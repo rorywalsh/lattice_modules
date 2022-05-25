@@ -26,6 +26,11 @@ public:
         return "Spectral Morph";
     }
 
+    int getModuleType() override
+    {
+        return ModuleType::AudioProcessor::spectral;
+    }
+    
 private:
     std::vector<float> win;
     Aurora::SpecStream<float> anal1, anal2;

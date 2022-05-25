@@ -26,9 +26,9 @@ public:
 
     const char* getModuleName() override {    return "Midi converter";     }   
 
-    ModuleType getModuleType() override
+    int getModuleType() override
     {
-        return ModuleType::midiProcessor;
+        return ModuleType::MidiProcessor::uncategorised;
     }
     
 private:

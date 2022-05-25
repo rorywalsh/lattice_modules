@@ -25,6 +25,10 @@ public:
     {    
         return "Single Band Parametric EQ";     
     }
+    virtual int getModuleType() override
+    {
+        return ModuleType::AudioProcessor::filters;
+    }
 
 private:
 	Aurora::Eq<float> eq;

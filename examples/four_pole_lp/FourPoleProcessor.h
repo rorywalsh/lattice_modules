@@ -28,7 +28,11 @@ public:
         description = "";
     }
 
-
+    virtual int getModuleType() override
+    {
+        return ModuleType::AudioProcessor::filters;
+    }
+    
     const char* getModuleName() override 
     {    
         return "Four Pole Resonant Lowpass";     

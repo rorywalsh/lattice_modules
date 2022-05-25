@@ -33,13 +33,17 @@ public:
         description = "";
     }
  
-
+    int getModuleType() override
+    {
+        return ModuleType::AudioProcessor::filters;
+    }
+    
     static float remap(float value, float from1, float to1, float from2, float to2)
     {
         return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
     }
     
-    const char* getModuleName() override {    return "TV Conv";     }
+    const char* getModuleName() override {    return "Time Varying Convolution";     }
     
 private:
     Conv<float> conv;

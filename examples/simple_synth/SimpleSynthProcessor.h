@@ -79,9 +79,9 @@ public:
         return synth.getRelease();
     }
     
-    ModuleType getModuleType() override
+    int getModuleType() override
     {
-        return ModuleType::synthProcessor;
+        return ModuleType::SynthProcessor::uncategorised;
     }
     
 private:
