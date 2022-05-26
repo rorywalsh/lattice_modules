@@ -36,9 +36,9 @@ void FShiftProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
   in.resize(blocksize);
   std::copy(buffer[0],buffer[0]+blocksize,in.begin());
   auto &up = fshift(in, getParameter("Shift Amount"));
-  auto &down = fshift.downshift();
+  //auto &down = fshift.downshift();
   std::copy(up.begin(), up.end(),buffer[0]);
-  std::copy(down.begin(), down.end(),buffer[0]); 		      
+  //std::copy(down.begin(), down.end(),buffer[1]); 		      
 }
 
 // the class factories

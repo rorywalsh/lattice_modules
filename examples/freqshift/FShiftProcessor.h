@@ -36,6 +36,7 @@ public:
     float re, im;
     up.resize(in.size());
     down.resize(in.size());
+    ph.vsize(in.size());
     auto &phase = ph(1, fr);
     auto &inr = quad(in);
     auto &ini = quad.imag();
