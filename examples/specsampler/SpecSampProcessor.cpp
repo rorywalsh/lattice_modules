@@ -54,6 +54,7 @@ LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
     addParameter({ p[8].c_str(), {-2, 2, 1, 0.001, 1}});
     addParameter({ p[9].c_str(), {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
     addParameter({ p[10].c_str(), {0, 1, 0, 1, 1}, Parameter::Type::FileButton});
+    addParameter({ p[11].c_str(), {0, 1, 0, 1, 1}, Parameter::Type::Momentary});
   }
 
   
@@ -62,38 +63,38 @@ LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
 
 void SpecSampProcessor::loadSpec(std::vector<std::vector<Aurora::specdata<float>>> &samp,
 				 const char* newValue) {
-     loading = true;
-      if(!getVoiceNum())
-        {
-	  std::cout << getVoiceNum()  << std::endl;
-	  std::cout << "File to load" << newValue << std::endl;
-	  auto samples = getSamplesFromFile(newValue);
-	  //std::cout << samples.numSamples << std::endl;
-	  if(samples.numSamples > 0) {
-	    samp.resize(samples.numSamples/anal.hsize());
-	    std::cout << "frames: " << samp.size() << " : " << samples.numSamples
-		      << " : " << anal.hsize() << std::endl;
-	    std::size_t n = 0;
-	    std::vector<float> lfr(anal.hsize());
-	    for(auto &frame : samp) {
-	      std::copy(samples.data[0] + n,
-			samples.data[0] + n + anal.hsize(),
-			lfr.begin());
-	      frame = anal(lfr);
-	      n += anal.hsize();
-	    }
-	    std::cout << "samples: " << n << "\n";
-	    if(n < samples.numSamples) {
-	      std::fill(lfr.begin(), lfr.end(), 0);
-	      std::copy(samples.data[0] + n,
-			samples.data[0] + samples.numSamples,
-			lfr.begin());
-	      samp.push_back(anal(lfr));
-	    }
-	  }
-        }
-      loading = false;
-      okToDraw = true;
+  loading = true;
+  if(!getVoiceNum())
+    {
+      std::cout << getVoiceNum()  << std::endl;
+      std::cout << "File to load" << newValue << std::endl;
+      auto samples = getSamplesFromFile(newValue);
+      //std::cout << samples.numSamples << std::endl;
+      if(samples.numSamples > 0) {
+	samp.resize(samples.numSamples/anal.hsize());
+	std::cout << "frames: " << samp.size() << " : " << samples.numSamples
+		  << " : " << anal.hsize() << std::endl;
+	std::size_t n = 0;
+	std::vector<float> lfr(anal.hsize());
+	for(auto &frame : samp) {
+	  std::copy(samples.data[0] + n,
+		    samples.data[0] + n + anal.hsize(),
+		    lfr.begin());
+	  frame = anal(lfr);
+	  n += anal.hsize();
+	}
+	std::cout << "samples: " << n << "\n";
+	if(n < samples.numSamples) {
+	  std::fill(lfr.begin(), lfr.end(), 0);
+	  std::copy(samples.data[0] + n,
+		    samples.data[0] + samples.numSamples,
+		    lfr.begin());
+	  samp.push_back(anal(lfr));
+	}
+      }
+    }
+  loading = false;
+  okToDraw = true;
 
 }
 
@@ -104,7 +105,7 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID,
   if(paramName == "Load Sample 1") loadSpec(samp0, newValue);
   else if(paramName == "Load Sample 2") loadSpec(samp1, newValue);
   else if(paramName == "Load Sample 3") loadSpec(samp2, newValue);
-   else if(paramName == "Load Sample 4") loadSpec(samp3, newValue);  
+  else if(paramName == "Load Sample 4") loadSpec(samp3, newValue);  
 }
 
 void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newValue)
@@ -146,6 +147,26 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
 	players[n].tscal = par;
       else if(paramName == p[9])
 	players[n].keep = par;
+      else if(paramName == p[11]) {
+        if(getParameter(paramName)) {
+	  if(!getVoiceNum()) {  
+	    switch(n) {
+	    case 0:
+	      samp0.clear();
+	      break;
+	    case 1:
+	      samp1.clear();
+	      break;
+	    case 2:
+	      samp2.clear();
+	      break;
+	    case 3:
+	      samp3.clear();
+	      break;  
+	    }
+	  }	    
+	}
+      }
       n++;
     }
   }

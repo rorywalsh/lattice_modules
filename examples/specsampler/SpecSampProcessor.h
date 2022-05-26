@@ -59,11 +59,11 @@ SpecPlay(S fs, std::size_t fftsize) : shift(fs,fftsize), sr(fs), rp(0), size(0),
 }
 
 struct SampParam {
-  std::array<const char *, 11> params;
+  std::array<const char *, 12> params;
   std::vector<std::vector<std::string>> pnames;
   
 SampParam(std::size_t np) : params({ "Base Note ", "Fine Tune ", "Freq Shift ", "Spec Warp ", "Gain", "Start Pos ",
-	"Loop Start ", "Loop End ", "Timescale ", "Keep Formants ", "Load Sample "}), pnames(np) {
+      "Loop Start ", "Loop End ", "Timescale ", "Keep Formants ", "Load Sample ", "Clear Sample "}), pnames(np) {
     std::size_t n = 0;
     char mem[4];
     for(auto &names : pnames) {
