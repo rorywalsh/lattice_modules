@@ -23,7 +23,8 @@ LatticeProcessorModule::ChannelData FShiftProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData FShiftProcessor::createParameters()
 {
-  addParameter({"Shift Amount", {-5000.f, 5000.f, 0.f, 1.f, 1.f}});
+  addParameter({"Shift Amount", {-1.f, 1.f, 0.f, 0.001f, 1.f}});
+  addParameter({"Scale", {5.f, 5000.f, 5.f, 1.f, .3f}});
   addParameter({"Mixture (A-B)", {0,1, 0.5f, 0.001f, 1.f}});
   addParameter({"Squelch Threshold", {-90,0,-60.f, 1.f, 1.f}});
   return {getParameters(), getNumberOfParameters()};
@@ -45,10 +46,10 @@ void FShiftProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
 {
    in.resize(blocksize);
    std::copy(buffer[0],buffer[0]+blocksize,in.begin());
-   auto &up = fshift(in, getParameter("Shift Amount"));
+   auto &up = fshift(in, getParameter("Shift Amount")*getParameter("Scale"));
    auto &down = fshift.downshift();
    auto gain = smooth(fshift.input_magnitude() > thresh ? 1.f : 0.f,
-		      0.01, fs/blocksize);
+		      0.1, fs/blocksize);
    auto m = getParameter("Mixture (A-B)");
    for(std::size_t n = 0; n < blocksize; n++) { 
      buffer[0][n] = (up[n]*(1-m) + down[n]*m)*gain;
