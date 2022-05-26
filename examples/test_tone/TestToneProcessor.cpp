@@ -23,8 +23,8 @@ LatticeProcessorModule::ChannelData TestToneProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData TestToneProcessor::createParameters()
 {
-    addParameter({ "Amplitude", {0, 1, 0.5f, 0.001f, 1.f}});
-    addParameter({ "Frequency", {0, 1000, 100.f, 0.001f, .5f}});
+    addParameter({ "Amplitude", {0, 1, 0.5f, 0.001f, 1.f}, Parameter::Type::Slider, true});
+    addParameter({ "Frequency", {0, 1000, 100.f, 0.001f, .5f}, Parameter::Type::Slider, true});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

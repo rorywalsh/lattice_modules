@@ -91,6 +91,11 @@ public:
         description = "";
     }
 
+    int getModuleType() override
+    {
+        return ModuleType::AudioProcessor::delay;
+    }
+    
     /* override this method if you want to draw to the Lattice generic editor viewport */
     const char* getSVGXml() override;
 

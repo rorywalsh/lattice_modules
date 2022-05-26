@@ -114,9 +114,9 @@ public:
 		return draw;
 	}
 
-    ModuleType getModuleType() override
+    int getModuleType() override
     {
-        return ModuleType::synthProcessor;
+        return ModuleType::SynthProcessor::uncategorised;
     }
 
 	static int remap(float value, float rangeMin, float rangeMax, float newRangeMin, float newRangeMax)

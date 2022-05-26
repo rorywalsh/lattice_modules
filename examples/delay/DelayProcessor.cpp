@@ -38,6 +38,7 @@ void DelayProcessor::prepareProcessor(int sr, std::size_t/*block*/)
 {
 	//delayL.reset(2, sr);
 	//delayL.reset(2, sr);
+    samplingRate = sr;
 }
 
 void DelayProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
@@ -48,9 +49,10 @@ void DelayProcessor::process(float** buffer, int /*numChannels*/, std::size_t bl
     std::copy(buffer[0], buffer[0] + blockSize, inL.begin());
     std::copy(buffer[1], buffer[1] + blockSize, inR.begin());
     
+    
 
-    auto &outL = delayL(inL, getParameter("Delay Time Left"), getParameter("Feedback Left"), getParameter("Dry Mix Left"));
-    auto &outR = delayR(inR, getParameter("Delay Time Right"), getParameter("Feedback Right"), getParameter("Dry Mix Right"));
+    auto &outL = delayL(inL, timeL(getParameter("Delay Time Left"), 0.01), getParameter("Feedback Left"), getParameter("Dry Mix Left"));
+    auto &outR = delayR(inR, timeR(getParameter("Delay Time Right"), 0.01), getParameter("Feedback Right"), getParameter("Dry Mix Right"));
 
     if( getParameter("Enabled") == 1 )
     {

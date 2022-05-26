@@ -27,9 +27,9 @@ public:
     
     void hostParameterChanged(const char* parameterID, float newValue) override;
     
-    ModuleType getModuleType() override
+    int getModuleType() override
     {
-        return ModuleType::automator;
+        return ModuleType::Automator::uncategorised;
     }
     
     const char* getModuleName() override {    return "Random Toggles";     }

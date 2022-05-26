@@ -105,8 +105,8 @@ public:
     ```
     */
 
-        Parameter(const char* name, Range paramRange, Parameter::Type type = Type::Slider)
-            :parameterName(name), range(paramRange), paramType(type)
+        Parameter(const char* name, Range paramRange, Parameter::Type type = Type::Slider, bool visible = false)
+            :parameterName(name), range(paramRange), paramType(type), showInputPin(visible)
         {
             
         }
@@ -129,6 +129,8 @@ public:
         const char* hint = "";
         /** Set the type of basic UI element to use for the parameter. If you select a a switch or trigger, many sure your parameter range is between 0 and 1, and the increment is set to 1*/
         Type paramType = Type::Slider;
+        
+        bool showInputPin = false;
     };
 
 
@@ -190,12 +192,40 @@ public:
     };
 
     /*! ModuleType enum */
-    enum ModuleType
+    struct ModuleType
     {
-        synthProcessor = 0,/** a module that will form part of a polyphonic or monophonic synth. This type of module can not only generate audio, but can also process incoming. See LatticeProcessorModule::getNumberOfVoices() for details on how to limit the number of voices. */
-        audioProcessor,/** an audio processor. This can be used to process or generate audio */
-        midiProcessor, /** a Midi based processor - can parse and modify incoming Midi data or generate new Midi streams on the fly*/
-        automator /** an automation processor. */
+        struct AudioProcessor
+        {
+            static constexpr int uncategorised = 0;
+            static constexpr int dynamic = 2;
+            static constexpr int filters = 3;
+            static constexpr int spectral = 6;
+            static constexpr int delay = 7;
+            static constexpr int nonlinear = 8;
+        };
+        struct MidiProcessor
+        {
+            static constexpr int uncategorised = 100;
+            static constexpr int generator = 101;
+            static constexpr int modifier = 102;
+            
+        };
+        struct SynthProcessor
+        {
+            static constexpr int uncategorised = 200;
+            static constexpr int distortion = 201;
+            static constexpr int spectral = 202;
+            static constexpr int time = 203;
+            static constexpr int nonlinear = 204;
+            
+        };
+        struct Automator{
+            static constexpr int uncategorised = 300;
+        };
+//        synthProcessor = 0,/** a module that will form part of a polyphonic or monophonic synth. This type of module can not only generate audio, but can also process incoming. See LatticeProcessorModule::getNumberOfVoices() for details on how to limit the number of voices. */
+//        audioProcessor,/** an audio processor. This can be used to process or generate audio */
+//        midiProcessor, /** a Midi based processor - can parse and modify incoming Midi data or generate new Midi streams on the fly*/
+//        automator /** an automation processor. */
     };
 
     enum ChannelType {
@@ -432,9 +462,9 @@ public:
     /** Called by Lattice to determine the type of module to load.
     * @return returns the type of module
     */
-    virtual ModuleType getModuleType()
+    virtual int getModuleType()
     {
-        return ModuleType::audioProcessor;
+        return ModuleType::AudioProcessor::uncategorised;
     }
 
 
@@ -606,6 +636,12 @@ public:
     void setConnection(int index, bool isConnected)
     {
         connections[index].isConnected = isConnected;
+        if(!isConnected)
+        {
+            auto it = automationValues.begin();
+            std::advance(it, std::max(0, int(index-getNumberOfInputChannels())));
+            automationValues.at(it->first) = 0;
+        }
     }
     
     bool isInputConnected(std::size_t index)

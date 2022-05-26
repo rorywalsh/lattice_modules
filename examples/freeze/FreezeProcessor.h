@@ -26,6 +26,11 @@ public:
         return "Spectral Freeze";
     }
 
+    virtual int getModuleType() override
+    {
+        return ModuleType::AudioProcessor::spectral;
+    }
+    
 private:
     std::vector<float> win;
     Aurora::SpecStream<float> anal;

@@ -25,6 +25,11 @@ public:
     {
         return "Spectral Vocoder";
     }
+    
+    int getModuleType() override
+    {
+        return ModuleType::AudioProcessor::spectral;
+    }
 
 private:
     std::vector<float> win;

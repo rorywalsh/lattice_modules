@@ -131,9 +131,9 @@ public:
     bool restrictBlockSize() override { return true; }
     
     
-    ModuleType getModuleType() override
+    virtual int getModuleType() override
     {
-        return ModuleType::synthProcessor;
+        return ModuleType::SynthProcessor::spectral;
     }
 
     const char* getModuleName() override

@@ -113,9 +113,9 @@ public:
     void processSynthVoice(float** buffer, int numChannels, std::size_t blockSize) override;
       
     
-    ModuleType getModuleType() override
+    int getModuleType() override
     {
-        return ModuleType::synthProcessor;
+        return ModuleType::SynthProcessor::nonlinear;
     }
     
     float getTailOffTime() override

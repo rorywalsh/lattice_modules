@@ -99,6 +99,11 @@ public:
         paramValues is a list of parameter values passed from the host in order of their creation */
     void process(float** buffer, int numChannels, std::size_t blockSize, const HostData hostInfo) override;
     
+    int getModuleType() override
+    {
+        return ModuleType::AudioProcessor::delay;
+    }
+    
     const char* getModuleName() override
     {
         return "Stereo Reverb";

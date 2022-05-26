@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project (LatticeModules)
 
 if(NOT DEFINED BUILD_VERSION)
-	set(BUILD_VERSION 0.1.152)
+	set(BUILD_VERSION 0.1.155)
 endif()
 
 
@@ -12,6 +12,8 @@ else()
     set(PLATFORM "MacOS")
     set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
 endif()
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 add_compile_options ( -fdeclspec -fms-extensions)
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
@@ -36,7 +38,6 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/examples/two_pole_svf)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/waveform_viewer)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/gr_synth)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/table_viewer)
-add_subdirectory(${CMAKE_SOURCE_DIR}/examples/table_conv)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/freverb)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/file_player)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/convolution_reverb)
@@ -57,3 +58,5 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/examples/lfo)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/adsr)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/midicv)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/freqshift)
+add_subdirectory(${CMAKE_SOURCE_DIR}/examples/bit_crunch)
+

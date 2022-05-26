@@ -33,6 +33,7 @@ void FilePlayerProcessor::hostParameterChanged(const char* parameterID, const ch
     const std::string paramName = getParameterNameFromId(parameterID);
     if (paramName == "Load Soundfile")
     {
+        filename = std::filesystem::path(newValue).filename();
         auto samples = getSamplesFromFile(newValue);
         numSamples = samples.numSamples;
         if(numSamples == 0)
@@ -135,8 +136,9 @@ const char* FilePlayerProcessor::getSVGXml()
     }
 
     svgPath << svg::Point(width, height/2);
-    svgPath << svg::Point(0, height/2);
+    svgPath << svg::Point(width, height/2);
     doc << svgPath;
+    doc << svg::Text(svg::Point(0, height-15), filename, svg::Fill(svg::Color(225, 225, 225)));
     svgText = doc.toString();
     return svgText.c_str();
 }

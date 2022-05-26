@@ -68,6 +68,7 @@ private:
     bool isPlaying = false;
     float sampleIndex = 0;
     bool fileLoaded = false;
+    std::string filename = "";
     
 };
 

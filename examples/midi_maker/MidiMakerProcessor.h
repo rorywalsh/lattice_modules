@@ -58,9 +58,9 @@ public:
 		return draw;
 	}
 
-    ModuleType getModuleType() override
+    int getModuleType() override
     {
-        return ModuleType::midiProcessor;
+        return ModuleType::MidiProcessor::generator;
     }
 
 	static int remap(float value, float rangeMin, float rangeMax, float newRangeMin, float newRangeMax)

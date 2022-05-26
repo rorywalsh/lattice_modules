@@ -25,9 +25,9 @@ public:
 
     const char* getModuleName() override {    return "ADSR";     }   
     
-    ModuleType getModuleType() override
+    int getModuleType() override
     {
-        return ModuleType::automator;
+        return ModuleType::Automator::uncategorised;
     }
     
 private:
