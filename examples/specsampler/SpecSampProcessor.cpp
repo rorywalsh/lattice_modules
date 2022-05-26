@@ -21,7 +21,6 @@ SpecSampProcessor::SpecSampProcessor() :
 
 LatticeProcessorModule::ChannelData SpecSampProcessor::createChannels()
 {
-  addChannel({"input", ChannelType::input });
   addChannel({"output", ChannelType::output });
   return ChannelData(getChannels(), getNumberOfChannels());
 }
@@ -164,6 +163,7 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
 	      samp3.clear();
 	      break;  
 	    }
+	    okToDraw = true;
 	  }	    
 	}
       }

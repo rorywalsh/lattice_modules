@@ -13,11 +13,12 @@ class FreqShifter {
   std::vector<float> sint;  
   std::vector<float> up;
   std::vector<float> down;
+  float mag;
 
 public:
   FreqShifter(float sr, std::size_t vsize = def_vsize)
     :   quad(sr,vsize), ph(sr,vsize), cost(def_ftlen+1), sint(def_ftlen+1),
-    up(vsize), down(vsize) {
+    up(vsize), down(vsize), mag(0) {
     for(std::size_t n = 0; n < def_ftlen+1; n++) {
       cost[n] = std::cos(n*twopi/def_ftlen);
       sint[n] = std::sin(n*twopi/def_ftlen);
@@ -46,9 +47,14 @@ public:
       s = re - im;
       down[n++] = re + im;
     }
+    mag = std::sqrt(inr[0]*inr[0] + ini[0]*ini[0]);
     return up;
   }
 
+  float input_magnitude() {
+    return mag;
+  }
+  
   const std::vector<float> &downshift() {
     return down;
   }
@@ -76,12 +82,16 @@ public:
     {
       return ModuleType::AudioProcessor::filters;
     }
- 
+
+    void hostParameterChanged(const char* parameterID, float newValue) override;
     
     const char* getModuleName() override {    return "Frequency Shifter";     }
     
 private:
     std::vector<float> in;
     FreqShifter fshift;
+    ParamSmooth smooth;
+    float thresh = 0;
+    float fs = def_sr;
 };
 
