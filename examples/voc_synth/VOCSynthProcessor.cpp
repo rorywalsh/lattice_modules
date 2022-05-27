@@ -83,7 +83,7 @@ void VOCSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::
       scl = freq/cps;
     shift.lock_formants(getParameter("Keep Formants"));
     auto &spec = shift(anal,scl);
-    auto &s = syn(a);
+    auto &s = syn(spec);
     auto &e = env(s,note_on);
     std::copy(e.begin(),e.end(), buffer[0]+offs);
     offs += blockSize;
