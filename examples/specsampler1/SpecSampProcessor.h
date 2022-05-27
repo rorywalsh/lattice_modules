@@ -138,7 +138,7 @@ public:
 
     const char* getModuleName() override
     {
-        return "Spec Sampler 4";
+        return "Spec Sampler";
     }
 
    const char* getSVGXml() override;
@@ -148,12 +148,9 @@ public:
      return draw;
   }
 
-  const std::vector<std::vector<Aurora::specdata<float>>> &getSamp(int n) {
+  const std::vector<std::vector<Aurora::specdata<float>>> &getSamp() {
     SpecSampProcessor *p = dynamic_cast<SpecSampProcessor *>(getVoices()[0]);
-    if(n == 3) return p->samp3;
-    else if(n == 2) return p->samp2;
-    else if(n == 1) return p->samp1;
-    else return p->samp0;
+    return p->samp0;
   }
 
   
@@ -165,16 +162,13 @@ private:
 
   
     std::vector<std::vector<Aurora::specdata<float>>> samp0;
-    std::vector<std::vector<Aurora::specdata<float>>> samp1;
-    std::vector<std::vector<Aurora::specdata<float>>> samp2;
-    std::vector<std::vector<Aurora::specdata<float>>> samp3;
     std::vector<float> win;
     Aurora::SpecStream<float> anal;
     Aurora::SpecSynth<float> syn;
     std::vector<Aurora::SpecPlay<float>> players;
     std::vector<Aurora::specdata<float>> del;
     std::vector<Aurora::specdata<float>> out;
-    std::array<float,4> g;
+    std::array<float,1> g;
     float att, dec, sus, rel;
     Aurora::Env<float> env;
     std::size_t hcnt;

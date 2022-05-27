@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project (SpecSampler4)
+project (SpecSampler1)
 
 include_directories("../include/")
 include_directories("${CMAKE_SOURCE_DIR}/aurora/include")
