@@ -134,8 +134,7 @@ public:
 	{
 		return static_cast<int>(newRangeMin + (value - rangeMin) * (newRangeMax - newRangeMin) / (rangeMax - rangeMin));
 	}
-
-     bool restrictBlockSize() override { return true; }	
+	
 private:
     DriveSynthProcessor::Synth synth;
     bool isNoteOn = false;
