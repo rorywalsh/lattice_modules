@@ -175,7 +175,7 @@ void BlSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
     const float freq = static_cast<float>(getMidiNoteInHertz(getMidiNoteNumber(), 440));
     synth.setBlockSize(blockSize);
     auto &out = synth(1, freq*synth.getDetune(), isNoteOn);
-    std::copy(out.begin(), out.end(),buffer[0]+blockSize); 
+    std::copy(out.begin(), out.end(),buffer[0]); 
 }
 
 const char* BlSynthProcessor::getSVGXml()

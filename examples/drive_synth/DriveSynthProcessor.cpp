@@ -77,7 +77,7 @@ void DriveSynthProcessor::processSynthVoice(float** buffer, int numChannels, std
     synth.setBlockSize(blockSize);
 
     auto &out = synth(amp, freq, getParameter("Drive"), isNoteOn);
-    std::copy(out.begin(), out.end(),buffer[0]+blockSize); 
+    std::copy(out.begin(), out.end(),buffer[0]); 
 }
 
 
