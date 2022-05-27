@@ -173,13 +173,9 @@ void BlSynthProcessor::stopNote (float /*velocity*/)
 void BlSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
 {
     const float freq = static_cast<float>(getMidiNoteInHertz(getMidiNoteNumber(), 440));
-    synth.setBlockSize(blockSize);
-
+    synth.setBlockSize(blockSize)
     auto &out = synth(1, freq*synth.getDetune(), isNoteOn);
-        
-    for(int i = 0; i < blockSize ; i++)
-      for(int chan = 0 ;  chan < numChannels; chan++)
-          buffer[chan][i] = out[i];
+    std::copy(out.begin(), out.end(),buffer[0]+blockSize); 
 }
 
 const char* BlSynthProcessor::getSVGXml()
