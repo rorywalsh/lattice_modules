@@ -62,33 +62,41 @@ void ATuneProcessor::prepareProcessor(int sr, std::size_t/*block*/)
 void ATuneProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
 {
   float thresh = std::pow(10, getParameter("Threshold")/20.), cps;
-  in.resize(blockSize);
-  syn.vsize(blockSize);
-  std::copy(buffer[0], buffer[0]+blockSize,in.begin());
-  anal(in);
-  shift.lock_formants(getParameter("Keep Formants"));
-  cps = ptrack(anal,thresh,getParameter("Smoothing"));
-  if(anal.framecount() > framecount) {
-    if(cps) {
-      float midinn = 69 + 12*log2(cps/440.);
-      int p1 = (int) midinn;
-      int p2 = (int) midinn; 
-      for(int i = 0; i < 128; i++) {
-	if(!on[i]) continue;
-	if(i > midinn) {
-	  p2 = i;
-	  break;
-	} else p1 = i;
-      }
-      float int1 = p1 - midinn; 
-      float int2 = p2 - midinn;
-      scl = pow(2, (fabs(int1) < fabs(int2) ? int1 : int2)/12);
-    } else scl = 1;
-    framecount = anal.framecount();
-  }
-  auto &spec = shift(anal, scl);
-  auto &s = syn(spec);
-  std::copy(s.begin(),s.end(), buffer[0]);
+  int smps = blockSize, hsize = anal.hsize(), offs = 0;
+  if(smps > hsize) blockSize = hsize;
+ 
+  while(smps > 0) {
+    in.resize(blockSize);
+    syn.vsize(blockSize);
+    std::copy(buffer[0]+offs, buffer[0]+blockSize+offs,in.begin());
+    anal(in);
+    shift.lock_formants(getParameter("Keep Formants"));
+    cps = ptrack(anal,thresh,getParameter("Smoothing"));
+    if(anal.framecount() > framecount) {
+      if(cps) {
+	float midinn = 69 + 12*log2(cps/440.);
+	int p1 = (int) midinn;
+	int p2 = (int) midinn; 
+	for(int i = 0; i < 128; i++) {
+	  if(!on[i]) continue;
+	  if(i > midinn) {
+	    p2 = i;
+	    break;
+	  } else p1 = i;
+	}
+	float int1 = p1 - midinn; 
+	float int2 = p2 - midinn;
+	scl = pow(2, (fabs(int1) < fabs(int2) ? int1 : int2)/12);
+      } else scl = 1;
+      framecount = anal.framecount();
+    }
+    auto &spec = shift(anal, scl);
+    auto &s = syn(spec);
+    std::copy(s.begin(), s.end(), buffer[0]+offs);
+    offs += blockSize;
+    smps -= hsize;
+    blockSize = smps < hsize ? smps : hsize;
+  }    
 }
 
 

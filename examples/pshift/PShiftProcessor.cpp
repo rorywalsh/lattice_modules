@@ -16,8 +16,7 @@ PShiftProcessor::PShiftProcessor():
 
 LatticeProcessorModule::ChannelData  PShiftProcessor::createChannels()
 {
-   addChannel({ "Input 1", LatticeProcessorModule::ChannelType::input });
-   addChannel({ "Input 2", LatticeProcessorModule::ChannelType::input });
+   addChannel({ "Input", LatticeProcessorModule::ChannelType::input });
    addChannel({ "Left", LatticeProcessorModule::ChannelType::output });
    addChannel({ "Right", LatticeProcessorModule::ChannelType::output });
    return ChannelData(getChannels(), getNumberOfChannels());
@@ -48,13 +47,17 @@ void PShiftProcessor::prepareProcessor(int sr, std::size_t/*block*/)
 
 void PShiftProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
 {
+   int smps = blockSize, hsize = anal.hsize(), offs = 0;
+    if(smps > hsize) blockSize = hsize;
+
+    while(smps > 0) {
     in.resize(blockSize);
     syn.vsize(blockSize);
     float check;
     float g = getParameter("Direct Gain");
     float sg = getParameter("Shift Gain")*0.333;
     float wd = (1-getParameter("Stereo Width"))*0.5;
-    std::copy(buffer[0], buffer[0]+blockSize,in.begin());
+    std::copy(buffer[0]+offs, buffer[0]+blockSize+offs,in.begin());
     anal(in);
     shift.lock_formants(getParameter("Lock Formants"));
     auto &spec = shift(anal, getParameter("Frequency Scale"),
@@ -64,9 +67,13 @@ void PShiftProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
     auto &s = syn(spec);
     auto &thru = delay(in);
     for(std::size_t n=0; n < blockSize; n++) {
-      buffer[0][n] = (1-wd)*sg*s[n] + wd*g*thru[n];
-      buffer[1][n] = wd*sg*s[n] + (1-wd)*g*thru[n];
-    }
+      buffer[0][n+offs] = (1-wd)*sg*s[n] + wd*g*thru[n];
+      buffer[1][n+offs] = wd*sg*s[n] + (1-wd)*g*thru[n];
+     }
+    offs += blockSize;
+    smps -= hsize;
+    blockSize = smps < hsize ? smps : hsize;
+  }   
 }
 
 

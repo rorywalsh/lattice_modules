@@ -45,12 +45,15 @@ void TScaleProcessor::prepareProcessor(int sr, std::size_t/*block*/)
 
 void TScaleProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
 {
-  
+    int smps = blockSize, hsize = anal.hsize(), offs = 0;
+    if(smps > hsize) blockSize = hsize;
+
+    while(smps > 0) {
     in.resize(blockSize);
     syn.vsize(blockSize);
     
     for(std::size_t i = 0; i < blockSize ; i++) 
-      in[i] = buffer[0][i]*0.666;
+      in[i] = buffer[0][i+offs]*0.666;
 
     auto &spec = anal(in);
     std::size_t end;
@@ -75,10 +78,6 @@ void TScaleProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
        n++;
      }
     }
-
-    auto &s = syn(out);
-    std::copy(s.begin(), s.end(), buffer[0]);
-    
     if(anal.framecount() > framecount) {
       rp += getParameter("Timescale");
      while (rp < 0) rp += end;
@@ -86,6 +85,13 @@ void TScaleProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
      wp = wp < end  ? wp + 1 : 0;
      framecount = anal.framecount();
     }
+
+    auto &s = syn(out);
+    std::copy(s.begin(), s.end(), buffer[0]+offs);
+    offs += blockSize;
+    smps -= hsize;
+    blockSize = smps < hsize ? smps : hsize;
+  }    
 }
 
 

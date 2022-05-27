@@ -18,8 +18,7 @@ LatticeProcessorModule::ChannelData  SVocProcessor::createChannels()
 {
   addChannel({ "formants", LatticeProcessorModule::ChannelType::input });
   addChannel({ "excitation", LatticeProcessorModule::ChannelType::input });
-  addChannel({ "Output 1", LatticeProcessorModule::ChannelType::output });
-  addChannel({ "Output 2", LatticeProcessorModule::ChannelType::output });
+  addChannel({ "Output", LatticeProcessorModule::ChannelType::output });
   return ChannelData(getChannels(), getNumberOfChannels());
 }
 
@@ -41,61 +40,68 @@ void SVocProcessor::prepareProcessor(int sr, std::size_t/*block*/)
 
 void SVocProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
 {
-  in.resize(blockSize);
-  syn.vsize(blockSize);
+
   float check1 = 0.f, check2 = 0.f;
+  int smps = blockSize, hsize = anal1.hsize(), offs = 0;
+  if(smps > hsize) blockSize = hsize;
+ 
+  while(smps > 0) {
+    in.resize(blockSize);
+    syn.vsize(blockSize);
+    for(std::size_t i = 0; i < blockSize ; i++) { 
+      in[i] = buffer[0][i+offs];
+      check1 += fabs(in[i]);
+    };
+    auto &s1 = anal1(in);
 
-  for(std::size_t i = 0; i < blockSize ; i++) { 
-    in[i] = buffer[0][i];
-    check1 += fabs(in[i]);
-  };
-  auto &s1 = anal1(in);
+    for(std::size_t i = 0; i < blockSize ; i++) { 
+      in[i] = buffer[1][i+offs]; 
+      check2 += fabs(in[i]);
+    };
 
-  for(std::size_t i = 0; i < blockSize ; i++) { 
-    in[i] = buffer[1][i]; 
-    check2 += fabs(in[i]);
-  };
+    auto &s2 = anal2(in);
+    if(anal1.framecount() > framecount) {
+      std::size_t n = 0;
+      if(check1 && check2) {
+	auto &senv2 = ceps(s2, 30);
+	float maxe = 0.f;
+	float eff = getParameter("Formant Depth");
+	float dir = 1. - eff;
+	float gain = getParameter("Formant Gain");
+	for(auto &m : senv2) 
+	  if(m > maxe) maxe = m;
+	for(auto &amp : ftmp) {
+	  amp = s2[n].amp();
+	  if(senv2[n] > 0)	
+	    amp *= maxe/senv2[n++];
+	}
+	auto &senv1 = ceps(s1, 30);
 
-  auto &s2 = anal2(in);
-  if(anal1.framecount() > framecount) {
-    std::size_t n = 0;
-    if(check1 && check2) {
-      auto &senv2 = ceps(s2, 30);
-      float maxe = 0.f;
-      float eff = getParameter("Formant Depth");
-      float dir = 1. - eff;
-      float gain = getParameter("Formant Gain");
-      for(auto &m : senv2) 
-	if(m > maxe) maxe = m;
-      for(auto &amp : ftmp) {
-	amp = s2[n].amp();
-	if(senv2[n] > 0)	
-	  amp *= maxe/senv2[n++];
-      }
-      auto &senv1 = ceps(s1, 30);
+	for(auto &m : senv1) 
+	  if(m > maxe) maxe = m;
+	n = 0;
+	for(auto &amp : fenv) {
+	  amp = senv1[n++];
+	  if(maxe)	
+	    amp *= 1./maxe;
+	}
+	n = 0 ;
+	for(auto &bin : buf) {
+	  bin.amp(fenv[n]*ftmp[n]*eff*gain + s2[n].amp()*dir*0.333);
+	  bin.freq(s2[n].freq());
+	  n++;
+	}
+      } else std::fill(buf.begin(), buf.end(),Aurora::specdata<float>(0,0));
 
-      for(auto &m : senv1) 
-	if(m > maxe) maxe = m;
-      n = 0;
-      for(auto &amp : fenv) {
-	amp = senv1[n++];
-	if(maxe)	
-	  amp *= 1./maxe;
-      }
-      n = 0 ;
-      for(auto &bin : buf) {
-	bin.amp(fenv[n]*ftmp[n]*eff*gain + s2[n].amp()*dir*0.333);
-	bin.freq(s2[n].freq());
-	n++;
-      }
-    } else std::fill(buf.begin(), buf.end(),Aurora::specdata<float>(0,0));
-
-    framecount = anal1.framecount();
-  }
+      framecount = anal1.framecount();
+    }
     
-  auto &ss = syn(buf);
-  std::copy(ss.begin(), ss.end(), buffer[0]);
-  std::copy(ss.begin(), ss.end(), buffer[1]);
+    auto &ss = syn(buf);
+    std::copy(ss.begin(), ss.end(), buffer[0]+offs);
+    offs += blockSize;
+    smps -= hsize;
+    blockSize = smps < hsize ? smps : hsize;
+  }  
 
 }
 

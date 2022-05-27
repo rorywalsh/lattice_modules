@@ -15,10 +15,10 @@ MorphProcessor::MorphProcessor():
 
 LatticeProcessorModule::ChannelData  MorphProcessor::createChannels()
 {
-   addChannel({ "Input 1", LatticeProcessorModule::ChannelType::input });
-   addChannel({ "Input 2", LatticeProcessorModule::ChannelType::input });
-   addChannel({ "Output", LatticeProcessorModule::ChannelType::output });
-   return ChannelData(getChannels(), getNumberOfChannels());
+  addChannel({ "Input 1", LatticeProcessorModule::ChannelType::input });
+  addChannel({ "Input 2", LatticeProcessorModule::ChannelType::input });
+  addChannel({ "Output", LatticeProcessorModule::ChannelType::output });
+  return ChannelData(getChannels(), getNumberOfChannels());
 }
 
 
@@ -26,7 +26,7 @@ LatticeProcessorModule::ParameterData MorphProcessor::createParameters()
 {
   addParameter({ "Amplitude Interpolation", {0, 1, 0, 0.001, 1}});
   addParameter({ "Frequency Interpolation", {0, 1, 0, 0.001, 1}});
-    return ParameterData(getParameters(), getNumberOfParameters());
+  return ParameterData(getParameters(), getNumberOfParameters());
     
 }
 
@@ -52,11 +52,14 @@ void MorphProcessor::process(float** buffer, int /*numChannels*/, std::size_t bl
     std::copy(buffer[1]+offs,buffer[1]+blockSize+offs,in.begin());
     auto &s2 = anal2(in);
 
-    std::size_t n = 0;
-    for(auto &bin : buf) {
-      bin.amp((s1[n].amp()*(1 - ia) + s2[n].amp()*ia)*0.666);
-      bin.freq(s1[n].freq()*(1 - ifr) + s2[n].freq()*ifr);
-      n++;
+    if(anal1.framecount() > framecount) {
+      std::size_t n = 0;
+      for(auto &bin : buf) {
+	bin.amp((s1[n].amp()*(1 - ia) + s2[n].amp()*ia)*0.666);
+	bin.freq(s1[n].freq()*(1 - ifr) + s2[n].freq()*ifr);
+	n++;
+      }
+      framecount = anal1.framecount();
     }
     auto &ss = syn(buf);
     std::copy(ss.begin(), ss.end(), buffer[0]+offs);
@@ -71,12 +74,12 @@ void MorphProcessor::process(float** buffer, int /*numChannels*/, std::size_t bl
 #ifdef WIN32
 extern "C" 
 {
-	__declspec(dllexport) LatticeProcessorModule* create() { return new MorphProcessor; }
+  __declspec(dllexport) LatticeProcessorModule* create() { return new MorphProcessor; }
 };
 
 extern "C" 
 {
-	__declspec(dllexport) void destroy(LatticeProcessorModule* p) { delete p; }
+  __declspec(dllexport) void destroy(LatticeProcessorModule* p) { delete p; }
 };
 #else
 extern "C" LatticeProcessorModule* create(){             return new MorphProcessor;         }

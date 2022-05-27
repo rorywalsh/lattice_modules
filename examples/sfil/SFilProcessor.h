@@ -37,4 +37,5 @@ private:
     Aurora::SpecSynth<float> syn;
     std::vector<float> in;
     std::vector<Aurora::specdata<float>> buf;
+    std::size_t framecount = 0;
 };

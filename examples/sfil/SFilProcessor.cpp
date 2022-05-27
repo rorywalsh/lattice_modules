@@ -17,8 +17,7 @@ LatticeProcessorModule::ChannelData  SFilProcessor::createChannels()
 {
    addChannel({ "Input 1", LatticeProcessorModule::ChannelType::input });
    addChannel({ "Input 2", LatticeProcessorModule::ChannelType::input });
-   addChannel({ "Output 1", LatticeProcessorModule::ChannelType::output });
-   addChannel({ "Output 2", LatticeProcessorModule::ChannelType::output });
+   addChannel({ "Output", LatticeProcessorModule::ChannelType::output });
    return ChannelData(getChannels(), getNumberOfChannels());
 }
 
@@ -40,26 +39,36 @@ void SFilProcessor::prepareProcessor(int sr, std::size_t/*block*/)
 
 void SFilProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
 {
+  int smps = blockSize, hsize = anal1.hsize(), offs = 0;
+  if(smps > hsize) blockSize = hsize;
+ 
+  while(smps > 0) {
     in.resize(blockSize);
     syn.vsize(blockSize);
     float ia = getParameter("Amplitude Prod");
     float ifr = getParameter("Frequency Sum");
 
-    std::copy(buffer[0],buffer[0]+blockSize,in.begin());
+    std::copy(buffer[0]+offs,buffer[0]+blockSize+offs,in.begin());
     auto &s1 = anal1(in);
-    std::copy(buffer[1],buffer[1]+blockSize,in.begin());
+    std::copy(buffer[1]+offs,buffer[1]+blockSize+offs,in.begin());
     auto &s2 = anal2(in);
 
+    if(anal1.framecount() > framecount) {
     std::size_t n = 0;
     for(auto &bin : buf) {
       bin.amp(s1[n].amp()*(0.01 + ia*(s2[n].amp() - 0.01)));
       bin.freq(s1[n].freq() + ifr*s2[n].freq());
       n++;
     }
+      framecount = anal1.framecount();
+    }
     
     auto &ss = syn(buf);
-    std::copy(ss.begin(), ss.end(), buffer[0]);
-    std::copy(ss.begin(), ss.end(), buffer[1]);
+    std::copy(ss.begin(), ss.end(), buffer[0]+offs);
+    offs += blockSize;
+    smps -= hsize;
+    blockSize = smps < hsize ? smps : hsize;
+  }
 
 }
 

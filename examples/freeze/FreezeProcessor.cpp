@@ -16,10 +16,8 @@ ya(0), yf(0), ar(Aurora::def_sr/Aurora::def_hsize)
 
 LatticeProcessorModule::ChannelData  FreezeProcessor::createChannels()
 {
-    addChannel({ "Input 1", LatticeProcessorModule::ChannelType::input });
-    addChannel({ "Input 2", LatticeProcessorModule::ChannelType::input });
-    addChannel({ "Output 1", LatticeProcessorModule::ChannelType::output });
-    addChannel({ "Output 2", LatticeProcessorModule::ChannelType::output });
+    addChannel({ "Input", LatticeProcessorModule::ChannelType::input });
+    addChannel({ "Output", LatticeProcessorModule::ChannelType::output });
     return ChannelData(getChannels(), getNumberOfChannels());
 }
 
@@ -81,13 +79,15 @@ void FreezeProcessor::prepareProcessor(int sr, std::size_t/*block*/)
 }
 
 void FreezeProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
-{    
+{
+    int smps = blockSize, hsize = anal.hsize(), offs = 0;
+    if(smps > hsize) blockSize = hsize;
+
+    while(smps > 0) {
     in.resize(blockSize);
     syn.vsize(blockSize);
-    
-    for(std::size_t i = 0; i < blockSize ; i++)
-        in[i] = (buffer[0][i] +  buffer[1][i])*0.333;
-    
+
+    std::copy(buffer[0]+offs,buffer[0]+blockSize+offs,in.begin());  
     auto &spec = anal(in);
     if(anal.framecount() > framecount) {
         std::size_t n = 0;
@@ -171,8 +171,12 @@ void FreezeProcessor::process(float** buffer, int /*numChannels*/, std::size_t b
         framecount = anal.framecount();
     }
     auto &s = syn(out);
-    std::copy(s.begin(), s.end(), buffer[0]);
-    std::copy(s.begin(), s.end(), buffer[1]);
+    std::copy(s.begin(), s.end(), buffer[0]+offs);
+    offs += blockSize;
+    smps -= hsize;
+    blockSize = smps < hsize ? smps : hsize;
+  }
+    
     
 }
 
