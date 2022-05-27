@@ -6,18 +6,16 @@
 
 GainProcessor::GainProcessor()
 	:LatticeProcessorModule(),
-	samplesL(512, 0),
-	samplesR(512, 0)
+	samples(512, 0)
 {
 
 }
 
 LatticeProcessorModule::ChannelData GainProcessor::createChannels()
 {
-	addChannel({ "Gain Input 1", ChannelType::input });
-	addChannel({ "Gain Input 2", ChannelType::input });
-	addChannel({ "Gain Output 1", ChannelType::output });
-	addChannel({ "Gain Output 2", ChannelType::output });
+	addChannel({ "input", ChannelType::input });
+	addChannel({ "gain", ChannelType::input });
+	addChannel({ "output", ChannelType::output });
 	return {getChannels(), getNumberOfChannels()};
 }
 
@@ -25,31 +23,24 @@ LatticeProcessorModule::ChannelData GainProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData GainProcessor::createParameters()
 {
-    addParameter({"Gain Left", LatticeProcessorModule::Parameter::Range(0.f, 4.f, 1.f, 0.001f, 1.f)});
-    addParameter({"Gain Right", LatticeProcessorModule::Parameter::Range(0.f, 4.f, 1.f, 0.001f, 1.f)});
-	return {getParameters(), getNumberOfParameters()};
+    addParameter({"Gain", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f)});
+    return {getParameters(), getNumberOfParameters()};
 }
 
-void GainProcessor::prepareProcessor(int /*sr*/, std::size_t block)
+void GainProcessor::prepareProcessor(int sr, std::size_t block)
 {
-//    samplesL.resize(block);
-//    samplesR.resize(block);
+  fs = sr;
 }  
 
 
 void GainProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
 {
+    float g = getParameter("Gain");
 
     for(int i = 0; i < blockSize ; i++)
-    {
-        buffer[0][i] *= getParameter("Gain Left");
-        buffer[1][i] *= getParameter("Gain Right");
-    }
-
-	samplesL.erase(samplesL.begin());
-	samplesL.push_back(buffer[0][0]);
-    samplesR.erase(samplesR.begin());
-    samplesR.push_back(buffer[1][0]);
+      buffer[0][i] *= smooth(g, 0.01, fs) + (isInputConnected(1) ? buffer[1][i] : 0);
+    samples.erase(samples.begin());
+    samples.push_back(buffer[0][0]);
 }
 
 const char* GainProcessor::getSVGXml()
@@ -59,22 +50,16 @@ const char* GainProcessor::getSVGXml()
 	svg::Dimensions dimensions(width, height);
 	svg::Document doc("rms.svg", svg::Layout(dimensions, svg::Layout::TopLeft));
 	svg::Polyline svgPathLeft(svg::Fill(), svg::Stroke(1, svg::Color("#00ABD1"), 1));
-    svg::Polyline svgPathRight(svg::Fill(), svg::Stroke(1, svg::Color("#00ABD1"), 1));
-
-	for (int i = 0; i < samplesL.size(); i += 12)
+  
+	for (int i = 0; i < samples.size(); i += 12)
 	{
-		double x = remap(float(i), 0.f, static_cast<float>(samplesL.size()), 0.f, width);
-		double yL = remap(samplesL[i], -1, 1, 0, height/2);
-        svgPathLeft << svg::Point(x, yL);;
-        double yR = remap(samplesR[i], -1, 1, height/2, height);
-        svgPathRight << svg::Point(x, yR);;
+		double x = remap(float(i), 0.f, static_cast<float>(samples.size()), 0.f, width);
+		double y = remap(samples[i], -1, 1, 0, height/2);
+        svgPathLeft << svg::Point(x, y);;
 	}
 
 	doc << svgPathLeft;
-    doc << svgPathRight;
-    
 	svgText = doc.toString();
-
 	return svgText.c_str();
 }
 

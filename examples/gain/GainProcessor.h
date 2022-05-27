@@ -27,7 +27,7 @@ public:
     bool canDraw() override { return true; }
     
     
-    const char* getModuleName() override {    return "Gain";     }
+    const char* getModuleName() override {    return "Amplifier";     }
     
 private:
 	static int remap(float value, float rangeMin, float rangeMax, float newRangeMin, float newRangeMax)
@@ -46,13 +46,10 @@ private:
 		return sqrt(sum / count);
 	}
 
-	float amp = .5f;
-    int numChannels = 0;
-    std::vector<float> inL;
-    std::vector<float> inR;
-	std::vector<float> samplesL;
-    std::vector<float> samplesR;
-	bool okToDraw = true;
+    ParamSmooth smooth;
+    std::vector<float> samples;
+    float fs = 44100;
+    bool okToDraw = true;
     std::string svgText;
 };
 
