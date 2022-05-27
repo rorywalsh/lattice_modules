@@ -13,7 +13,7 @@ VOCSynthProcessor::VOCSynthProcessor() :
 {
   std::size_t n = 0;
   for(auto &s : win)
-  s = 0.5 - 0.5*cos((Aurora::twopi*n++)/Aurora::def_fftsize);
+    s = 0.5 - 0.5*cos((Aurora::twopi*n++)/Aurora::def_fftsize);
 }
 
 LatticeProcessorModule::ChannelData VOCSynthProcessor::createChannels()
@@ -68,19 +68,28 @@ void VOCSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::
 {
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
   float thresh = std::pow(10, getParameter("Threshold")/20.), cps, scl = 1.;
-  in.resize(blockSize);
-  syn.vsize(blockSize);
-  sus = getParameter("Sustain");
-  std::copy(buffer[0],buffer[0]+blockSize,in.begin());   
-  auto &a = anal(in);
-  cps = ptrack(anal,thresh,getParameter("Slew Time"));
-  if(cps > 0)
+  int smps = blockSize, hsize = anal.hsize(), offs = 0;
+  if(smps > hsize) blockSize = hsize;
+  
+  //std::cout << buffer[1][0] << std::endl;
+   while(smps > 0) {
+    in.resize(blockSize);
+    syn.vsize(blockSize);
+    sus = getParameter("Sustain");
+    std::copy(buffer[0]+offs,buffer[0]+blockSize+offs,in.begin());   
+    auto &a = anal(in);
+    cps = ptrack(anal,thresh,getParameter("Slew Time"));
+    if(cps > 0)
       scl = freq/cps;
-  shift.lock_formants(getParameter("Keep Formants"));
-  auto &spec = shift(anal,scl);
-  auto &s = syn(spec);
-  auto &e = env(s,note_on);
-  std::copy(e.begin(),e.end(), buffer[0]);
+    shift.lock_formants(getParameter("Keep Formants"));
+    auto &spec = shift(anal,scl);
+    auto &s = syn(a);
+    auto &e = env(s,note_on);
+    std::copy(e.begin(),e.end(), buffer[0]+offs);
+    offs += blockSize;
+    smps -= hsize;
+    blockSize = smps < hsize ? smps : hsize;
+  }
 }
 
 

@@ -213,6 +213,12 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
     syn.reset(fs);
     doReset = false;
   }
+
+  int smps = blockSize, hsize = anal.hsize(), offs = 0;
+  if(smps > hsize) blockSize = hsize;
+  
+  //std::cout << buffer[1][0] << std::endl;
+   while(smps > 0) {
   
   syn.vsize(blockSize);
   env.vsize(blockSize);
@@ -251,9 +257,13 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
       n++;
     }
   }
-  auto &s = syn(out);
-  std::copy(s.begin(),s.end(), buffer[0]);
-  hcnt += blockSize;
+    auto &s = syn(out);
+    hcnt += blockSize;
+    std::copy(s.begin(),s.end(), buffer[0]+offs);
+    offs += blockSize;
+    smps -= hsize;
+    blockSize = smps < hsize ? smps : hsize;
+  }
 }
 
 
