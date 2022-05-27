@@ -62,7 +62,7 @@ class DriveSynthProcessor : public LatticeProcessorModule
         const std::vector<float> &operator()(float a, float f, float dr, bool gate,
                                            std::size_t vsiz = 0)
         {
-            return amp(a * env(gate)[0], drive(osc(dr, f)));
+	  return amp(a, env(drive(osc(dr, f)),gate));
         }
         
         void setBlockSize(std::size_t blockSize)
@@ -70,6 +70,8 @@ class DriveSynthProcessor : public LatticeProcessorModule
             osc.vsize(blockSize);
             env.vsize(blockSize);
         }
+
+      
         
 		void setSampleRate(int sr)
 		{
@@ -132,7 +134,8 @@ public:
 	{
 		return static_cast<int>(newRangeMin + (value - rangeMin) * (newRangeMax - newRangeMin) / (rangeMax - rangeMin));
 	}
-    
+
+     bool restrictBlockSize() override { return true; }	
 private:
     DriveSynthProcessor::Synth synth;
     bool isNoteOn = false;
