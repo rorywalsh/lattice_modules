@@ -140,8 +140,10 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
 	players[n].keep = par;
       else if(paramName == p[11]) {
         if(getParameter(paramName)) {
-	      samp0.clear();
+	  if(!getVoiceNum()) {
+	     samp0.clear();
 	     okToDraw = true;
+	  }
 	  }	    
 	}
       }

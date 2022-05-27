@@ -271,12 +271,12 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
 const char* SpecSampProcessor::getSVGXml()
 {
   const float width = 256;
-  const float height = 48;
+  const float height = 72;
   svg::Dimensions dimensions(width, height);
   svg::Document doc("specsamp.svg", svg::Layout(dimensions, svg::Layout::TopLeft));
-  svg::Polyline svgPath(svg::Fill(), svg::Stroke(2, svg::Color("#00ABD1"), 1));
-    
-    
+
+    svg::Polyline svgPath0(svg::Fill(), svg::Stroke(2, svg::Color("#FFABD1"), 1));
+  if(getSamp(0).size()) {
   std::vector<float> amps(win.size()/2 + 1);
   for(auto &frame : getSamp(0)) {
     std::size_t n = 0;
@@ -292,11 +292,81 @@ const char* SpecSampProcessor::getSVGXml()
   for(auto &amp : amps) {
     amp *= scal;
     amp = 20*std::log10(amp);
-    svgPath << svg::Point(n++,-(amp+96)/2);
+    svgPath0 << svg::Point(n++,-(amp+96)/2);
     if(n == width) break;
   }
-    
-  doc << svgPath;
+  doc << svgPath0;
+  }
+
+    svg::Polyline svgPath1(svg::Fill(), svg::Stroke(2, svg::Color("#00ABD1"), 1));
+ if(getSamp(1).size()) {
+  std::vector<float> amps(win.size()/2 + 1);
+  for(auto &frame : getSamp(1)) {
+    std::size_t n = 0;
+    for(auto &bin : frame) {
+      amps[n++] += bin.amp();
+    }
+  }
+  std::size_t n = 0;
+  float max = 0;
+  for(auto &amp : amps)
+    if(amp > max) max = amp;
+  float scal = 1./max;
+  for(auto &amp : amps) {
+    amp *= scal;
+    amp = 20*std::log10(amp);
+    svgPath1 << svg::Point(n++,-(amp+96)/2);
+    if(n == width) break;
+  }
+  doc << svgPath1;
+  }
+
+   svg::Polyline svgPath2(svg::Fill(), svg::Stroke(2, svg::Color("#ABD100"), 1));
+   if(getSamp(2).size()) {
+  std::vector<float> amps(win.size()/2 + 1);
+  for(auto &frame : getSamp(2)) {
+    std::size_t n = 0;
+    for(auto &bin : frame) {
+      amps[n++] += bin.amp();
+    }
+  }
+  std::size_t n = 0;
+  float max = 0;
+  for(auto &amp : amps)
+    if(amp > max) max = amp;
+  float scal = 1./max;
+  for(auto &amp : amps) {
+    amp *= scal;
+    amp = 20*std::log10(amp);
+    svgPath2 << svg::Point(n++,-(amp+96)/2);
+    if(n == width) break;
+  }
+  doc << svgPath2;
+  }
+
+   svg::Polyline svgPath3(svg::Fill(), svg::Stroke(2, svg::Color("#AB00D1"), 1));
+ if(getSamp(3).size()) {
+  std::vector<float> amps(win.size()/2 + 1);
+  for(auto &frame : getSamp(3)) {
+    std::size_t n = 0;
+    for(auto &bin : frame) {
+      amps[n++] += bin.amp();
+    }
+  }
+  std::size_t n = 0;
+  float max = 0;
+  for(auto &amp : amps)
+    if(amp > max) max = amp;
+  float scal = 1./max;
+  for(auto &amp : amps) {
+    amp *= scal;
+    amp = 20*std::log10(amp);
+    svgPath3 << svg::Point(n++,-(amp+96)/2);
+    if(n == width) break;
+  }
+  doc << svgPath3;
+  }
+  
   svgText = doc.toString();
   return svgText.c_str();
     

@@ -52,6 +52,7 @@ LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
     addParameter({ p[9].c_str(), {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
     addParameter({ p[10].c_str(), {0, 1, 0, 1, 1}, Parameter::Type::FileButton});
     addParameter({ p[11].c_str(), {0, 1, 0, 1, 1}, Parameter::Type::Momentary});
+     
   }
   
   
@@ -99,6 +100,7 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID,
                                              const char* newValue)
 {
   const std::string paramName = getParameterNameFromId(parameterID);
+  std::cout << paramName << std::endl;
   if(paramName == "Load Sample 1") loadSpec(samp0, newValue);
   else if(paramName == "Load Sample 2") loadSpec(samp1, newValue);
 }
@@ -117,12 +119,12 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
     if(par) doReset = true;
   }
   else {
-    std::size_t n = 0;
+     std::size_t n = 0;
     for(auto &p : sparams.pnames) {
       float par = getParameter(paramName);
       if(paramName == p[0]) {
 	players[n].bn = getMidiNoteInHertz(par, 440);
-	std::cout << par << std::endl;
+	
       }
       else if(paramName == p[1])
 	players[n].fine = par;
@@ -153,8 +155,8 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
 	      samp1.clear();
 	      break;
 	    }
-	    okToDraw = true;
-	  }	    
+	  }
+	  okToDraw = true;
 	}
       }
       n++;
@@ -257,13 +259,15 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
 const char* SpecSampProcessor::getSVGXml()
 {
   const float width = 256;
-  const float height = 48;
-  svg::Dimensions dimensions(width, height);
+  const float height = 96;
+  svg::Dimensions dimensions(width, height*2);
   svg::Document doc("specsamp.svg", svg::Layout(dimensions, svg::Layout::TopLeft));
-  svg::Polyline svgPath(svg::Fill(), svg::Stroke(2, svg::Color("#00ABD1"), 1));  
-    
-  std::vector<float> amps(win.size()/2 + 1);
+  svg::Polyline svgPath1(svg::Fill(), svg::Stroke(2, svg::Color("#00ABD1"), 1));  
+  svg::Polyline svgPath2(svg::Fill(), svg::Stroke(2, svg::Color("#ABD100"), 1));
   
+  std::vector<float> amps(win.size()/2 + 1);
+
+  if(getSamp(0).size()) {
   for(auto &frame : getSamp(0)) {
     std::size_t n = 0;
     for(auto &bin : frame) {
@@ -278,11 +282,34 @@ const char* SpecSampProcessor::getSVGXml()
   for(auto &amp : amps) {
     amp *= scal;
     amp = 20*std::log10(amp);
-    svgPath << svg::Point(n++,-(amp+96)/2);
+    svgPath1 << svg::Point(n++,-(amp+96)/2);
     if(n == width) break;
   }
-    
-  doc << svgPath;
+  doc << svgPath1;
+  }
+
+  if(getSamp(1).size()) {
+   std::fill(amps.begin(), amps.end(), 0);
+  for(auto &frame : getSamp(1)) {
+    std::size_t n = 0;
+    for(auto &bin : frame) {
+      amps[n++] += bin.amp();
+    }
+  }
+  std::size_t n = 0;
+  float max = 0;
+  for(auto &amp : amps)
+    if(amp > max) max = amp;
+  float scal = 1./max;
+  for(auto &amp : amps) {
+    amp *= scal;
+    amp = 20*std::log10(amp);
+    svgPath2 << svg::Point(n++,-(amp+96)/2);
+    if(n == width) break;
+  }
+  doc << svgPath2;
+
+  }
   
   
   svgText = doc.toString();
