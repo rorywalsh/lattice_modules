@@ -63,7 +63,6 @@ void KSSynthProcessor::stopNote (float /* velocity */)
 
 void KSSynthProcessor::triggerParameterUpdate(const std::string& parameterID, float newValue)
 {
-  updateParameter(parameterID, newValue);
 }
 
 void KSSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)

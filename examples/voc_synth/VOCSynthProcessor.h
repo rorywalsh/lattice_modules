@@ -47,9 +47,9 @@ public:
         return 6;
     }
 
-        float getTailOffTime() override
+    float getTailOffTime() override
     {
-      return 0;
+        return getParameter("Release");
     }
 
     bool restrictBlockSize() override { return true; }

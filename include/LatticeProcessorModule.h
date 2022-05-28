@@ -508,9 +508,22 @@ public:
     }
     
 
-    void registerHostParameterCallback(const std::function<void(const char*, float)>& func)
+    
+    /** Call this to inform the host that a parameter has been updated.
+       Be careful that you don't call this too often!
+    * @param [in] parameterID The parameter in the host you wish to update
+    * @param [in] newValue The value you wish to set the parameter to.
+    */
+    void updateHostParameter(const char* parameterID, const char* newValue)
     {
-        hostParamCallback = func;
+        if (hostParamCallback)
+            hostParamCallbackChar(parameterID, newValue);
+    }
+    
+    void registerHostParameterCallback(const std::function<void(const char*, float)>& func1, const std::function<void(const char*, const char*)>& func2)
+    {
+        hostParamCallback = func1;
+        hostParamCallbackChar = func2;
     }
     
     void updateParameter(std::string name, float newValue)
@@ -698,6 +711,7 @@ private:
     AudioFileSamples(*audioFileSamplesCallback)(const char* channel);
     //std::function<void(const std::string& parameterID, float newValue)> paramCallback;
     std::function<void(const char*, float)> hostParamCallback;
+    std::function<void(const char*, const char*)> hostParamCallbackChar;
     int voiceNum = -1;
     std::vector<LatticeProcessorModule *> voices;
 };
