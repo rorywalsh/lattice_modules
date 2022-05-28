@@ -141,6 +141,7 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
       else if(paramName == p[11]) {
         if(getParameter(paramName)) {
 	  if(!getVoiceNum()) {
+          updateHostParameter(paramName.c_str(), "");
 	     samp0.clear();
 	     okToDraw = true;
 	  }

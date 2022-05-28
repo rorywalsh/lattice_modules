@@ -485,7 +485,8 @@ public:
 
     void updateAutomationForParameters(float** buffer, int numChannels)
     {
-        int inputs = getNumberOfInputChannels();
+        int inputs = getNumberOfInputChannels() + 1;
+        std::cout << inputs << ":"  << numChannels;
         for(int i = inputs ; i < numChannels ; i++)
         {
             if(isInputConnected(i))
@@ -516,7 +517,7 @@ public:
     */
     void updateHostParameter(const char* parameterID, const char* newValue)
     {
-        if (hostParamCallback)
+        if (hostParamCallbackChar)
             hostParamCallbackChar(parameterID, newValue);
     }
     
@@ -580,7 +581,7 @@ public:
     
     std::size_t getNumberOfOutputChannels()
     {
-        int numOutputs = 0;
+        int numOutputs = getModuleType() >= 200 && getModuleType() < 300;
         for(auto& c : channels)
             if(c.type == ChannelType::output)
                 numOutputs++;
