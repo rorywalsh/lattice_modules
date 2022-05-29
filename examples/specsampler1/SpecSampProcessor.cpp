@@ -6,17 +6,15 @@ static const int dm = 8;
 
 //======================================================================================
 SpecSampProcessor::SpecSampProcessor() :
-  win(Aurora::def_fftsize), anal(win,win.size()/dm), syn(win,win.size()/dm),
+  win(Aurora::def_fftsize), samp(1, Aurora::SpecTable<float>(win,win.size()/dm)), syn(win,win.size()/dm),
   players(1,Aurora::SpecPlay<float>(Aurora::def_sr,win.size())), del(win.size()/2 + 1),
   out(win.size()/2 + 1), g({1.f}),
-  att(0.1f), dec(0.1f), sus(1.f), rel(0.1f), env(att,dec,sus,rel), hcnt(anal.hsize()),
+  att(0.1f), dec(0.1f), sus(1.f), rel(0.1f), env(att,dec,sus,rel), hcnt(samp[0].hsize()),
   ta(win.size()/(dm*Aurora::def_sr)), sparams(1)
 {
   std::size_t n = 0;
   for(auto &s : win)
     s = 0.5 - 0.5*cos((Aurora::twopi*n++)/Aurora::def_fftsize);
-
-   
 }
 
 LatticeProcessorModule::ChannelData SpecSampProcessor::createChannels()
@@ -56,47 +54,32 @@ LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
   return ParameterData(getParameters(), getNumberOfParameters());
 }
 
-void SpecSampProcessor::loadSpec(std::vector<std::vector<Aurora::specdata<float>>> &samp,
+void SpecSampProcessor::loadSpec(Aurora::SpecTable<float> &samp,
 				 const char* newValue) {
   loading = true;
   if(!getVoiceNum())
-    {
+    {     
       std::cout << getVoiceNum()  << std::endl;
-      std::cout << "File to load" << newValue << std::endl;
+      std::cout << "File to load " << newValue << std::endl;
       auto samples = getSamplesFromFile(newValue);
       if(samples.numSamples > 0) {
-	samp.resize(samples.numSamples/anal.hsize());
-	std::cout << "frames: " << samp.size() << " : " << samples.numSamples
-		  << " : " << anal.hsize() << std::endl;
-	std::size_t n = 0;
-	std::vector<float> lfr(anal.hsize());
-	for(auto &frame : samp) {
-	  std::copy(samples.data[0] + n,
-		    samples.data[0] + n + anal.hsize(),
-		    lfr.begin());
-	  frame = anal(lfr);
-	  n += anal.hsize();
-	}
-	std::cout << "samples: " << n << "\n";
-	if(n < samples.numSamples) {
-	  std::fill(lfr.begin(), lfr.end(), 0);
-	  std::copy(samples.data[0] + n,
-		    samples.data[0] + samples.numSamples,
-		    lfr.begin());
-	  samp.push_back(anal(lfr));
-	}
+	std::vector<float> in(samples.numSamples);
+	std::copy(samples.data[0],
+		  samples.data[0]+samples.numSamples,
+		  in.begin());
+        auto nframes = samp(in);
+	std::cout << "Frames loaded: " << nframes << std::endl;
       }
     }
   loading = false;
   okToDraw = true;
-
 }
 
 void SpecSampProcessor::hostParameterChanged(const char* parameterID,
                                              const char* newValue)
 {
   const std::string paramName = getParameterNameFromId(parameterID);
-  if(paramName == "Load Sample 1") loadSpec(samp0, newValue);
+  if(paramName == "Load Sample 1") loadSpec(samp[0], newValue);
 }
 
 void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newValue)
@@ -117,48 +100,47 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
     for(auto &p : sparams.pnames) {
       float par = getParameter(paramName);
       if(paramName == p[0]) {
-	players[n].bn = getMidiNoteInHertz(par, 440);
-	std::cout << par << std::endl;
+	players[n].basefreq(getMidiNoteInHertz(par, 440));
       }
       else if(paramName == p[1])
-	players[n].fine = par;
+	players[n].finetune(par);
       else if(paramName == p[2])
-	players[n].shft = par;
+	players[n].freqshift(par);
       else if(paramName == p[3])
-	players[n].fscal = par;
+	players[n].formscal(par);
       else if(paramName == p[4])
 	g[n] = par;
       else if(paramName == p[5])
-	players[n].st = par;
+	players[n].start(par);
       else if(paramName == p[6])
-	players[n].beg = par;
+	players[n].loopbeg(par);
       else if(paramName == p[7])
-	players[n].end = par;
+	players[n].loopend(par);
       else if(paramName == p[8])
-	players[n].tscal = par;
+	players[n].timescale(par);
       else if(paramName == p[9])
-	players[n].keep = par;
+	players[n].keepform(par);
       else if(paramName == p[11]) {
         if(getParameter(paramName)) {
-	  if(!getVoiceNum()) {
-	     samp0.clear();
-	     okToDraw = true;
-	  }
+	  if(!getVoiceNum()) {  
+	    samp[n].clear();
+	    okToDraw = true;
 	  }	    
 	}
       }
       n++;
     }
+  }
 }
 
 void SpecSampProcessor::prepareProcessor(int sr, std::size_t blockSize)
 {
-  anal.reset(sr);
   syn.reset(sr);
-  hcnt = anal.hsize();
+  hcnt = samp[0].hsize();
   players[0].reset(sr);
   fs = sr;
   ta = win.size()/(dm*fs);
+  samp[0].sr(sr);
 }
 
 void SpecSampProcessor::startNote(int midiNoteNumber, float velocity )
@@ -166,7 +148,7 @@ void SpecSampProcessor::startNote(int midiNoteNumber, float velocity )
   setMidiNoteNumber(midiNoteNumber);
   att = getParameter("Attack");
   dec = getParameter("Decay");
-  players[0].set_size(getSamp().size());
+  players[0].size(getSamp().size());
   players[0].onset();
   note_on = true;
 }
@@ -190,7 +172,7 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
     doReset = false;
   }
 
-  int smps = blockSize, hsize = anal.hsize(), offs = 0;
+  int smps = blockSize, hsize = samp[0].hsize(), offs = 0;
   if(smps > hsize) blockSize = hsize;
   
    while(smps > 0) {
@@ -199,12 +181,12 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
   env.vsize(blockSize);
   sus = getParameter("Sustain");
   auto &e = env(note_on);
-  if(hcnt >= anal.hsize()) {
+  if(hcnt >= samp[0].hsize()) {
     for(auto &bin : out) bin.amp(0);
   }
         
   const float decim = getParameter("Granulation");
-  const float hops = anal.hsize()*decim;
+  const float hops = samp[0].hsize()*decim;
         
   if(hcnt >= hops && !loading) {
     std::size_t n = 0;
@@ -243,7 +225,7 @@ const char* SpecSampProcessor::getSVGXml()
     
     
   std::vector<float> amps(win.size()/2 + 1);
-  for(auto &frame : getSamp()) {
+  for(auto &frame : getSamp()()) {
     std::size_t n = 0;
     for(auto &bin : frame) {
       amps[n++] += bin.amp();

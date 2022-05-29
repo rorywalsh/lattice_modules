@@ -6,17 +6,16 @@ static const int dm = 8;
 
 //======================================================================================
 SpecSampProcessor::SpecSampProcessor() :
-  win(Aurora::def_fftsize), anal(win,win.size()/dm), syn(win,win.size()/dm),
+  win(Aurora::def_fftsize), samp(4, Aurora::SpecTable<float>(win,win.size()/dm)),
+  syn(win,win.size()/dm),
   players(4,Aurora::SpecPlay<float>(Aurora::def_sr,win.size())), del(win.size()/2 + 1),
   out(win.size()/2 + 1), g({1.f,1.f,1.f,1.f}),
-  att(0.1f), dec(0.1f), sus(1.f), rel(0.1f), env(att,dec,sus,rel), hcnt(anal.hsize()),
+  att(0.1f), dec(0.1f), sus(1.f), rel(0.1f), env(att,dec,sus,rel), hcnt(samp[0].hsize()),
   ta(win.size()/(dm*Aurora::def_sr)), sparams(4)
 {
   std::size_t n = 0;
   for(auto &s : win)
     s = 0.5 - 0.5*cos((Aurora::twopi*n++)/Aurora::def_fftsize);
-
-   
 }
 
 LatticeProcessorModule::ChannelData SpecSampProcessor::createChannels()
@@ -51,7 +50,8 @@ LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
     addParameter({ p[6].c_str(), {0, 1, 0, 0.001, 1}});
     addParameter({ p[7].c_str(), {0,1, 1, 0.001, 1}});
     addParameter({ p[8].c_str(), {-2, 2, 1, 0.001, 1}});
-    addParameter({ p[9].c_str(), {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
+    addParameter({ p[9].c_str(), {0, 1, 0, 1, 1},
+	  LatticeProcessorModule::Parameter::Type::Switch});
     addParameter({ p[10].c_str(), {0, 1, 0, 1, 1}, Parameter::Type::FileButton});
     addParameter({ p[11].c_str(), {0, 1, 0, 1, 1}, Parameter::Type::Momentary});
   }
@@ -60,51 +60,35 @@ LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
   return ParameterData(getParameters(), getNumberOfParameters());
 }
 
-void SpecSampProcessor::loadSpec(std::vector<std::vector<Aurora::specdata<float>>> &samp,
+void SpecSampProcessor::loadSpec(Aurora::SpecTable<float> &samp,
 				 const char* newValue) {
   loading = true;
   if(!getVoiceNum())
-    {
+    {     
       std::cout << getVoiceNum()  << std::endl;
-      std::cout << "File to load" << newValue << std::endl;
+      std::cout << "File to load " << newValue << std::endl;
       auto samples = getSamplesFromFile(newValue);
-      //std::cout << samples.numSamples << std::endl;
       if(samples.numSamples > 0) {
-	samp.resize(samples.numSamples/anal.hsize());
-	std::cout << "frames: " << samp.size() << " : " << samples.numSamples
-		  << " : " << anal.hsize() << std::endl;
-	std::size_t n = 0;
-	std::vector<float> lfr(anal.hsize());
-	for(auto &frame : samp) {
-	  std::copy(samples.data[0] + n,
-		    samples.data[0] + n + anal.hsize(),
-		    lfr.begin());
-	  frame = anal(lfr);
-	  n += anal.hsize();
-	}
-	std::cout << "samples: " << n << "\n";
-	if(n < samples.numSamples) {
-	  std::fill(lfr.begin(), lfr.end(), 0);
-	  std::copy(samples.data[0] + n,
-		    samples.data[0] + samples.numSamples,
-		    lfr.begin());
-	  samp.push_back(anal(lfr));
-	}
+	std::vector<float> in(samples.numSamples);
+	std::copy(samples.data[0],
+		  samples.data[0]+samples.numSamples,
+		  in.begin());
+        auto nframes = samp(in);
+	std::cout << "Frames loaded: " << nframes << std::endl;
       }
     }
   loading = false;
   okToDraw = true;
-
 }
 
 void SpecSampProcessor::hostParameterChanged(const char* parameterID,
                                              const char* newValue)
 {
-  const std::string paramName = getParameterNameFromId(parameterID);
-  if(paramName == "Load Sample 1") loadSpec(samp0, newValue);
-  else if(paramName == "Load Sample 2") loadSpec(samp1, newValue);
-  else if(paramName == "Load Sample 3") loadSpec(samp2, newValue);
-  else if(paramName == "Load Sample 4") loadSpec(samp3, newValue);  
+  const std::string paramName = getParameterNameFromId(parameterID);  
+  if(paramName == "Load Sample 1") loadSpec(samp[0], newValue);
+  else if(paramName == "Load Sample 2") loadSpec(samp[1], newValue);
+  else if(paramName == "Load Sample 3") loadSpec(samp[2], newValue);
+  else if(paramName == "Load Sample 4") loadSpec(samp[3], newValue);  
 }
 
 void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newValue)
@@ -125,44 +109,30 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
     for(auto &p : sparams.pnames) {
       float par = getParameter(paramName);
       if(paramName == p[0]) {
-	players[n].bn = getMidiNoteInHertz(par, 440);
-	std::cout << par << std::endl;
+	players[n].basefreq(getMidiNoteInHertz(par, 440));
       }
       else if(paramName == p[1])
-	players[n].fine = par;
+	players[n].finetune(par);
       else if(paramName == p[2])
-	players[n].shft = par;
+	players[n].freqshift(par);
       else if(paramName == p[3])
-	players[n].fscal = par;
+	players[n].formscal(par);
       else if(paramName == p[4])
 	g[n] = par;
       else if(paramName == p[5])
-	players[n].st = par;
+	players[n].start(par);
       else if(paramName == p[6])
-	players[n].beg = par;
+	players[n].loopbeg(par);
       else if(paramName == p[7])
-	players[n].end = par;
+	players[n].loopend(par);
       else if(paramName == p[8])
-	players[n].tscal = par;
+	players[n].timescale(par);
       else if(paramName == p[9])
-	players[n].keep = par;
+	players[n].keepform(par);
       else if(paramName == p[11]) {
         if(getParameter(paramName)) {
 	  if(!getVoiceNum()) {  
-	    switch(n) {
-	    case 0:
-	      samp0.clear();
-	      break;
-	    case 1:
-	      samp1.clear();
-	      break;
-	    case 2:
-	      samp2.clear();
-	      break;
-	    case 3:
-	      samp3.clear();
-	      break;  
-	    }
+	    samp[n].clear();
 	    okToDraw = true;
 	  }	    
 	}
@@ -174,13 +144,14 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
 
 void SpecSampProcessor::prepareProcessor(int sr, std::size_t blockSize)
 {
-  anal.reset(sr);
   syn.reset(sr);
-  hcnt = anal.hsize();
+  hcnt = samp[0].hsize();
   for(auto &player: players)
       player.reset(sr);
   fs = sr;
   ta = win.size()/(dm*fs);
+  for(auto &smp: samp)
+      smp.sr(sr);
 }
 
 void SpecSampProcessor::startNote(int midiNoteNumber, float velocity )
@@ -190,7 +161,7 @@ void SpecSampProcessor::startNote(int midiNoteNumber, float velocity )
   dec = getParameter("Decay");
   std::size_t n = 0;
   for(auto &player : players) {
-    player.set_size(getSamp(n++).size());
+    player.size(getSamp(n++).size());
     player.onset();
   }
   note_on = true;
@@ -215,22 +186,21 @@ void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::
     doReset = false;
   }
 
-  int smps = blockSize, hsize = anal.hsize(), offs = 0;
+  int smps = blockSize, hsize = samp[0].hsize(), offs = 0;
   if(smps > hsize) blockSize = hsize;
   
-  //std::cout << buffer[1][0] << std::endl;
    while(smps > 0) {
   
   syn.vsize(blockSize);
   env.vsize(blockSize);
   sus = getParameter("Sustain");
   auto &e = env(note_on);
-  if(hcnt >= anal.hsize()) {
+  if(hcnt >= samp[0].hsize()) {
     for(auto &bin : out) bin.amp(0);
   }
         
   const float decim = getParameter("Granulation");
-  const float hops = anal.hsize()*decim;
+  const float hops = samp[0].hsize()*decim;
         
   if(hcnt >= hops && !loading) {
     std::size_t n = 0;
@@ -278,7 +248,7 @@ const char* SpecSampProcessor::getSVGXml()
     svg::Polyline svgPath0(svg::Fill(), svg::Stroke(2, svg::Color("#FFABD1"), 1));
   if(getSamp(0).size()) {
   std::vector<float> amps(win.size()/2 + 1);
-  for(auto &frame : getSamp(0)) {
+  for(auto &frame : getSamp(0)()) {
     std::size_t n = 0;
     for(auto &bin : frame) {
       amps[n++] += bin.amp();
@@ -293,7 +263,7 @@ const char* SpecSampProcessor::getSVGXml()
     amp *= scal;
     amp = 20*std::log10(amp);
     svgPath0 << svg::Point(n++,-(amp+96)/2);
-    if(n == width) break;
+    if(n == width) break;   
   }
   doc << svgPath0;
   }
@@ -301,7 +271,7 @@ const char* SpecSampProcessor::getSVGXml()
     svg::Polyline svgPath1(svg::Fill(), svg::Stroke(2, svg::Color("#00ABD1"), 1));
  if(getSamp(1).size()) {
   std::vector<float> amps(win.size()/2 + 1);
-  for(auto &frame : getSamp(1)) {
+  for(auto &frame : getSamp(1)()) {
     std::size_t n = 0;
     for(auto &bin : frame) {
       amps[n++] += bin.amp();
@@ -324,7 +294,7 @@ const char* SpecSampProcessor::getSVGXml()
    svg::Polyline svgPath2(svg::Fill(), svg::Stroke(2, svg::Color("#ABD100"), 1));
    if(getSamp(2).size()) {
   std::vector<float> amps(win.size()/2 + 1);
-  for(auto &frame : getSamp(2)) {
+  for(auto &frame : getSamp(2)()) {
     std::size_t n = 0;
     for(auto &bin : frame) {
       amps[n++] += bin.amp();
@@ -347,7 +317,7 @@ const char* SpecSampProcessor::getSVGXml()
    svg::Polyline svgPath3(svg::Fill(), svg::Stroke(2, svg::Color("#AB00D1"), 1));
  if(getSamp(3).size()) {
   std::vector<float> amps(win.size()/2 + 1);
-  for(auto &frame : getSamp(3)) {
+  for(auto &frame : getSamp(3)()) {
     std::size_t n = 0;
     for(auto &bin : frame) {
       amps[n++] += bin.amp();
