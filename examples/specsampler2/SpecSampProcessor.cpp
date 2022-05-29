@@ -129,7 +129,8 @@ else {
 	players[n].keepform(par);
       else if(paramName == p[11]) {
         if(getParameter(paramName)) {
-	  if(!getVoiceNum()) {  
+	  if(!getVoiceNum()) {
+	    updateHostParameter(p[10].c_str(), "");
 	    samp[n].clear();
 	    okToDraw = true;
 	  }	    
