@@ -7,7 +7,7 @@ static const int dm = 8;
 //======================================================================================
 SpecSampProcessor::SpecSampProcessor() :
   win(Aurora::def_fftsize), samp(1, Aurora::SpecTable<float>(win,win.size()/dm)), syn(win,win.size()/dm),
-  players(1,Aurora::SpecPlay<float>(Aurora::def_sr,win.size())), del(win.size()/2 + 1),
+  players(1), del(win.size()/2 + 1),
   out(win.size()/2 + 1), g({1.f}),
   att(0.1f), dec(0.1f), sus(1.f), rel(0.1f), env(att,dec,sus,rel), hcnt(samp[0].hsize()),
   ta(win.size()/(dm*Aurora::def_sr)), sparams(1)
@@ -149,8 +149,7 @@ void SpecSampProcessor::startNote(int midiNoteNumber, float velocity )
   setMidiNoteNumber(midiNoteNumber);
   att = getParameter("Attack");
   dec = getParameter("Decay");
-  players[0].size(getSamp().size());
-  players[0].onset();
+  players[0].onset(getSamp().size());
   note_on = true;
 }
 
