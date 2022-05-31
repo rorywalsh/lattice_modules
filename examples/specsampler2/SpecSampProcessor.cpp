@@ -149,9 +149,11 @@ void SpecSampProcessor::hostParameterChanged(const char* parameterID, float newV
                     if(!getVoiceNum()) {
                         switch(n) {
                             case 0:
+                                updateHostParameter(getParameterNameFromId(" Load Sample 1").c_str(), "");
                                 samp0.clear();
                                 break;
                             case 1:
+                                updateHostParameter(getParameterNameFromId(" Load Sample 2").c_str(), "");
                                 samp1.clear();
                                 break;
                         }

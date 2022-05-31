@@ -219,9 +219,16 @@ public:
             static constexpr int nonlinear = 204;
             
         };
+
         struct Automator{
             static constexpr int uncategorised = 300;
         };
+        
+        struct SamplerProcessor
+        {
+            static constexpr int uncategorised = 400;
+        };
+        
 //        synthProcessor = 0,/** a module that will form part of a polyphonic or monophonic synth. This type of module can not only generate audio, but can also process incoming. See LatticeProcessorModule::getNumberOfVoices() for details on how to limit the number of voices. */
 //        audioProcessor,/** an audio processor. This can be used to process or generate audio */
 //        midiProcessor, /** a Midi based processor - can parse and modify incoming Midi data or generate new Midi streams on the fly*/
@@ -341,6 +348,12 @@ public:
         unused(buffer, numChannels, blockSize);
     }
 
+    virtual void processSamplerVoice(float** buffer, int numChannels, std::size_t blockSize)
+    {
+        unused(buffer, numChannels, blockSize);
+    }
+
+    
     /** Called by Lattice to set the number of voices
      * @return The maximum number of voices that can be played simultaneously.
     */
@@ -486,7 +499,7 @@ public:
     void updateAutomationForParameters(float** buffer, int numChannels)
     {
         int inputs = getNumberOfInputChannels() + 1;
-        std::cout << inputs << ":"  << numChannels;
+
         for(int i = inputs ; i < numChannels ; i++)
         {
             if(isInputConnected(i))
@@ -525,6 +538,17 @@ public:
     {
         hostParamCallback = func1;
         hostParamCallbackChar = func2;
+    }
+    
+    void registerSampleLoadCallback(const std::function<void(const char*)>& func1)
+    {
+        sampleLoadCallback = func1;
+    }
+    
+    void loadSamplePack(const char* filename)
+    {
+        if (sampleLoadCallback)
+            sampleLoadCallback(filename);
     }
     
     void updateParameter(std::string name, float newValue)
@@ -712,6 +736,7 @@ private:
     AudioFileSamples(*audioFileSamplesCallback)(const char* channel);
     //std::function<void(const std::string& parameterID, float newValue)> paramCallback;
     std::function<void(const char*, float)> hostParamCallback;
+    std::function<void(const char*)> sampleLoadCallback;
     std::function<void(const char*, const char*)> hostParamCallbackChar;
     int voiceNum = -1;
     std::vector<LatticeProcessorModule *> voices;
