@@ -2,7 +2,7 @@
 #include "LatticeProcessorModule.h"
 #include <iterator>
 #include "SpecStream.h"
-#include "SpecShift.h"
+#include "SpecPlay.h"
 #include "Env.h"
 #include <cstdlib>
 #include <functional>
@@ -10,53 +10,6 @@
 #include <atomic>
 #include <array>
 #include "simple_svg_1.0.0.hpp"
-
-
-namespace Aurora {
-template <typename S>
-struct SpecPlay {
-  SpecShift<S> shift;
-  S sr;
-  S rp;
-  S size, shft, fscal;
-  S bn, fine, tscal, beg, end, st;
-  bool keep;
-
-SpecPlay(S fs, std::size_t fftsize) : shift(fs,fftsize), sr(fs), rp(0), size(0),
-    shft(0), fscal(1), bn(261), fine(1), tscal(1), beg(0), end(1), st(0), keep(0){ }
-
-  void onset() {
-    rp = (st < end? st : end)*size;
-  }
-  void reset(S fs) {
-    shift.reset(fs);
-    sr  = fs;
-    rp = 0;
-  }
-
-  void set_size(std::size_t sz) { size = sz; }
-
-  const std::vector<specdata<S>>
-  &operator() (const std::vector<std::vector<specdata<S>>> &samp, S cps) {
-    if(samp.size() != size || samp.size() == 0){
-       shift.reset(sr);
-       return shift.frame();
-      } 	
-      shift.lock_formants(keep);
-      shift(samp[(int)rp],cps*fine/bn, shft, fscal);
-      rp += tscal;
-      if(end <= beg) beg = end;
-      if(tscal >= 0) {
-	 rp = rp < end*size ? rp : beg*size;
-      } else {
-        while(rp < 0) rp += size;
-        rp = rp > beg*size ? rp : end*size - 1;
-      }	 
-      return shift.frame();
-      }
-};
-
-}
 
 struct SampParam {
   std::array<const char *, 12> params;
@@ -138,7 +91,7 @@ public:
 
     const char* getModuleName() override
     {
-        return "Spec Sampler 2";
+        return "Spec Sampler Duo";
     }
 
    const char* getSVGXml() override;
@@ -148,24 +101,19 @@ public:
      return draw;
   }
 
-  const std::vector<std::vector<Aurora::specdata<float>>> &getSamp(int n) {
+   const Aurora::SpecTable<float> &getSamp(int n) {
     SpecSampProcessor *p = dynamic_cast<SpecSampProcessor *>(getVoices()[0]);
-    if(n == 1) return p->samp1;
-    else return p->samp0;
+    return p->samp[n];
   }
 
   
 
 private:
 
-  void loadSpec(std::vector<std::vector<Aurora::specdata<float>>> &samp,
-		const char* newValue);
-
-  
-    std::vector<std::vector<Aurora::specdata<float>>> samp0;
-    std::vector<std::vector<Aurora::specdata<float>>> samp1;
+   void loadSpec(Aurora::SpecTable<float> &samp,
+  	const char* newValue);
     std::vector<float> win;
-    Aurora::SpecStream<float> anal;
+    std::vector<Aurora::SpecTable<float>> samp;
     Aurora::SpecSynth<float> syn;
     std::vector<Aurora::SpecPlay<float>> players;
     std::vector<Aurora::specdata<float>> del;
