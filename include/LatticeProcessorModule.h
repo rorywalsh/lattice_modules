@@ -185,7 +185,7 @@ public:
 
         /** Creates a simple MIDI message that can be added to a incoming MIDI vector in process()
          */
-        LatticeMidiMessage(LatticeMidiMessage::Type type, int chan, int noteNum, float vel)
+    LatticeMidiMessage(LatticeMidiMessage::Type type = Type::noteOn, int chan = 0 , int noteNum = 0, float vel = 0)
             : msgType(type), note(noteNum), channel(chan), velocity(vel)
         {}
 
