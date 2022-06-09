@@ -259,7 +259,7 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
   const float am = getParameter("LFO2 AM");
   std::size_t j = 0;
   for(auto &s : aenv.vector()) {
-    buffer[0][j] = s;//(am*mod2[j] + xvel*mvel + 1 - xvel)*s;
+    buffer[0][j] = (am*mod2[j] + xvel*mvel + 1 - xvel)*s;
     j++;
   }
   
