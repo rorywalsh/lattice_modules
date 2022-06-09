@@ -563,7 +563,7 @@ public:
     */
     std::string getParameterNameFromId(std::string parameterId)
     {
-        return parameterId.substr(parameterId.find("-") + 2);
+        return parameterId.substr(parameterId.find_last_of("|") + 2);
     }
 
     /** override this method if you want to draw to the Lattice generic editor viewport
