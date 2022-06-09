@@ -1,7 +1,10 @@
 #pragma once
 #include "LatticeProcessorModule.h"
-#include "../../aurora/include/BlOsc.h"
-#include "../../aurora/include/Env.h"
+#include "BlOsc.h"
+#include "Env.h"
+#include "FourPole.h"
+#include "TwoPole.h"
+
 
 #include <iterator>
 #include <array>
@@ -18,9 +21,10 @@ const TableSet<float> *tritab = &triangle;
    Aurora::BlOsc<float> osc;
    Aurora::BlOsc<float> oscb;
    std::vector<float> sig;
-   float freq, fine, fm, pwm, amp;
+   float freq, fine, fm, pwm, amp, lfo1, lfo2, env;
    int wave;
    ParamSmooth smooth;
+   ParamSmooth ampsm;
 
    float midi2freq(float nn) {
     return 440*std::pow(2.f, (nn - 69.f)/12.f);
@@ -28,7 +32,7 @@ const TableSet<float> *tritab = &triangle;
 
 
  Oscil() : osc(sawtab), oscb(sawtab), sig(def_vsize), freq(60.),
-     fine(0.), fm(0.), pwm(0.5), amp(0), wave(0) { };
+     fine(0.), fm(0.), pwm(0.5), amp(0.5), wave(0), lfo1(0), lfo2(0), env(0) { };
 
    void set_wave(int wav) {
      wave = wav;
@@ -48,33 +52,73 @@ const TableSet<float> *tritab = &triangle;
      const std::vector<float>
        &operator()(float amp, const std::vector<float> &fm) {
        sig.resize(fm.size());
+       float a = ampsm(amp,0.01f,osc.fs()/fm.size());
        if(wave < 3) {
 	 auto &a = osc(amp, fm);
-	 oscb(amp,fm);
+	 oscb(a,fm);
 	 std::copy(a.begin(), a.end(), sig.begin());   
 	 return sig;
        }
        else {
 	float pwms = smooth(pwm,0.01f, osc.fs()/fm.size());
-        float off = amp*(2*pwms - 1.f);
-	auto &a = osc(amp,fm,pwms);
-	auto &b = oscb(amp,fm);
+        float off = a*(2*pwms - 1.f);
+	auto &s1 = osc(a,fm,pwms);
+	auto &s2 = oscb(a,fm);
 	std::size_t j = 0;
         for(auto &s :sig) {
-	  s = a[j] - b[j] + off;
+	  s = s1[j] - s2[j] + off;
           j++;
 	}
 	return sig;		
        }
      } 
  };
+
+ const struct Tables {
+   std::vector<float> utri;
+   std::vector<float> btri;
+   std::vector<float> saw;
+   std::vector<float> sqr;
+   std::vector<float> sine;
+   std::vector<float> *tabs[5];
+
+ Tables() :
+   utri(8192), btri(8192), saw(8192), sqr(8192), sine(8192),
+     tabs{&sine,&utri,&btri,&saw,&sqr}
+       {
+     std::size_t n = 0;
+     for(auto &wv : sine) {
+       wv = std::sin(twopi*n/sine.size());
+       utri[n] = n < utri.size()/2 ? (2.f*n)/utri.size() : 1 - (2.*n - utri.size())/utri.size();
+       btri[n] = utri[n]*2 - 1.;
+       saw[n] = float(n)/saw.size();
+       sqr[n] = n < sqr.size()/2 ? 1. : -1;
+       n++;
+     }
+   }
+  } lfotables;
+
+ struct LFO {
+   Osc<float,lookup> osc;
+   LFO() : osc(&lfotables.sine, def_sr) { };
+
+   auto &operator()(float freq)  {
+     return osc(1, freq);
+   }
+
+   void set_wave(int w) {
+     osc.table(lfotables.tabs[w]);
+   }   
+ };
+ 
  }
 
 struct OscParam {
-  std::array<const char *, 6> params;
+  std::array<const char *, 9> params;
   std::vector<std::vector<std::string>> pnames;
 
-  OscParam(std::size_t np) : params({ "Coarse Freq ", "Fine Tune ", "FM Amount ", "PWM ", "Waveform ", "Osc "}),
+OscParam(std::size_t np) : params({ "Coarse Freq ", "Fine Tune ", "FM Amount ",
+      "LFO1 Amount ", "LFO2 Amount ", "Aux Env ",  "PWM ", "Waveform ", "Osc "}),
     pnames(np) {
     std::size_t n = 0;
     char mem[4];
@@ -96,10 +140,15 @@ class SubsynthProcessor : public LatticeProcessorModule
 {
     OscParam oparams;
     std::vector<Aurora::Oscil> oscs;
-    std::vector<float> buf;
+    std::vector<float> buf, cf1, cf2;
     float att, dec, sus, rel;
     Aurora::Env<float> aenv;
-
+    float xatt, xdec, xsus, xrel;
+    Aurora::Env<float> xenv;
+    Aurora::FourPole<float> lp;
+    Aurora::TwoPole<float> svf;
+    Aurora::LFO lfo1, lfo2;
+    float mvel;
  
 public:
     SubsynthProcessor();
