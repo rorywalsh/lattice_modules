@@ -33,8 +33,6 @@ LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
   addParameter({ "Sustain", {0, 1., 1., 0.001, 1}});
   addParameter({ "Release", {0, 1., 0.1, 0.001, 1}});
   addParameter({ "Reset", {0, 1, 0, 1, 1}, Parameter::Type::Momentary});
- 
-    
   for(auto &p : sparams.pnames) {
     addParameter({ p[0].c_str(), {0, 127, 60, 1, 1}});
     addParameter({ p[1].c_str(), {0.9439,1.0594, 1, 0.0001, 1}});
@@ -45,7 +43,8 @@ LatticeProcessorModule::ParameterData SpecSampProcessor::createParameters()
     addParameter({ p[6].c_str(), {0, 1, 0, 0.001, 1}});
     addParameter({ p[7].c_str(), {0,1, 1, 0.001, 1}});
     addParameter({ p[8].c_str(), {-2, 2, 1, 0.001, 1}});
-    addParameter({ p[9].c_str(), {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
+    addParameter({ p[9].c_str(), {0, 1, 0, 1, 1},
+	  LatticeProcessorModule::Parameter::Type::Switch});
     addParameter({ p[10].c_str(), {0, 1, 0, 1, 1}, Parameter::Type::FileButton});
     addParameter({ p[11].c_str(), {0, 1, 0, 1, 1}, Parameter::Type::Momentary});
   }
