@@ -70,7 +70,8 @@ LatticeProcessorModule::ParameterData SubsynthProcessor::createParameters()
 
    addParameter({ "Amp Velocity", {0, 1, 0, 0.001, 1}});
    addParameter({ "Filter Velocity", {0, 1, 0, 0.001, 1}});
-  
+   addParameter({ "Bend range", {0, 12, 1, 1, 1}});
+   addParameter({ "Glide Time", {0, 1., 0, 0.001, 1}});
   return ParameterData(getParameters(), getNumberOfParameters());  
 }
 
@@ -147,6 +148,7 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
 					  int numChannels, std::size_t blockSize)
 {
   float freq;
+  float fs = oscs[0].osc.fs();
   buf.resize(blockSize);
   cf1.resize(blockSize);
   cf2.resize(blockSize);
@@ -159,13 +161,13 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
   auto &mod1 = lfo1(getParameter("LFO1 Freq"));
   auto &mod2 = lfo2(getParameter("LFO2 Freq"));
   auto &aux =  xenv(isNoteOn);
-  
+  auto bend = bsmooth(getParameter("Bend Range"), 0.01, fs/blockSize);
+  auto glide = getParameter("Glide Time")*0.5;
+  auto midinn = fsmooth(getMidiNoteNumber(), glide, fs/blockSize);
   // osc sources
   for(auto &osc : oscs) {
-    std::cout << osc.freq  << std::endl;
-    freq = osc.midi2freq(getMidiNoteNumber()
-			 + osc.freq - refnote
-			 + osc.fine);      
+    freq = osc.midi2freq(midinn + osc.freq - refnote
+		    + osc.fine + pbend*bend);      
     std::size_t j = 0;
     for(auto &s : buf) {
       s = freq*(1 + mod1[j]*osc.lfo1 + mod2[j]*osc.lfo2

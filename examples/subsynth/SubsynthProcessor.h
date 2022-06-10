@@ -149,6 +149,9 @@ class SubsynthProcessor : public LatticeProcessorModule
     Aurora::TwoPole<float> svf;
     Aurora::LFO lfo1, lfo2;
     float mvel;
+    float pbend = 0;
+    ParamSmooth fsmooth;
+    ParamSmooth bsmooth;
  
 public:
     SubsynthProcessor();
@@ -192,6 +195,11 @@ public:
     int getModuleType() override
     {
         return ModuleType::SynthProcessor::uncategorised;
+    }
+
+     void pitchBendChange(int newValue) override
+    {
+      pbend = (newValue - 64)/128.;
     }
     
 private:
