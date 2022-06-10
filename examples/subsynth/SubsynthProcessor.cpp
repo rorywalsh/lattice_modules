@@ -77,11 +77,12 @@ LatticeProcessorModule::ParameterData SubsynthProcessor::createParameters()
 void SubsynthProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
   const std::string paramName = getParameterNameFromId(parameterID);
-  float par = getParameter(paramName);
   std::size_t n = 0;
   for(auto &p : oparams.pnames) {
-    if(paramName == p[0]) 
+    float par = getParameter(paramName);
+    if(paramName == p[0]) {
       oscs[n].freq = par;
+    }
     else if(paramName == p[1])
       oscs[n].fine = par;
     else if(paramName == p[2])
@@ -101,6 +102,7 @@ void SubsynthProcessor::hostParameterChanged(const char* parameterID, float newV
     }
     n++;
   }
+  float par = getParameter(paramName);
   if(paramName == "LFO1 Wave")
     lfo1.set_wave(par);
   if(paramName == "LFO2 Wave")
@@ -160,6 +162,7 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
   
   // osc sources
   for(auto &osc : oscs) {
+    std::cout << osc.freq  << std::endl;
     freq = osc.midi2freq(getMidiNoteNumber()
 			 + osc.freq - refnote
 			 + osc.fine);      
