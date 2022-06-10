@@ -17,7 +17,9 @@ sawOsc1(&sawWave, sr),
 sawOsc2(&sawWave, sr),
 mix(),
 pwmTone(sr),
-pwmChanges(1)
+pwmChanges(1),
+filter(sr),
+buf(Aurora::def_vsize)
 {
     pwmChanges[0] = 0.5;
     std::size_t n = 0;
@@ -29,7 +31,7 @@ pwmChanges(1)
     
 }
 
-const std::vector<float>& BlSynthProcessor::Synth::operator()(float a, float f, bool gate)
+const std::vector<float>& BlSynthProcessor::Synth::operator()(float a, float f, float cf, float res, float fen, bool gate)
 {
     if(currentWave == 0)
     {
@@ -40,11 +42,35 @@ const std::vector<float>& BlSynthProcessor::Synth::operator()(float a, float f, 
         auto &pwmSmooth = pwmTone(pwmChanges, 10.f);
         float off = a*(2*pwmSmooth[0] - 1.f);
         auto &m = mix(mix(sawOsc1(a, f, pwmSmooth[0]), sawOsc2(-a, f)), off);
-        return env(m, gate);
+	auto &e = env(gate);
+	std::size_t n = 0;
+        for(auto &s : buf) {
+	  s = cf*(fen*e[n]+1);
+          n++;
+	}
+	n = 0;
+	auto &fil = filter(m,buf,res);
+	for(auto &s : buf) {
+	  s = fil[n]*e[n];
+          n++;
+	}
+        return buf;
     }
     else
     {
-        return env(osc(a, f), gate);
+        auto &e = env(gate);
+	std::size_t n = 0;
+	for(auto &s : buf) {
+	  s = a*e[n];
+          n++;
+	}
+	n = 0;
+        auto &o = osc(buf, f);
+	for(auto &s : buf) {
+	  s = cf*(fen*e[n]+1);
+          n++;
+	}
+        return filter(o,buf,res);
     }
 }
 
@@ -72,17 +98,19 @@ void BlSynthProcessor::Synth::setBlockSize(std::size_t blockSize)
     sawOsc2.vsize(blockSize);
     sinOsc.vsize(blockSize);
     osc.vsize(blockSize);
+    buf.resize(blockSize);
     env.vsize(blockSize);
 }
 
-void BlSynthProcessor::Synth::setSampleRate(std::size_t blockSize)
+void BlSynthProcessor::Synth::setSampleRate(std::size_t sr)
 {
-    pwmTone.reset(blockSize);
-    sawOsc1.reset(blockSize);
-    sawOsc2.reset(blockSize);
-    sinOsc.reset(blockSize);
-    osc.reset(blockSize);
-    env.reset(blockSize);
+    pwmTone.reset(sr);
+    sawOsc1.reset(sr);
+    sawOsc2.reset(sr);
+    sinOsc.reset(sr);
+    osc.reset(sr);
+    env.reset(sr);
+    filter.reset(sr);
 }
 
 //======================================================================================
@@ -101,13 +129,16 @@ LatticeProcessorModule::ChannelData BlSynthProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData BlSynthProcessor::createParameters()
 {
+    addParameter({ "Detune", {.5, 2, 1, 0.001, 1}});
+    addParameter({ "Wave", {0, 3, 2, 1, 1}});
+    addParameter({ "PW", {0.01, .999, .5, 0.001, 1}});
+    addParameter({ "Cutoff Freq", {0, 10000, 5000, 0.5, 1}});
+    addParameter({ "Resonance", {0, 1, 0.7, 0.001, 1}});
+    addParameter({ "Filter Env Amount", {-1, 1, 0, 0.001, 1}});
     addParameter({ "Attack", {0, 1, 0.4, 0.001, 1}});
     addParameter({ "Decay", {0, 2, 0.1, 0.001, 1}});
     addParameter({ "Sustain", {0, 1, 0.8, 0.001, 1}});
     addParameter({ "Release", {0, 3, 0.1, 0.001, 1}});
-    addParameter({ "Wave", {0, 3, 1, 1, 1}});
-    addParameter({ "PWM", {0.01, .999, .5, 0.001, 1}});
-    addParameter({ "Detune", {.5, 2, 1, 0.001, 1}});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
@@ -143,7 +174,7 @@ void BlSynthProcessor::hostParameterChanged(const char* parameterID, float newVa
     {
         synth.setDetune(newValue);
     }
-    else if(parameterName == "PWM")
+    else if(parameterName == "PW")
     {
         synth.setPwm(newValue);
     }
@@ -163,9 +194,10 @@ void BlSynthProcessor::startNote(int noteNumber, float velocity)
     {
         isNoteOn = true;
     }
+    vel = velocity;
 }
 
-void BlSynthProcessor::stopNote (float /*velocity*/)
+void BlSynthProcessor::stopNote (float velocity)
 {
     isNoteOn = false;
 }
@@ -173,8 +205,11 @@ void BlSynthProcessor::stopNote (float /*velocity*/)
 void BlSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
 {
     const float freq = static_cast<float>(getMidiNoteInHertz(getMidiNoteNumber(), 440));
+    const float cf = getParameter("Cutoff Freq");
+    const float res = getParameter("Resonance");
+    const float fe = getParameter("Filter Env Amount");
     synth.setBlockSize(blockSize);
-    auto &out = synth(1, freq*synth.getDetune(), isNoteOn);
+    auto &out = synth(vel, freq*synth.getDetune(), cf, res, fe, isNoteOn);
     std::copy(out.begin(), out.end(),buffer[0]); 
 }
 

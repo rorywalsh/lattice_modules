@@ -127,7 +127,7 @@ public:
     
     const char* getModuleName() override
     {
-        return "Waveshaping Synth";
+        return "Square Waveshaper";
     }
 
 	static int remap(float value, float rangeMin, float rangeMax, float newRangeMin, float newRangeMax)

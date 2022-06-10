@@ -188,7 +188,7 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
       buf[j++] += s*0.25f; 
   }
   for(auto &s : buf)
-    s += (2*std::rand()/float(RAND_MAX) - 1)*getParameter("Noise");
+    s += 0.25*(2*std::rand()/float(RAND_MAX) - 1)*getParameter("Noise");
 
   // filters
   const float fvel = getParameter("Filter Velocity");

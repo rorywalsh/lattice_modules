@@ -65,7 +65,7 @@ public:
 
     const char* getModuleName() override
     {
-        return "Basic synth with ADSR";
+        return "Oscillator + ADSR";
     }
 
     /* Is a synth */
@@ -87,5 +87,6 @@ public:
 private:
     SimpleSynthProcessor::Synth synth;
     bool isNoteOn = false;
+    float vel = 1;
 };
 

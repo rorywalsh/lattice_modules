@@ -4,6 +4,7 @@
 #include "Osc.h"
 #include "Env.h"
 #include "OnePole.h"
+#include "FourPole.h"
 #include <iterator>
 
 
@@ -22,7 +23,7 @@ class BlSynthProcessor : public LatticeProcessorModule
         void setSampleRate(std::size_t sr);
         
         
-        const std::vector<float> &operator()(float a, float f, bool gate);
+      const std::vector<float> &operator()(float, float, float, float,float, bool);
         
         void setAttack(float value)     {    att = value;           }
         void setDecay(float value)      {    dec = value;           }
@@ -48,10 +49,11 @@ class BlSynthProcessor : public LatticeProcessorModule
         Aurora::BlOsc<float, Aurora::lookupi<float>> sawOsc2;
         static float add(float a, float b) { return a + b; }
         Aurora::BinOp<float, add> mix;
-        int currentWave = 1;
+        int currentWave = 2;
         Aurora::OnePole<float> pwmTone;
-		std::vector<float> pwmChanges;
-        
+	std::vector<float> pwmChanges;
+        Aurora::FourPole<float> filter;
+        std::vector<float> buf;
     };
     
 public:
@@ -89,7 +91,7 @@ public:
     
     const char* getModuleName() override
     {
-        return "Bandlimited Synth";
+        return "Subtractive Synth I";
     }
 
     float getTailOffTime() override 
@@ -128,6 +130,7 @@ private:
     bool isNoteOn = false;
 	bool okToDraw = true;
 	int waveform = 1;
+	float vel = 1;
     std::string svgText = "";
 
 };

@@ -57,11 +57,11 @@ LatticeProcessorModule::ChannelData SimpleSynthProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData SimpleSynthProcessor::createParameters()
 {
+    addParameter({"Wave", {1, 3, 1, 1, 1}});
     addParameter({"Attack", {0, 1, synth.getAttack(), 0.001, 1}});
     addParameter({"Decay", {0, 2, synth.getDecay(), 0.001, 1}});
     addParameter({"Sustain", {0, 1, synth.getSustain(), 0.001, 1}});
     addParameter({"Release", {0, 3, 0.1, 0.001, 1}});
-    addParameter({"Wave", {1, 3, 1, 1, 1}});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
@@ -95,9 +95,10 @@ void SimpleSynthProcessor::prepareProcessor(int sr, std::size_t blockSize)
 	synth.setBlockSize(blockSize);
 }
 
-void SimpleSynthProcessor::startNote(int midiNoteNumber, float/* velocity */)
+void SimpleSynthProcessor::startNote(int midiNoteNumber, float velocity)
 {
     setMidiNoteNumber(midiNoteNumber);
+    vel = velocity;
     isNoteOn = true;
 }
 
@@ -111,11 +112,8 @@ void SimpleSynthProcessor::processSynthVoice(float** buffer, int numChannels, st
 {
     const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
     synth.setBlockSize(blockSize);
-    const std::vector<float> &out = synth(1, freq, isNoteOn);
-    for(int i = 0; i < blockSize ; i++)
-      for(int chan = 0 ;  chan < numChannels; chan++)
-          buffer[chan][i] = out[i];
-    
+    const std::vector<float> &out = synth(vel, freq, isNoteOn);
+    std::copy(out.begin(),out.end(), buffer[0]);    
     
 }
 

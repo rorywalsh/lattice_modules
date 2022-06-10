@@ -118,7 +118,7 @@ struct OscParam {
   std::vector<std::vector<std::string>> pnames;
 
 OscParam(std::size_t np) : params({ "Coarse Freq ", "Fine Tune ", "FM Amount ",
-      "LFO1 Amount ", "LFO2 Amount ", "Aux Env ",  "PWM ", "Waveform ", "Osc "}),
+      "LFO1 Amount ", "LFO2 Amount ", "Aux Env ",  "PW ", "Waveform ", "Osc "}),
     pnames(np) {
     std::size_t n = 0;
     char mem[4];
@@ -178,7 +178,7 @@ public:
 
     const char* getModuleName() override
     {
-        return "Subtractive Synth";
+        return "Subtractive Synth II";
     }
 
     /* Is a synth */

@@ -177,7 +177,7 @@ public:
 
     const char* getModuleName() override
     {
-        return "Karplus Strong Synth";
+        return "String Model";
     }
 
 private:
