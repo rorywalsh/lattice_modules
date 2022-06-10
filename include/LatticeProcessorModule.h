@@ -605,7 +605,7 @@ public:
     
     std::size_t getNumberOfOutputChannels()
     {
-        int numOutputs = getModuleType() >= 200 && getModuleType() < 300;
+        int numOutputs = 0;
         for(auto& c : channels)
             if(c.type == ChannelType::output)
                 numOutputs++;
