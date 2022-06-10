@@ -15,7 +15,8 @@ SubsynthProcessor::SubsynthProcessor()
 
 LatticeProcessorModule::ChannelData SubsynthProcessor::createChannels()
 {
-  addChannel({"FM", LatticeProcessorModule::ChannelType::input });
+  addChannel({"Osc FM", LatticeProcessorModule::ChannelType::input });
+  addChannel({"Filter FM", LatticeProcessorModule::ChannelType::input });
   addChannel({"Output", LatticeProcessorModule::ChannelType::output });
   return ChannelData(getChannels(), getNumberOfChannels());
 }
@@ -40,11 +41,13 @@ LatticeProcessorModule::ParameterData SubsynthProcessor::createParameters()
   addParameter({ "Filter Type", {0, 3, 0, 1, 1}});
 
   addParameter({ "LP Freq", {0, 15000, 5000, 0.5, 1}});
+  addParameter({ "LP FM", {0, 1, 0, 0.001, 1}});
   addParameter({ "LP LFO1", {0, 1, 0, 0.001, 1}});
   addParameter({ "LP Aux Env", {0, 15000, 0, 0.5, 1}});
   addParameter({ "LP Regen", {0, 1., 0.7f, 0.001, 1}});
 
   addParameter({ "MM Freq", {0, 15000, 5000, 0.5, 1}});
+  addParameter({ "MM FM", {0, 1, 0, 0.001, 1}});
   addParameter({ "MM LFO2", {0, 1, 0, 0.001, 1}});
   addParameter({ "MM Aux Env", {0, 15000, 0, 0.5, 1}});
   addParameter({ "MM Q", {0.5, 100, 2., 0.5, 1}});
@@ -148,7 +151,7 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
 					  int numChannels, std::size_t blockSize)
 {
   float freq;
-  float fs = oscs[0].osc.fs();
+  const float fs = oscs[0].osc.fs();
   buf.resize(blockSize);
   cf1.resize(blockSize);
   cf2.resize(blockSize);
@@ -161,9 +164,9 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
   auto &mod1 = lfo1(getParameter("LFO1 Freq"));
   auto &mod2 = lfo2(getParameter("LFO2 Freq"));
   auto &aux =  xenv(isNoteOn);
-  auto bend = bsmooth(getParameter("Bend Range"), 0.01, fs/blockSize);
-  auto glide = getParameter("Glide Time")*0.5;
-  auto midinn = fsmooth(getMidiNoteNumber(), glide, fs/blockSize);
+  const float bend = bsmooth(getParameter("Bend Range"), 0.01, fs/blockSize);
+  const float glide = getParameter("Glide Time")*0.5;
+  const float midinn = fsmooth(getMidiNoteNumber(), glide, fs/blockSize);
   // osc sources
   for(auto &osc : oscs) {
     freq = osc.midi2freq(midinn + osc.freq - refnote
@@ -195,6 +198,8 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
   const float f2 = getParameter("MM Freq");
   const float m2 = getParameter("MM LFO2");
   const float ax2 = getParameter("MM Aux Env");
+  const float mfm = getParameter("MM FM");
+  const float lpfm = getParameter("LP FM");
   switch(int(getParameter("Filter Type"))) {
     // lopass only
   default:
@@ -202,7 +207,7 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
     {
       std::size_t j = 0;
       for(auto &cf : cf1) {
-        cf = limcf(f*(1 + mod1[j]*m) + aux[j]*ax);
+        cf = limcf(f*(1 + mod1[j]*m) + aux[j]*ax + buffer[1][j]*lpfm);
         j++;
       }		    
       auto &sig = lp(buf,cf1,getParameter("LP Regen"));
@@ -214,8 +219,8 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
     {
       std::size_t j = 0;
       for(auto &cf : cf1) {
-        cf = limcf(f*(1 + mod1[j]*m) + aux[j]*ax);
-	cf2[j] = limcf(f2*(1 + mod2[j]*m2) + aux[j]*ax2);
+        cf = limcf(f*(1 + mod1[j]*m) + aux[j]*ax + buffer[1][j]*lpfm);
+	cf2[j] = limcf(f2*(1 + mod2[j]*m2) + aux[j]*ax2 + buffer[1][j]*mfm);
         j++;
       }	
       auto &sig1 = lp(buf,cf1, getParameter("LP Regen"));
@@ -230,8 +235,8 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
     {
       std::size_t j = 0;
       for(auto &cf : cf1) {
-        cf = limcf(f*(1 + mod1[j]*m) + aux[j]*ax);
-	cf2[j] = limcf(f2*(1 + mod2[j]*m2) + aux[j]*ax2);
+        cf = limcf(f*(1 + mod1[j]*m) + aux[j]*ax + buffer[1][j]*lpfm);
+	cf2[j] = limcf(f2*(1 + mod2[j]*m2) + aux[j]*ax2 + buffer[1][j]*mfm);
         j++;
       }	
       auto &sig1 = lp(buf, cf1, getParameter("LP Regen"));
@@ -250,7 +255,7 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
     {
       std::size_t j = 0;
       for(auto &cf : cf2) {
-	cf = limcf(f2*(1 + mod2[j]*m2) + aux[j]*ax2);
+	cf = limcf(f2*(1 + mod2[j]*m2) + aux[j]*ax2 + buffer[1][j]*mfm);
         j++;
       }	
       auto &sig = svf(buf,cf2, 1./getParameter("MM Q"),
