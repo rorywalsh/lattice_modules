@@ -40,20 +40,23 @@ LatticeProcessorModule::ParameterData SubsynthProcessor::createParameters()
 
   addParameter({ "Filter Type", {0, 3, 0, 1, 1}});
 
-  addParameter({ "LP Freq", {0, 15000, 5000, 0.5, 1}});
+  addParameter({ "LP Freq", {0, 15000, 2000, 0.5, 1}});
   addParameter({ "LP FM", {0, 1, 0, 0.001, 1}});
   addParameter({ "LP LFO1", {0, 1, 0, 0.001, 1}});
-  addParameter({ "LP Aux Env", {0, 15000, 0, 0.5, 1}});
+  addParameter({ "LP Aux Env", {-10000, 10000, 0, 0.5, 1}});
+  addParameter({ "LP Key Scale", {0, 1, 1, 0.001, 1}});
   addParameter({ "LP Regen", {0, 1., 0.7f, 0.001, 1}});
 
-  addParameter({ "MM Freq", {0, 15000, 5000, 0.5, 1}});
+  addParameter({ "MM Freq", {0, 15000, 2000, 0.5, 1}});
   addParameter({ "MM FM", {0, 1, 0, 0.001, 1}});
   addParameter({ "MM LFO2", {0, 1, 0, 0.001, 1}});
-  addParameter({ "MM Aux Env", {0, 15000, 0, 0.5, 1}});
+  addParameter({ "MM Aux Env", {-10000, 10000, 0, 0.5, 1}});
+   addParameter({ "MM Key Scale", {0, 1, 1, 0.001, 1}});
   addParameter({ "MM Q", {0.5, 100, 2., 0.5, 1}});
   addParameter({ "MM Drive", {0, 1., 0, 0.001, 1}});
   addParameter({ "MM Mode", {0, 4., 0, 0.001, 1}});
 
+  addParameter({ "Filter Velocity", {0, 1, 0, 0.001, 1}});
   addParameter({ "Aux Attack", {0, 1., 0.01, 0.001, 1}});
   addParameter({ "Aux Decay", {0, 1., 0.01, 0.001, 1}});
   addParameter({ "Aux Sustain", {0, 1., 1., 0.001, 1}});
@@ -63,6 +66,8 @@ LatticeProcessorModule::ParameterData SubsynthProcessor::createParameters()
   addParameter({ "Amp Decay", {0, 1., 0.01, 0.001, 1}});
   addParameter({ "Amp Sustain", {0, 1., 1., 0.001, 1}});
   addParameter({ "Amp Release", {0, 1., 0.1, 0.001, 1}});
+  addParameter({ "Amp Velocity", {0, 1, 0, 0.001, 1}});
+  
   addParameter({ "LFO2 AM", {0, 1, 0, 0.001, 1}});
 
    addParameter({ "LFO1 Freq", {0.01, 100, 1, 0.01, 1}});
@@ -71,8 +76,6 @@ LatticeProcessorModule::ParameterData SubsynthProcessor::createParameters()
    addParameter({ "LFO2 Freq", {0.01, 100, 1, 0.01, 1}});
    addParameter({ "LFO2 Wave", {0, 4, 0, 1, 1}});
 
-   addParameter({ "Amp Velocity", {0, 1, 0, 0.001, 1}});
-   addParameter({ "Filter Velocity", {0, 1, 0, 0.001, 1}});
    addParameter({ "Bend range", {0, 12, 1, 1, 1}});
    addParameter({ "Glide Time", {0, 1., 0, 0.001, 1}});
   return ParameterData(getParameters(), getNumberOfParameters());  
@@ -200,6 +203,9 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
   const float ax2 = getParameter("MM Aux Env");
   const float mfm = getParameter("MM FM");
   const float lpfm = getParameter("LP FM");
+  const float mmf = oscs[0].midi2freq(midinn);
+  const float lpkf = mmf*getParameter("LP Key Scale");
+  const float mmkf = mmf*getParameter("MM Key Scale");
   switch(int(getParameter("Filter Type"))) {
     // lopass only
   default:
@@ -207,7 +213,7 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
     {
       std::size_t j = 0;
       for(auto &cf : cf1) {
-        cf = limcf(f*(1 + mod1[j]*m) + aux[j]*ax + buffer[1][j]*lpfm);
+        cf = limcf(f*(1 + mod1[j]*m) + aux[j]*ax + buffer[1][j]*lpfm + lpkf);
         j++;
       }		    
       auto &sig = lp(buf,cf1,getParameter("LP Regen"));
@@ -219,8 +225,8 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
     {
       std::size_t j = 0;
       for(auto &cf : cf1) {
-        cf = limcf(f*(1 + mod1[j]*m) + aux[j]*ax + buffer[1][j]*lpfm);
-	cf2[j] = limcf(f2*(1 + mod2[j]*m2) + aux[j]*ax2 + buffer[1][j]*mfm);
+        cf = limcf(f*(1 + mod1[j]*m) + aux[j]*ax + buffer[1][j]*lpfm + lpkf);
+	cf2[j] = limcf(f2*(1 + mod2[j]*m2) + aux[j]*ax2 + buffer[1][j]*mfm + mmkf);
         j++;
       }	
       auto &sig1 = lp(buf,cf1, getParameter("LP Regen"));
@@ -235,8 +241,8 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
     {
       std::size_t j = 0;
       for(auto &cf : cf1) {
-        cf = limcf(f*(1 + mod1[j]*m) + aux[j]*ax + buffer[1][j]*lpfm);
-	cf2[j] = limcf(f2*(1 + mod2[j]*m2) + aux[j]*ax2 + buffer[1][j]*mfm);
+        cf = limcf(f*(1 + mod1[j]*m) + aux[j]*ax + buffer[1][j]*lpfm + lpkf);
+	cf2[j] = limcf(f2*(1 + mod2[j]*m2) + aux[j]*ax2 + buffer[1][j]*mfm + mmkf);
         j++;
       }	
       auto &sig1 = lp(buf, cf1, getParameter("LP Regen"));
@@ -255,7 +261,7 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
     {
       std::size_t j = 0;
       for(auto &cf : cf2) {
-	cf = limcf(f2*(1 + mod2[j]*m2) + aux[j]*ax2 + buffer[1][j]*mfm);
+	cf = limcf(f2*(1 + mod2[j]*m2) + aux[j]*ax2 + buffer[1][j]*mfm + mmkf);
         j++;
       }	
       auto &sig = svf(buf,cf2, 1./getParameter("MM Q"),
