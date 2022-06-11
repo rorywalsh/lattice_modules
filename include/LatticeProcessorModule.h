@@ -12,7 +12,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-//silence unused wanrings..
+//silence unused warnings..
 template <typename... Types>
 void unused(Types&&...) noexcept {}
 
@@ -217,6 +217,10 @@ public:
             static constexpr int spectral = 202;
             static constexpr int time = 203;
             static constexpr int nonlinear = 204;
+            static constexpr int physicalModel = 205;
+            static constexpr int standard = 206;
+            
+            
             
         };
 

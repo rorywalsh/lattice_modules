@@ -170,7 +170,7 @@ public:
     
     int getModuleType() override
     {
-        return ModuleType::SynthProcessor::uncategorised;
+        return ModuleType::SynthProcessor::physicalModel;
     }
 
     bool restrictBlockSize() override { return true; }

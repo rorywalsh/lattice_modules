@@ -171,7 +171,7 @@ class GrSynthProcessor : public LatticeProcessorModule
       
     int getModuleType() override
     {
-        return ModuleType::SynthProcessor::uncategorised;
+        return ModuleType::SynthProcessor::nonlinear;
     }
 
     int getNumberOfVoices() override

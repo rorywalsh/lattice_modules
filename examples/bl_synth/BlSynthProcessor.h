@@ -118,7 +118,7 @@ public:
 
     int getModuleType() override
     {
-        return ModuleType::SynthProcessor::uncategorised;
+        return ModuleType::SynthProcessor::standard;
     }
 
 	static int remap(float value, float rangeMin, float rangeMax, float newRangeMin, float newRangeMax)

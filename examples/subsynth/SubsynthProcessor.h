@@ -194,7 +194,7 @@ public:
     
     int getModuleType() override
     {
-        return ModuleType::SynthProcessor::uncategorised;
+        return ModuleType::SynthProcessor::standard;
     }
 
      void pitchBendChange(int newValue) override
