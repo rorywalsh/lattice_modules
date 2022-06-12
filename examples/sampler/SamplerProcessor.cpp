@@ -100,8 +100,8 @@ inline static float limcf(float cf) {
 }
 
 
-void SamplerProcessor::process(float** buffer, int numChannels,
-			       std::size_t blockSize, const HostData)
+void SamplerProcessor::processSamplerVoice(float** buffer, int numChannels,
+			       std::size_t blockSize)
 {
   in1.resize(blockSize);
   in2.resize(blockSize);
@@ -143,8 +143,8 @@ void SamplerProcessor::process(float** buffer, int numChannels,
     pan1 = pan*(lfs > 0 ? lfs : -lfs);
     pan2 = 1 - pan1;
     vel = (xvel*mvel + 1 - xvel)*e;
-    buffer[0][j] = e*(pan2*sig1[j] + pan1*sig2[j]);
-    buffer[1][j] = e*(pan2*sig2[j] + pan1*sig1[j]);
+    buffer[0][j] = e*(pan2*sig1[j] +  pan1*sig2[j]);
+    buffer[1][j] = e*(pan1*sig1[j] +  pan2*sig2[j]);
     j++;
   }
  

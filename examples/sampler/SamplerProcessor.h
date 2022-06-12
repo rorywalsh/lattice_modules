@@ -71,7 +71,7 @@ public:
 
     /*  Main processing function called continuously by the host on the audio thread.
         paramValues is a list of parameter values passed from the host in order of their creation */
-    void process(float** buffer, int numChannels, std::size_t blockSize, const HostData hostInfo) override;
+    void processSamplerVoice(float** buffer, int numChannels, std::size_t blockSize) override;
 
     void hostParameterChanged(const char* parameterID, const char* newValue) override;
 
@@ -81,7 +81,7 @@ public:
 
     void stopNote (float /* velocity */) override;
     
-    const char* getModuleName() override {    return "Basic Sampler";     }
+    const char* getModuleName() override {    return "Sampler Synth";     }
     
     float getTailOffTime() override
     {
