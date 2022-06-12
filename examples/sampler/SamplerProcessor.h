@@ -85,7 +85,7 @@ public:
     
     float getTailOffTime() override
     {
-        return 5;
+      return getParameter("Amp Release");
     }
     
     int getModuleType() override

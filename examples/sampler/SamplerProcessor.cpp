@@ -147,7 +147,7 @@ void SamplerProcessor::process(float** buffer, int numChannels,
     buffer[1][j] = e*(pan2*sig2[j] + pan1*sig1[j]);
     j++;
   }
-    
+ 
 }
 
 // the class factories
