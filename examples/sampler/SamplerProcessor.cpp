@@ -3,7 +3,7 @@
 #include <iterator>
 #include <sstream>
 
-const float maxdel = 0.02f;
+const float maxdel = 0.05f;
 
 SamplerProcessor::SamplerProcessor()
   :LatticeProcessorModule(), att(0.1f), dec(0.1f), sus(1.f), rel(0.1f), aenv(att,dec,sus,rel),
@@ -117,6 +117,7 @@ void SamplerProcessor::processSamplerVoice(float** buffer, int numChannels,
   vlfo.resize(blockSize);
   sus = getParameter("Amp Sustain");
   xsus = getParameter("Filter Sustain");
+  const float min = 1./lfo.osc.fs();
   
   const float fvel = getParameter("Filter Velocity");
   const float f = getParameter("Filter Freq")*(fvel*mvel + 1 - fvel);
@@ -124,18 +125,19 @@ void SamplerProcessor::processSamplerVoice(float** buffer, int numChannels,
   const float ax = getParameter("Filter Env");
   const float mmf = getMidiNoteInHertz(getMidiNoteNumber(), 440);
   const float lpkf = mmf*getParameter("Filter Key Scale");
+  const float lfrq = getParameter("LFO Freq");
   std::size_t j = 0;
 
  std::copy(buffer[0],buffer[0]+blockSize, in1.begin()); 
  std::copy(buffer[1],buffer[1]+blockSize, in2.begin()); 
 
-  auto &mod1 = lfo(getParameter("LFO Freq"));
-  auto v = getParameter("Vibrato LFO")*maxdel;
+ auto &mod1 = lfo(lfrq);
+ auto v = getParameter("Vibrato LFO")*(maxdel-min)/(1+lfrq);
   auto &aux =  xenv(isNoteOn);
   j = 0;
   for(auto &cf : cf1) {
      cf = limcf(f*(1 + mod1[j]*m) + aux[j]*ax + lpkf);
-     vlfo[j] = mod1[j]*v;
+     vlfo[j] = mod1[j]*v + min;
      j++;
   }
   auto &vsig1 = vibr1(in1,vlfo);

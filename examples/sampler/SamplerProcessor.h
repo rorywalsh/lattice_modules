@@ -20,7 +20,7 @@ namespace Aurora {
        {
      std::size_t n = 0;
      for(auto &wv : sine) {
-       wv = 1 + std::sin(twopi*n/sine.size())*0.5;
+       wv = 0.5 + std::sin(twopi*n/sine.size())*0.5;
        utri[n] = n < utri.size()/2 ? (2.f*n)/utri.size() : 1 - (2.*n - utri.size())/utri.size();
        saw[n] = float(n)/saw.size();
        sqr[n] = n < sqr.size()/2 ? 1. : 0;
