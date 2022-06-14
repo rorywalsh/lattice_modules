@@ -44,7 +44,7 @@ LatticeProcessorModule::ParameterData SamplerProcessor::createParameters()
   
   addParameter({ "LFO Freq", {0.01, 100, 1, 0.01, 1}});
   addParameter({ "LFO Wave", {0, 3, 0, 1, 1}});
-  addParameter({ "Glide Time", {0, 10, 0, 0.001, 1}});
+  addParameter({ "Glide Time", {0, 1, 0, 0.001, 1}});
  
   return {getParameters(), getNumberOfParameters()};
 }
@@ -65,7 +65,6 @@ void SamplerProcessor::hostParameterChanged(const char* parameterID, const char*
 
 void SamplerProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
-<<<<<<< HEAD
     const std::string paramName = getParameterNameFromId(parameterID);
     float par = getParameter(paramName);
     
@@ -73,13 +72,7 @@ void SamplerProcessor::hostParameterChanged(const char* parameterID, float newVa
         lfo.set_wave(par);
     else if(paramName == "Glide Time")
         setSamplerGlideTime(newValue);
-=======
-  const std::string paramName = getParameterNameFromId(parameterID);
-  float par = getParameter(paramName);
-  if(paramName == "LFO Wave")
-    lfo.set_wave(par);
->>>>>>> 2dee50df82ce143c242451e30945be204e6b4b0d
-  
+
 }
 
 void SamplerProcessor::prepareProcessor(int sr, std::size_t block)
