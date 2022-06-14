@@ -23,12 +23,15 @@ class TWProcessor : public LatticeProcessorModule
 
   void startNote(int n, float vel) override
   {
-    if(n >= 36 && n < 97) keys[n-24] = 1; 
+   
+   if(n >= 36 && n <= 96) {
+     keys[n-24] = 1;
+   }
   }
 
   void stopNote(int n, float vel) override
   {
-    if(n >= 36  && n < 97) keys[n-24] = 0;
+    if(n >= 36  && n <= 96) keys[n-24] = 0;
   }
 
   /* override this method and return true if you wish to enable drawing on the generic editor viewport */
@@ -38,7 +41,7 @@ class TWProcessor : public LatticeProcessorModule
     
  private:
   Aurora::Tonegen<float> tg;
-  bool keys[61] = {0};
+  bool keys[73] = {0};
   float fs = 44100;
 
 };

@@ -53,15 +53,14 @@ void TWProcessor::process(float** buffer, int /*numChannels*/, std::size_t block
 		       getParameter("1 1/3'"),
 		       getParameter("1'")};
 
-    const float scal = 1./(g[0]+g[1]+g[2]+g[3]+g[4]+g[5]+g[6]+g[7]+g[8]);  
     std::fill(buffer[0],buffer[0]+blockSize,0);
     for(auto key: keys) {
-      if(key) {
+      if(key) {	
 	for(std::size_t j = 0; j < blockSize; j++) {
 	  // lower foldback
 	   buffer[0][j] += (n - 12 >= 12) ?
 	     tg.wheel(n-12)[j]*g[0] : tg.wheel(n)[j]*g[0];
-	   buffer[0][j] += tg.wheel(n)[j]*g[1] + tg.wheel(n+7)[j]*g[2] +
+	   buffer[0][j] += tg.wheel(n)[j]*g[2] + tg.wheel(n+7)[j]*g[1] +
 	    tg.wheel(n+12)[j]*g[3];
 	   // top foldbacks
 	   buffer[0][j] += (n + 19 < 91) ? tg.wheel(n+19)[j]*g[4] :
@@ -76,9 +75,9 @@ void TWProcessor::process(float** buffer, int /*numChannels*/, std::size_t block
            buffer[0][j] += (n + 48 < 91) ? tg.wheel(n+48)[j]*g[8] :
 	     ((n + 24 < 91) ? tg.wheel(n+24)[j]*g[8] :
 	      tg.wheel(n+12)[j]*g[8]);
-	   buffer[0][j] *= scal;
 	}
       }
+      n++;
     }
 }
 
