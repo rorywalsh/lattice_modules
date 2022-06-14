@@ -53,7 +53,7 @@ void VOCSynthProcessor::startNote(int midiNoteNumber, float velocity )
   note_on = true;
 }
 
-void VOCSynthProcessor::stopNote (float /* velocity */)
+void VOCSynthProcessor::stopNote (int, float /* velocity */)
 {
   note_on = false;
   env.release(getParameter("Release"));

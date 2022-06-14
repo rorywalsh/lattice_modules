@@ -66,7 +66,7 @@ void DriveSynthProcessor::startNote(int noteNumber, float velocity)
     }
 }
 
-void DriveSynthProcessor::stopNote (float velocity)
+void DriveSynthProcessor::stopNote (int, float velocity)
 {
     isNoteOn = false;
 }

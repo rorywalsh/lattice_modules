@@ -41,7 +41,7 @@ void MIDICVProcessor::startNote(int noteNumber, float velocity)
   ncnt++;
 }
 
-void MIDICVProcessor::stopNote(float velocity)
+void MIDICVProcessor::stopNote(int midiNoteNumber, float velocity)
 {
   if(!--ncnt) gate = false;
 }

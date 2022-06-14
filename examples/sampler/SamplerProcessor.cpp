@@ -97,7 +97,7 @@ void SamplerProcessor::startNote(int midiNoteNumber, float velocity)
   mvel = velocity;
 }
 
-void SamplerProcessor::stopNote (float /* velocity */)
+void SamplerProcessor::stopNote (int, float /* velocity */)
 {
   isNoteOn = false;
   aenv.release(getParameter("Amp Release"));

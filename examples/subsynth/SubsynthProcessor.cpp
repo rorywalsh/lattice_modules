@@ -139,7 +139,7 @@ void SubsynthProcessor::startNote(int midiNoteNumber, float velocity)
   mvel = velocity;
 }
 
-void SubsynthProcessor::stopNote (float /* velocity */)
+void SubsynthProcessor::stopNote (int, float /* velocity */)
 {
   isNoteOn = false;
   aenv.release(getParameter("Amp Release"));

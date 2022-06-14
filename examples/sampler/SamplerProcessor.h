@@ -79,7 +79,7 @@ public:
 
     void startNote(int midiNoteNumber, float velocity) override;
 
-    void stopNote (float /* velocity */) override;
+    void stopNote (int, float /* velocity */) override;
     
     const char* getModuleName() override {    return "Sampler Synth";     }
     

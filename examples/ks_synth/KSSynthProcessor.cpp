@@ -55,7 +55,7 @@ void KSSynthProcessor::startNote(int midiNoteNumber, float velocity )
   pluckR.release(getParameter("Release Time"));
 }
 
-void KSSynthProcessor::stopNote (float /* velocity */)
+void KSSynthProcessor::stopNote (int, float /* velocity */)
 {
   pluckL.note_off();
   pluckR.note_off();

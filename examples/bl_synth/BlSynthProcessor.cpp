@@ -197,7 +197,7 @@ void BlSynthProcessor::startNote(int noteNumber, float velocity)
     vel = velocity;
 }
 
-void BlSynthProcessor::stopNote (float velocity)
+void BlSynthProcessor::stopNote (int, float velocity)
 {
     isNoteOn = false;
 }

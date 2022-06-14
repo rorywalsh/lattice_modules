@@ -163,7 +163,7 @@ void SpecSampProcessor::startNote(int midiNoteNumber, float velocity )
   note_on = true;
 }
 
-void SpecSampProcessor::stopNote (float /* velocity */)
+void SpecSampProcessor::stopNote (int, float /* velocity */)
 {
     note_on = false;
     env.release(getParameter("Release"));

@@ -72,7 +72,7 @@ void GrSynthProcessor::startNote(int midiNoteNumber, float velocity )
   env.release(rel);
 }
 
-void GrSynthProcessor::stopNote (float /* velocity */)
+void GrSynthProcessor::stopNote (int, float /* velocity */)
 {
   isNoteOn = false;
 }

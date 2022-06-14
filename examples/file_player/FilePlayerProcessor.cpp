@@ -3,6 +3,8 @@
 #include <iterator>
 #include <sstream>
 
+#include<iostream>
+#include<filesystem>
 
 FilePlayerProcessor::FilePlayerProcessor()
 {
@@ -33,7 +35,7 @@ void FilePlayerProcessor::hostParameterChanged(const char* parameterID, const ch
     const std::string paramName = getParameterNameFromId(parameterID);
     if (paramName == "Load Soundfile")
     {
-        filename = std::filesystem::path(newValue).filename();
+        filename = std::filesystem::path(newValue).filename().string();
         auto samples = getSamplesFromFile(newValue);
         numSamples = samples.numSamples;
         if(numSamples == 0)
@@ -112,7 +114,7 @@ void FilePlayerProcessor::startNote(int noteNumber, float velocity)
     noteOff = false;
 }
 
-void FilePlayerProcessor::stopNote(float velocity)
+void FilePlayerProcessor::stopNote(int, float velocity)
 {
     noteOff = true;
     if (getParameter("Oneshot Midi") == 0)

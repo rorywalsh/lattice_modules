@@ -59,7 +59,7 @@ public:
     void startNote(int midiNoteNumber, float velocity) override;
     
     /* Called by the host when a note is stoped */
-    void stopNote (float velocity) override;
+    void stopNote (int midiNoteNumber, float velocity) override;
     
     /*  Main processing function called continuously by the host on the audio thread.
         paramValues is a list of parameter values passed from the host in order of their creation */

@@ -32,7 +32,7 @@ public:
     /** called by the host when a note is stoped
      * @param velocity Midi velocity in the range of 0 to 1
     */
-    void stopNote(float velocity) override;
+    void stopNote(int midiNoteNumber, float velocity) override;
 
     /* override this method if you want to draw to the Lattice generic editor viewport */
     const char* getSVGXml() override;

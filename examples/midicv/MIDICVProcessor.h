@@ -22,7 +22,7 @@ public:
 
     void startNote(int noteNumber, float velocity) override;
 
-    void stopNote(float velocity) override;
+    void stopNote(int midiNoteNumber, float velocity) override;
 
     const char* getModuleName() override {    return "Midi converter";     }   
 

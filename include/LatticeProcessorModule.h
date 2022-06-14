@@ -410,7 +410,7 @@ public:
     /** called by the host when a note is stoped
      * @param velocity Midi velocity in the range of 0 to 1
     */
-    virtual void stopNote(float velocity)
+    virtual void stopNote(int midiNoteNumber, float velocity)
     {
         unused(velocity);
     }

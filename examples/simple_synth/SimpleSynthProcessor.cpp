@@ -102,7 +102,7 @@ void SimpleSynthProcessor::startNote(int midiNoteNumber, float velocity)
     isNoteOn = true;
 }
 
-void SimpleSynthProcessor::stopNote (float /* velocity */)
+void SimpleSynthProcessor::stopNote (int, float /* velocity */)
 {
     isNoteOn = false;
 }
