@@ -28,10 +28,8 @@ class TWProcessor : public LatticeProcessorModule
 
   void stopNote(int n, float vel) override
   {
-    if(n >= 36  && n < 97) key[n-48] = 0;
+    if(n >= 36  && n < 97) keys[n-48] = 0;
   }
-
-    
 
   /* override this method and return true if you wish to enable drawing on the generic editor viewport */
   bool canDraw() override { return true; }
