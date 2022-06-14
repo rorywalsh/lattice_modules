@@ -41,7 +41,6 @@ void TWProcessor::prepareProcessor(int sr, std::size_t block)
 
 void TWProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
 {
-    tg(blockSize);
     std::size_t n = 0;
     const float g[] = {getParameter("16'"),
 		       getParameter("5 1/3'"),
@@ -52,8 +51,9 @@ void TWProcessor::process(float** buffer, int /*numChannels*/, std::size_t block
 		       getParameter("1 3/5'"),
 		       getParameter("1 1/3'"),
 		       getParameter("1'")};
-
+    float scal = 1./(12.+g[0]+g[1]+g[2]+g[3]+g[4]+g[5]+g[6]+g[7]+g[8]);
     std::fill(buffer[0],buffer[0]+blockSize,0);
+    tg(blockSize);
     for(auto key: keys) {
       if(key) {	
 	for(std::size_t j = 0; j < blockSize; j++) {
@@ -79,6 +79,8 @@ void TWProcessor::process(float** buffer, int /*numChannels*/, std::size_t block
       }
       n++;
     }
+    for(std::size_t j = 0; j < blockSize; j++) buffer[0][j++] *= scal;
+    
 }
 
 // the class factories
