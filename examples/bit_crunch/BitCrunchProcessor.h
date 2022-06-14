@@ -24,6 +24,7 @@ public:
         description = "";
     }
 
+    
     int getModuleType() override
     {
         return ModuleType::AudioProcessor::nonlinear;

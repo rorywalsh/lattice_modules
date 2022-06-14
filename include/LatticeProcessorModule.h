@@ -202,6 +202,7 @@ public:
             static constexpr int spectral = 6;
             static constexpr int delay = 7;
             static constexpr int nonlinear = 8;
+            static constexpr int mixer = 9;
         };
         struct MidiProcessor
         {
@@ -219,9 +220,6 @@ public:
             static constexpr int nonlinear = 204;
             static constexpr int physicalModel = 205;
             static constexpr int standard = 206;
-            
-            
-            
         };
 
         struct Automator{
@@ -591,6 +589,16 @@ public:
         return "";
     }
 
+    void setSamplerGlideTime(float value)
+    {
+        glideTime = value;
+    }
+    
+    float getSamplerGlideTime()
+    {
+        return glideTime;
+    }
+    
     //==================================================================
     std::size_t getNumberOfChannels()
     {
@@ -728,6 +736,7 @@ public:
     }
      
 private:
+    float glideTime = 0;
     std::vector<Channel> channels;
     int inCount = 0;
     Connection connections[24];
