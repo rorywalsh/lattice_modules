@@ -32,6 +32,17 @@ public:
         return draw;
     }
 
+    double getRMS(std::vector<float> const& v)
+    {
+        double sum = 0;
+        auto const count = static_cast<float>(v.size());
+
+        for (int i = 0; i < count; i++)
+            sum += pow(v[i], 2);
+
+        return sqrt(sum / count);
+    }
+    
     static float remap(float value, float from1, float to1, float from2, float to2)
     {
         return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
@@ -41,8 +52,18 @@ public:
     
 private:
     std::vector<float> table;
+    std::vector<float> signal;
     bool okToDraw = true;
     std::string svgText;
+    std::vector<svg::Color> colours;
+    int tableIndex = 0;
+    ParamSmooth smooth;
+    int frameCnt = 0;
+    const int width = 400;
+    const int height = 200;
+    svg::Dimensions dimensions;
+    svg::Document doc;
+    int xIndex = 0;
 
 };
 
