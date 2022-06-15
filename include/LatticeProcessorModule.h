@@ -40,6 +40,8 @@ class ParamSmooth {
     }
     return (y = x*(1-cf) + y*cf);
   }
+
+  float operator()() { return y;}  
 };
 
 /** @class LatticeProcessorModule

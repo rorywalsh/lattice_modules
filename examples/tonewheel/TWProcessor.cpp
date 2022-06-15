@@ -5,7 +5,7 @@
 
 
 TWProcessor::TWProcessor()
-	:LatticeProcessorModule()
+  :LatticeProcessorModule(), sm(73)
 {
 
 }
@@ -35,6 +35,7 @@ LatticeProcessorModule::ParameterData TWProcessor::createParameters()
 void TWProcessor::prepareProcessor(int sr, std::size_t block)
 {
   fs = sr;
+  tg.reset(fs);
 }
 
 
@@ -51,36 +52,41 @@ void TWProcessor::process(float** buffer, int /*numChannels*/, std::size_t block
 		       getParameter("1 3/5'"),
 		       getParameter("1 1/3'"),
 		       getParameter("1'")};
-    float scal = 1./(12.+g[0]+g[1]+g[2]+g[3]+g[4]+g[5]+g[6]+g[7]+g[8]);
+    float scal = 0.006/(1.25 + g[0]+g[1]+g[2]+g[3]+g[4]+g[5]+g[6]+g[7]+g[8]);
     std::fill(buffer[0],buffer[0]+blockSize,0);
     tg(blockSize);
-    for(auto key: keys) {
-      if(key) {	
+    float sig;
+    for(auto &sms: sm) {
+      sms(keys[n] ? 1.f : 0.f, 0.005, fs/blockSize);
+      for(std::size_t j = 0; j < blockSize; j++)
+	if(sms() > 0.00001) {
+      //else sms(keys[n],0.01,44100);
 	for(std::size_t j = 0; j < blockSize; j++) {
 	  // lower foldback
-	   buffer[0][j] += (n - 12 >= 12) ?
-	     tg.wheel(n-12)[j]*g[0] : tg.wheel(n)[j]*g[0];
-	   buffer[0][j] += tg.wheel(n)[j]*g[2] + tg.wheel(n+7)[j]*g[1] +
-	    tg.wheel(n+12)[j]*g[3];
+	  sig = (n - 12 >= 12 ?
+		 tg.wheel(n-12)[j]*g[0] : tg.wheel(n)[j]*g[0])
+	    // no foldback  
+	    + tg.wheel(n)[j]*g[2] + tg.wheel(n+7)[j]*g[1] +
+	    tg.wheel(n+12)[j]*g[3]
 	   // top foldbacks
-	   buffer[0][j] += (n + 19 < 91) ? tg.wheel(n+19)[j]*g[4] :
-	     tg.wheel(n+7)[j]*g[4];
-           buffer[0][j] += (n + 24 < 91) ? tg.wheel(n+24)[j]*g[5] :
-	     tg.wheel(n+12)[j]*g[5];
-           buffer[0][j] += (n + 28 < 91) ? tg.wheel(n+28)[j]*g[6] :
-	     tg.wheel(n+16)[j]*g[6];
-           buffer[0][j] += (n + 31 < 91) ? tg.wheel(n+31)[j]*g[7] :
+	    + (n + 19 < 91 ? tg.wheel(n+19)[j]*g[4] :
+		   tg.wheel(n+7)[j]*g[4])
+           + (n + 24 < 91 ? tg.wheel(n+24)[j]*g[5] :
+	      tg.wheel(n+12)[j]*g[5])
+          +  (n + 28 < 91 ? tg.wheel(n+28)[j]*g[6] :
+	      tg.wheel(n+16)[j]*g[6])
+          + (n + 31 < 91 ? tg.wheel(n+31)[j]*g[7] :
 	     ((n + 19 < 91) ? tg.wheel(n+19)[j]*g[7] :
-	      tg.wheel(n+7)[j]*g[7]);
-           buffer[0][j] += (n + 48 < 91) ? tg.wheel(n+48)[j]*g[8] :
+	      tg.wheel(n+7)[j]*g[7]))
+          + (n + 48 < 91 ? tg.wheel(n+48)[j]*g[8] :
 	     ((n + 24 < 91) ? tg.wheel(n+24)[j]*g[8] :
-	      tg.wheel(n+12)[j]*g[8]);
-	}
-      }
+	      tg.wheel(n+12)[j]*g[8]));
+	  buffer[0][j] += sms()*sig*scal;
+	} 
+       } 
       n++;
     }
-    for(std::size_t j = 0; j < blockSize; j++) buffer[0][j++] *= scal;
-    
+    //if(fabs(buffer[0][0]) > 1) std::cout << fabs(buffer[0][0])  << std::endl;
 }
 
 // the class factories
