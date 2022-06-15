@@ -21,6 +21,7 @@ SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 include_directories("${CMAKE_SOURCE_DIR}/include/")
 include_directories("${CMAKE_SOURCE_DIR}/aurora/include")
+add_subdirectory(${CMAKE_SOURCE_DIR}/examples/vibr)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/tonewheel)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/subsynth)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/adsr)
