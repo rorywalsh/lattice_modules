@@ -66,8 +66,7 @@ public:
             Switch =  -98,  /*!< A switch button - shown as an dual state button */
             Slider = -97, /*!< A slider (default) - shown as a horizontal slider */
             FileButton = -96, /*!< A non-automatable button that launches a file browser dialogue */
-            Momentary = -95, /*!< A momentary button - shown only a single state button - will return a value of 1 for as long as the button is being pressed */
-            AutomationMode = -94
+            Momentary = -95 /*!< A momentary button - shown only a single state button - will return a value of 1 for as long as the button is being pressed */
         };
 
         /** Name of your module parameter - this is the name that will appear in the module editor in Lattice */
