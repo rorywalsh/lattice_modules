@@ -8,7 +8,7 @@
 #include <iostream>
 #include <vector>
 
-const float maxdel = 0.0015f;
+const float maxdel = 0.001f;
 
 class VibratoProcessor : public LatticeProcessorModule
 {
