@@ -20,6 +20,7 @@ LatticeProcessorModule::ChannelData TWProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData TWProcessor::createParameters()
 {
+    addParameter({ "True Bass", {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
     addParameter({"16'", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 0.f, 0.001f, 1.f)});
     addParameter({"5 1/3'", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 0.f, 0.001f, 1.f)});
     addParameter({"8'", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 0.f, 0.001f, 1.f)});
@@ -43,6 +44,7 @@ void TWProcessor::prepareProcessor(int sr, std::size_t block)
 void TWProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
 {
     std::size_t n = 0;
+    const bool truebass = getParameter("True Bass");
     const float g[] = {getParameter("16'"),
 		       getParameter("5 1/3'"),
 		       getParameter("8'"),
@@ -60,10 +62,9 @@ void TWProcessor::process(float** buffer, int /*numChannels*/, std::size_t block
       sms(keys[n] ? 1.f : 0.f, 0.005, fs/blockSize);
       for(std::size_t j = 0; j < blockSize; j++)
 	if(sms() > 0.00001) {
-      //else sms(keys[n],0.01,44100);
 	for(std::size_t j = 0; j < blockSize; j++) {
 	  // lower foldback
-	  sig = (n - 12 >= 12 ?
+	  sig = (n - 12 >= 12 || truebass ?
 		 tg.wheel(n-12)[j]*g[0] : tg.wheel(n)[j]*g[0])
 	    // no foldback  
 	    + tg.wheel(n)[j]*g[2] + tg.wheel(n+7)[j]*g[1] +
