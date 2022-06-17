@@ -32,8 +32,7 @@ void VibratoProcessor::triggerParameterUpdate(const std::string& parameterID, fl
 LatticeProcessorModule::ChannelData VibratoProcessor::createChannels()
 {
     addChannel({"Input", ChannelType::input });
-    addChannel({"Left", ChannelType::output });
-    addChannel({"Right", ChannelType::output });
+    addChannel({"Output", ChannelType::output });
     return ChannelData(getChannels(), getNumberOfChannels());
 }
 
@@ -42,11 +41,10 @@ void VibratoProcessor::process(float** buffer, int numChannels, std::size_t bloc
    
     in.resize(blockSize);
     std::copy(buffer[0], buffer[0] + blockSize, in.begin());
-    const float speed = 0.8 + getParameter("Speed")*6;
+    const float speed = 0.4 + getParameter("Speed")*3;
     
-    vibr(in,sm(speed,0.5,fs/blockSize),getParameter("AM"));
-    std::copy(vibr.sumL.begin(),vibr.sumL.end(),buffer[0]);
-    std::copy(vibr.sumR.begin(),vibr.sumR.end(),buffer[1]);
+    auto &s = vibr(in,sm(speed,0.5,fs/blockSize),getParameter("AM"));
+    std::copy(s.begin(),s.end(),buffer[0]);
 }
 
 

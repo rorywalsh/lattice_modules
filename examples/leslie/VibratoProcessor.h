@@ -8,27 +8,22 @@
 #include <iostream>
 #include <vector>
 
-const float maxdel = 0.001f;
+const float maxdel = 0.0015f;
 
 class VibratoProcessor : public LatticeProcessorModule
 {
-    static float ofs(float a, float b) { return a + b; }
-    static float mul(float a, float b) { return a * b; }
     struct Vibrato {
     Aurora::Osc<float,Aurora::phase> lfo;
     std::vector<Aurora::Del<float, Aurora::vdelayi>> delays;
     std::vector<std::vector<float>> sines;
     std::vector<float> buff;
-    std::vector<float> sumL;
-    std::vector<float> sumR;
-    Aurora::BinOp<float, ofs> offs;
-    Aurora::BinOp<float, mul> scal;
+    std::vector<float> sum;
     float min;
 
     Vibrato(float sr)
     : lfo(sr), delays(8, Aurora::Del<float, Aurora::vdelayi>(maxdel, sr)),
-      sines(8,std::vector<float>(8192)), buff(Aurora::def_vsize), sumL(Aurora::def_vsize),
-      sumR(Aurora::def_vsize), offs(), min(1.f/sr) {
+      sines(8,std::vector<float>(8192)), buff(Aurora::def_vsize), sum(Aurora::def_vsize),
+       min(1.f/sr) {
       std::size_t k = 1;
       for(auto &sine : sines) {
       std::size_t n = 0;	
@@ -42,36 +37,32 @@ class VibratoProcessor : public LatticeProcessorModule
 
     };
 
-    void operator()(const std::vector<float> &in, float fr,
+    const std::vector<float> &operator()(const std::vector<float> &in, float fr,
                                         float d) {
       lfo.vsize(in.size());
-      sumL.resize(in.size());
-      sumR.resize(in.size());
+      sum.resize(in.size());
       buff.resize(in.size());
       auto v = (maxdel-min);
       auto &phs = lfo(1.,fr);
       std::size_t k = 0;
       std::size_t n = 0;
-      std::fill(sumL.begin(),sumL.end(),0);
-      std::fill(sumR.begin(),sumR.end(),0);
+      std::fill(sum.begin(),sum.end(),0);
       for(auto &delay: delays) {
 	n = 0;
         for(auto &p : phs) {
-	  buff[n++] = sines[k][(int)(p*8192)];
+	  buff[n++] = min + v*sines[k][(int)(p*8192)];
 	}
-	auto &lw = scal(v, buff);
 	n = 0;
-	for(auto &s : delay(in,offs(min,lw))) {
-	  sumL[n] += s;
-	  sumR[n++] += s;
+	for(auto &s : delay(in,buff)) {
+	  sum[n++] += s;
 	} 
         k++;
       }
       n = 0;
-      for(auto &s : buff) {
-        sumL[n] *= (1.-d*s);
-        sumR[n++] *= (1.-d*s);
-      }
+      float scl = d/v;
+      for(auto &s : sum) 
+	s *= (1-scl*(buff[n++] - min));		
+      return sum;
     }
     
     void reset(float sr) {
