@@ -62,15 +62,15 @@ class VibratoProcessor : public LatticeProcessorModule
 	auto &lw = scal(v, buff);
 	n = 0;
 	for(auto &s : delay(in,offs(min,lw))) {
-	  sumL[n] += s*(1.f - k/8.f);
-	  sumR[n++] += s*k/8.f;
+	  sumL[n] += s;
+	  sumR[n++] += s;
 	} 
         k++;
       }
       n = 0;
       for(auto &s : buff) {
         sumL[n] *= (1.-d*s);
-        sumR[n++] *= (d*s+1-d);
+        sumR[n++] *= (1.-d*s);
       }
     }
     

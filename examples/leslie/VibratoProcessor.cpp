@@ -44,7 +44,7 @@ void VibratoProcessor::process(float** buffer, int numChannels, std::size_t bloc
     std::copy(buffer[0], buffer[0] + blockSize, in.begin());
     const float speed = 0.8 + getParameter("Speed")*6;
     
-    vibr(in,sm(speed,1,fs/blockSize),getParameter("AM"));
+    vibr(in,sm(speed,0.5,fs/blockSize),getParameter("AM"));
     std::copy(vibr.sumL.begin(),vibr.sumL.end(),buffer[0]);
     std::copy(vibr.sumR.begin(),vibr.sumR.end(),buffer[1]);
 }
