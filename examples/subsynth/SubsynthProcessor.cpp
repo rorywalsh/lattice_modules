@@ -54,7 +54,7 @@ LatticeProcessorModule::ParameterData SubsynthProcessor::createParameters()
    addParameter({ "MM Key Scale", {0, 1, 1, 0.001, 1}});
   addParameter({ "MM Q", {0.5, 100, 2., 0.5, 1}});
   addParameter({ "MM Drive", {0, 1., 0, 0.001, 1}});
-  addParameter({ "MM Mode", {0, 4., 0, 0.001, 1}});
+  addParameter({ "MM Mode", {0, 2., 0, 0.001, 1}});
 
   addParameter({ "Filter Velocity", {0, 1, 0, 0.001, 1}});
   addParameter({ "Aux Attack", {0, 1., 0.01, 0.001, 1}});
