@@ -61,7 +61,7 @@ class VibratoProcessor : public LatticeProcessorModule
       n = 0;
       float scl = d/v;
       for(auto &s : sum) 
-	s *= (1-scl*(buff[n++] - min));		
+	s *= (1-scl*(buff[n++] - min))*0.125;		
       return sum;
     }
     
