@@ -81,7 +81,7 @@ public:
     
     int getModuleType() override
     {
-        return ModuleType::SynthProcessor::uncategorised;
+        return ModuleType::SynthProcessor::standard;
     }
     
 private:

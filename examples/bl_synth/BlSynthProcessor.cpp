@@ -39,9 +39,9 @@ const std::vector<float>& BlSynthProcessor::Synth::operator()(float a, float f, 
     }
     else if(currentWave == 2)
     {
-        auto &pwmSmooth = pwmTone(pwmChanges, 10.f);
-        float off = a*(2*pwmSmooth[0] - 1.f);
-        auto &m = mix(mix(sawOsc1(a, f, pwmSmooth[0]), sawOsc2(-a, f)), off);
+        auto pwmSmooth = psm(pwm, 0.01f, sawOsc1.fs()/sawOsc1.vsize());
+	float off = a*(2*pwmSmooth - 1.f);
+        auto &m = mix(mix(sawOsc1(a, f, pwmSmooth), sawOsc2(-a, f)), off);
 	auto &e = env(gate);
 	std::size_t n = 0;
         for(auto &s : buf) {
@@ -131,7 +131,7 @@ LatticeProcessorModule::ParameterData BlSynthProcessor::createParameters()
 {
     addParameter({ "Detune", {.5, 2, 1, 0.001, 1}});
     addParameter({ "Wave", {0, 3, 2, 1, 1}});
-    addParameter({ "PW", {0.01, .999, .5, 0.001, 1}});
+    addParameter({ "PW", {0.01, .99, .5, 0.001, 1}});
     addParameter({ "Cutoff Freq", {0, 10000, 5000, 0.5, 1}});
     addParameter({ "Resonance", {0, 1, 0.7, 0.001, 1}});
     addParameter({ "Filter Env Amount", {-1, 1, 0, 0.001, 1}});
