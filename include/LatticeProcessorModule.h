@@ -501,7 +501,7 @@ public:
 
     void updateAutomationForParameters(float** buffer, int numChannels)
     {
-        int inputs = getNumberOfInputChannels() + 1;
+        int inputs = getNumberOfInputChannels();
 
         for(int i = inputs ; i < numChannels ; i++)
         {

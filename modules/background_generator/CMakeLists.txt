@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.15)
-project (BubblesWaveform)
+project (BackgroundGenerator)
 
 include_directories("../include/")
 include_directories("${CMAKE_SOURCE_DIR}/aurora/include")
 
-set(SOURCE BubblesProcessor.cpp BubblesProcessor.h)
+set(SOURCE BackgroundProcessor.cpp BackgroundProcessor.h)
 
 if(MSVC)
     set(PLATFORM "Windows")

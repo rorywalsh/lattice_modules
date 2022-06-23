@@ -3,10 +3,10 @@
 #include <iterator>
 #include "simple_svg_1.0.0.hpp"
 
-class BackgroundProcessor : public LatticeProcessorModule
+class BubblesProcessor : public LatticeProcessorModule
 {
 public:
-    BackgroundProcessor();
+    BubblesProcessor();
     
     ChannelData createChannels() override;
     
@@ -48,17 +48,16 @@ public:
         return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
     }
     
-    const char* getModuleName() override {    return "Table Viewer";     }
+    const char* getModuleName() override {    return "Bubbles Waveform";     }
     
 private:
-    std::vector<float> table;
-    std::vector<float> signal;
+
     std::vector<float> samples;
+    std::vector<float> xPositions;
     bool okToDraw = true;
     std::string svgText;
     std::vector<svg::Color> colours;
-    int tableIndex = 0;
-    int sampleIndex = 0;
+
     ParamSmooth smooth;
     int frameCnt = 0;
     const int width = 400;
