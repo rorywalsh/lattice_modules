@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project (LatticeModules)
 
 if(NOT DEFINED BUILD_VERSION)
-	set(BUILD_VERSION 0.1.172)
+	set(BUILD_VERSION 0.1.173)
 endif()
 
 
@@ -60,7 +60,6 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/modules/specsampler)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/specsampler1)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/specsampler2)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/svoc)
-add_subdirectory(${CMAKE_SOURCE_DIR}/modules/table_viewer)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/test_tone)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/tscale)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/tvconv)
