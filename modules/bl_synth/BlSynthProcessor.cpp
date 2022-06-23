@@ -31,7 +31,8 @@ buf(Aurora::def_vsize)
     
 }
 
-const std::vector<float>& BlSynthProcessor::Synth::operator()(float a, float f, float cf, float res, float fen, bool gate)
+const std::vector<float>& BlSynthProcessor::Synth::operator()(float a, float f, float pwmp,
+							      float cf, float res, float fen, bool gate)
 {
     if(currentWave == 0)
     {
@@ -39,7 +40,7 @@ const std::vector<float>& BlSynthProcessor::Synth::operator()(float a, float f, 
     }
     else if(currentWave == 2)
     {
-        auto pwmSmooth = psm(pwm, 0.01f, sawOsc1.fs()/sawOsc1.vsize());
+        auto pwmSmooth = psm(pwmp, 0.01f, sawOsc1.fs()/sawOsc1.vsize());
 	float off = a*(2*pwmSmooth - 1.f);
         auto &m = mix(mix(sawOsc1(a, f, pwmSmooth), sawOsc2(-a, f)), off);
 	auto &e = env(gate);
@@ -170,14 +171,7 @@ void BlSynthProcessor::hostParameterChanged(const char* parameterID, float newVa
     {
         synth.setRelease(newValue);
     }
-    else if(parameterName == "Detune")
-    {
-        synth.setDetune(newValue);
-    }
-    else if(parameterName == "PW")
-    {
-        synth.setPwm(newValue);
-    }
+
     
 }
 
@@ -209,7 +203,7 @@ void BlSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::s
     const float res = getParameter("Resonance");
     const float fe = getParameter("Filter Env Amount");
     synth.setBlockSize(blockSize);
-    auto &out = synth(vel, freq*synth.getDetune(), cf, res, fe, isNoteOn);
+    auto &out = synth(vel, freq*getParameter("Detune"), getParameter("PW"), cf, res, fe, isNoteOn);
     std::copy(out.begin(), out.end(),buffer[0]); 
 }
 

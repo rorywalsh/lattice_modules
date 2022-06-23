@@ -24,19 +24,12 @@ class BlSynthProcessor : public LatticeProcessorModule
         void setSampleRate(std::size_t sr);
         
         
-      const std::vector<float> &operator()(float, float, float, float,float, bool);
+      const std::vector<float> &operator()(float, float, float, float, float,float, bool);
         
         void setAttack(float value)     {    att = value;           }
         void setDecay(float value)      {    dec = value;           }
         void setSustain(float value)    {    sus = value;           }
         void setRelease(float value)    {    env.release(value);    }
-        void setDetune(float value)     {    detune = value;        }
-        void setPwm(float value)
-        {
-            pwm = value;
-            pwmChanges.push_back(value);            
-        }
-        float getDetune()               {    return detune;         }
 
         float att = 0.01f, dec = 0.1f, sus=.8f, detune = 1, pwm = 0.5;
         Aurora::TableSet<float> squareWave;
