@@ -40,6 +40,7 @@ class TWProcessor : public LatticeProcessorModule
   const char* getModuleName() override {    return "Tonewheel Generator";     }
     
  private:
+  std::vector<ParamSmooth> sm;
   Aurora::Tonegen<float> tg;
   bool keys[73] = {0};
   float fs = 44100;

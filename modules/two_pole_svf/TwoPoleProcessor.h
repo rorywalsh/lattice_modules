@@ -3,6 +3,10 @@
 #include <iterator>
 #include "TwoPole.h"
 
+inline float drive(float s, float drv) {
+  return drv > 0.02 ? std::tanh(s*drv)/drv : s;
+}
+
 class TwoPoleProcessor : public LatticeProcessorModule
 {
 
@@ -29,7 +33,7 @@ public:
     const char* getModuleName() override {    return "State Variable Filter";     }
 
 private:
-	Aurora::TwoPole<float> lp;
+    Aurora::TwoPole<float,drive> lp;
     std::vector<float> in;
 };
 

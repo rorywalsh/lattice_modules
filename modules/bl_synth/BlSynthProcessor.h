@@ -15,6 +15,7 @@ class BlSynthProcessor : public LatticeProcessorModule
     /* Basic synth class thata contains Aurora::Env, Aurora::BlOsc,
        and Aurora::TableSet objects */
     struct Synth {
+      ParamSmooth psm;
         
     public:
         Synth(float rt, float sr);

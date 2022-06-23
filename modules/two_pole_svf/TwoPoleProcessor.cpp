@@ -19,10 +19,10 @@ LatticeProcessorModule::ChannelData TwoPoleProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData TwoPoleProcessor::createParameters()
 {
-    addParameter({ "Filter Type", {0, 3.f, 0.f, 1.f, 1.f}});
     addParameter({ "Frequency", {1, 22050, 100, 1, .5f}});
-	addParameter({ "Damping", {0, 2, 1, 0.001f, 1.f}});
-    addParameter({ "Overdrive", {0, 5, 0, 0.0001f, 1.f}});
+    addParameter({ "Q", {0.5, 100, 1, 0.001f, 1.f}});
+    addParameter({ "Filter Type", {0, 2.f, 0.f, 0.001f, 1.f}});
+    addParameter({ "Overdrive", {0, 1, 0, 0.001f, 1.f}});
     return ParameterData(getParameters(), getNumberOfParameters());	
 }
 
@@ -36,15 +36,12 @@ void TwoPoleProcessor::prepareProcessor(int sr, std::size_t block)
 void TwoPoleProcessor::process(float** buffer, int numChannels, std::size_t blockSize, const HostData /*hostInfo*/)
 {
     in.resize(blockSize);
-
     std::copy(buffer[0], buffer[0] + blockSize, in.begin());
-
-	const std::vector<float>& out = lp(in, getParameter("Frequency"), getParameter("Damping"), getParameter("Overdrive"));
-
-    for (int i = 0; i < blockSize; i++)
-        for (int chan = 0; chan < numChannels; chan++)
-            buffer[chan][i] = out[i];
+    auto& out = lp(in, getParameter("Frequency"), 1.f/getParameter("Q"),
+		   4*getParameter("Overdrive")-1, getParameter("Filter Type"));
+    std::copy(out.begin(),out.end(),buffer[0]);
 }
+
 
 // the class factories
 #ifdef WIN32

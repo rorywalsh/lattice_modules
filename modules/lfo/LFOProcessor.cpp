@@ -23,8 +23,9 @@ LFOProcessor::LFOProcessor()
 
 LatticeProcessorModule::ChannelData LFOProcessor::createChannels()
 {
-  addChannel({ "sine", ChannelType::output });
+
   addChannel({ "cosine", ChannelType::output });
+  addChannel({ "sine", ChannelType::output });
   addChannel({ "unipolar square", ChannelType::output });
   addChannel({ "inverted unipolar square", ChannelType::output });
   addChannel({ "bipolar square", ChannelType::output });
