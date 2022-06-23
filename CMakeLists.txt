@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project (LatticeModules)
 
 if(NOT DEFINED BUILD_VERSION)
-	set(BUILD_VERSION 0.1.169)
+	set(BUILD_VERSION 0.1.170)
 endif()
 
 
@@ -57,11 +57,12 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/examples/specsampler)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/specsampler1)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/specsampler2)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/svoc)
-add_subdirectory(${CMAKE_SOURCE_DIR}/examples/table_viewer)
+add_subdirectory(${CMAKE_SOURCE_DIR}/examples/bubbles_waveform)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/test_tone)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/tscale)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/tvconv)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/two_pole_svf)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/voc_synth)
 add_subdirectory(${CMAKE_SOURCE_DIR}/examples/waveform_viewer)
+add_subdirectory(${CMAKE_SOURCE_DIR}/examples/background_generator)
 

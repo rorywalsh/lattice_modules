@@ -3,10 +3,10 @@
 #include <iterator>
 #include "simple_svg_1.0.0.hpp"
 
-class TableViewerProcessor : public LatticeProcessorModule
+class BackgroundProcessor : public LatticeProcessorModule
 {
 public:
-    TableViewerProcessor();
+    BackgroundProcessor();
     
     ChannelData createChannels() override;
     
@@ -53,10 +53,12 @@ public:
 private:
     std::vector<float> table;
     std::vector<float> signal;
+    std::vector<float> samples;
     bool okToDraw = true;
     std::string svgText;
     std::vector<svg::Color> colours;
     int tableIndex = 0;
+    int sampleIndex = 0;
     ParamSmooth smooth;
     int frameCnt = 0;
     const int width = 400;

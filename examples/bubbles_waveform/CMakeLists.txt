@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.15)
-project (TableViewer)
+project (BubblesWaveform)
 
 include_directories("../include/")
 include_directories("${CMAKE_SOURCE_DIR}/aurora/include")
 
-set(SOURCE TableViewerProcessor.cpp TableViewerProcessor.h)
+set(SOURCE BubblesProcessor.cpp BubblesProcessor.h)
 
 if(MSVC)
     set(PLATFORM "Windows")
