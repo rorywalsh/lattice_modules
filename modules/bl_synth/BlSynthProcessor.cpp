@@ -16,11 +16,11 @@ LatticeProcessorModule::ChannelData BlSynthProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData BlSynthProcessor::createParameters()
 {
-  addParameter({ "Detune", {.5, 2, 1, 0.001, 1}});
+  addParameter({ "Detune", {.5, 2, 1, 0.001, 1},  Parameter::Type::Slider, true});
   addParameter({ "Wave", {0, 3, 2, 1, 1}});
-  addParameter({ "PW", {0.01, .99, .5, 0.001, 1}});
-  addParameter({ "Cutoff Freq", {0, 10000, 5000, 0.5, 1}});
-  addParameter({ "Resonance", {0, 1, 0.7, 0.001, 1}});
+  addParameter({ "PW", {0.01, .99, .5, 0.001, 1},  Parameter::Type::Slider, true});
+  addParameter({ "Cutoff Freq", {0, 10000, 5000, 0.5, 1},  Parameter::Type::Slider, true});
+  addParameter({ "Resonance", {0, 1, 0.7, 0.001, 1},  Parameter::Type::Slider, true});
   addParameter({ "Filter Env Amount", {-1, 1, 0, 0.001, 1}});
   addParameter({ "Filter Key Track", {0, 1, 0, 0.001, 1}});
   addParameter({ "Attack", {0, 1, 0.4, 0.001, 1}});

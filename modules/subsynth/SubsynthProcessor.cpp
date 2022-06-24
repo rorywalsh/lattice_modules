@@ -36,23 +36,28 @@ LatticeProcessorModule::ParameterData SubsynthProcessor::createParameters()
   for(auto &p : oparams.pnames)
     addParameter({ p[8].c_str(), {0.,1., 0.5, 0.0001, 1}});
   
-  addParameter({ "Noise", {0.,1., 0, 0.0001, 1}});
+  addParameter({ "Noise", {0.,1., 0, 0.0001, 1},
+	 Parameter::Type::Slider, true});
 
   addParameter({ "Filter Type", {0, 3, 0, 1, 1}});
 
-  addParameter({ "LP Freq", {0, 15000, 2000, 0.5, 1}});
+  addParameter({ "LP Freq", {0, 15000, 2000, 0.5, 1},
+	Parameter::Type::Slider, true});
   addParameter({ "LP FM", {0, 1, 0, 0.001, 1}});
   addParameter({ "LP LFO1", {0, 1, 0, 0.001, 1}});
   addParameter({ "LP Aux Env", {-10000, 10000, 0, 0.5, 1}});
   addParameter({ "LP Key Scale", {0, 1, 1, 0.001, 1}});
-  addParameter({ "LP Regen", {0, 1., 0.7f, 0.001, 1}});
+  addParameter({ "LP Regen", {0, 1., 0.7f, 0.001, 1},
+	 Parameter::Type::Slider, true});
 
-  addParameter({ "MM Freq", {0, 15000, 2000, 0.5, 1}});
+  addParameter({ "MM Freq", {0, 15000, 2000, 0.5, 1},
+	 Parameter::Type::Slider, true});
   addParameter({ "MM FM", {0, 1, 0, 0.001, 1}});
   addParameter({ "MM LFO2", {0, 1, 0, 0.001, 1}});
   addParameter({ "MM Aux Env", {-10000, 10000, 0, 0.5, 1}});
    addParameter({ "MM Key Scale", {0, 1, 1, 0.001, 1}});
-  addParameter({ "MM Q", {0.5, 100, 2., 0.5, 1}});
+   addParameter({ "MM Q", {0.5, 100, 2., 0.5, 1},
+	  Parameter::Type::Slider, true});
   addParameter({ "MM Drive", {0, 1., 0, 0.001, 1}});
   addParameter({ "MM Mode", {0, 2., 0, 0.001, 1}});
 
@@ -70,10 +75,12 @@ LatticeProcessorModule::ParameterData SubsynthProcessor::createParameters()
   
   addParameter({ "LFO2 AM", {0, 1, 0, 0.001, 1}});
 
-   addParameter({ "LFO1 Freq", {0.01, 100, 1, 0.01, 1}});
+  addParameter({ "LFO1 Freq", {0.01, 100, 1, 0.01, 1},
+	Parameter::Type::Slider, true});
    addParameter({ "LFO1 Wave", {0, 4, 0, 1, 1}});
 
-   addParameter({ "LFO2 Freq", {0.01, 100, 1, 0.01, 1}});
+   addParameter({ "LFO2 Freq", {0.01, 100, 1, 0.01, 1},
+	 Parameter::Type::Slider, true});
    addParameter({ "LFO2 Wave", {0, 4, 0, 1, 1}});
 
    addParameter({ "Bend range", {0, 12, 1, 1, 1}});
