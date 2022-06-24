@@ -5,7 +5,7 @@
 
 
 TWProcessor::TWProcessor()
-  :LatticeProcessorModule(), sm(73)
+  :LatticeProcessorModule(), sm(73), gsm(9)
 {
 
 }
@@ -53,16 +53,18 @@ void TWProcessor::prepareProcessor(int sr, std::size_t block)
 void TWProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
 {
     std::size_t n = 0;
+    const float st = 0.01f;
+    const float rate = fs/blockSize;
     const bool truebass = getParameter("True Bass");
-    const float g[] = {getParameter("16'"),
-		       getParameter("5 1/3'"),
-		       getParameter("8'"),
-		       getParameter("4'"),
-		       getParameter("2 2/3'"),
-		       getParameter("2'"),
-		       getParameter("1 3/5'"),
-		       getParameter("1 1/3'"),
-		       getParameter("1'")};
+    const float g[] = {gsm[0](getParameter("16'"),st,rate),
+		       gsm[1](getParameter("5 1/3'"),st,rate),
+		       gsm[2](getParameter("8'"),st,rate),
+		       gsm[3](getParameter("4'"),st,rate),
+		       gsm[4](getParameter("2 2/3'"),st,rate),
+		       gsm[5](getParameter("2'"),st,rate),
+		       gsm[6](getParameter("1 3/5'"),st,rate),
+		       gsm[7](getParameter("1 1/3'"),st,rate),
+		       gsm[8](getParameter("1'"),st,rate)};
     float scal = 0.006/(1.25 + g[0]+g[1]+g[2]+g[3]+g[4]+g[5]+g[6]+g[7]+g[8]);
     std::fill(buffer[0],buffer[0]+blockSize,0);
     tg(blockSize);
