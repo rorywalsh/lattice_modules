@@ -106,8 +106,8 @@ public:
     ```
     */
 
-        Parameter(const char* name, Range paramRange, Parameter::Type type = Type::Slider, bool visible = false)
-            :parameterName(name), range(paramRange), paramType(type), showInputPin(visible)
+        Parameter(const char* name, Range paramRange, Parameter::Type type = Type::Slider, bool automation = false, bool visible = false)
+            :parameterName(name), range(paramRange), paramType(type), supportsGraphAutomation(automation), showInputPin(visible)
         {
             
         }
@@ -130,8 +130,11 @@ public:
         const char* hint = "";
         /** Set the type of basic UI element to use for the parameter. If you select a a switch or trigger, many sure your parameter range is between 0 and 1, and the increment is set to 1*/
         Type paramType = Type::Slider;
-        
+        /** Sets if this parameter can be automated in the graph. */
+        bool supportsGraphAutomation = false;
+        /** Sets if this parameter has a pin visible by default in the graph*/
         bool showInputPin = false;
+        
     };
 
 
