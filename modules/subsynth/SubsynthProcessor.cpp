@@ -31,10 +31,11 @@ LatticeProcessorModule::ParameterData SubsynthProcessor::createParameters()
     addParameter({ p[4].c_str(), {0.,1., 0, 0.0001, 1}});
     addParameter({ p[5].c_str(), {0.,1., 0, 0.0001, 1}});
     addParameter({ p[6].c_str(), {0.05,.95, 0.5, 0.001, 1}});
-    addParameter({ p[7].c_str(), {0, 3, 0, 1, 1}});
+    addParameter({ p[7].c_str(), {0, 1., 0, 0.001, 1}});
+    addParameter({ p[8].c_str(), {0, 3, 0, 1, 1}});
   }
   for(auto &p : oparams.pnames)
-    addParameter({ p[8].c_str(), {0.,1., 0.5, 0.0001, 1}});
+    addParameter({ p[9].c_str(), {0.,1., 0.5, 0.0001, 1}});
   
   addParameter({ "Noise", {0.,1., 0, 0.0001, 1},
 	 Parameter::Type::Slider, true});
@@ -109,9 +110,11 @@ void SubsynthProcessor::hostParameterChanged(const char* parameterID, float newV
       oscs[n].env = par;
     else if(paramName == p[6])
       oscs[n].pwm = par;
-    else if(paramName == p[7])
+   else if(paramName == p[7])
+      oscs[n].pwm_lfo = par; 
+    else if(paramName == p[8])
       oscs[n].set_wave(par);
-    else if(paramName == p[8]) {
+    else if(paramName == p[9]) {
       oscs[n].amp = par;
     }
     n++;
@@ -187,7 +190,7 @@ void SubsynthProcessor::processSynthVoice(float** buffer,
       + aux[j]*osc.env) + buffer[0][j]*osc.fm;
       j++;
     }
-    osc(osc.amp,buf); 
+    osc(osc.amp,buf,osc.pwm_lfo*mod1[0]); 
   }
  
   // mixer 

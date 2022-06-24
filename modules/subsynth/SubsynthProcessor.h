@@ -21,7 +21,7 @@ const TableSet<float> *tritab = &triangle;
    Aurora::BlOsc<float> osc;
    Aurora::BlOsc<float> oscb;
    std::vector<float> sig;
-   float freq, fine, fm, pwm, amp, lfo1, lfo2, env;
+   float freq, fine, fm, pwm, pwm_lfo, amp, lfo1, lfo2, env;
    int wave;
    ParamSmooth smooth;
    ParamSmooth ampsm;
@@ -32,7 +32,7 @@ const TableSet<float> *tritab = &triangle;
 
 
  Oscil() : osc(sawtab), oscb(sawtab), sig(def_vsize), freq(60.),
-     fine(0.), fm(0.), pwm(0.5), amp(0.5), wave(0), lfo1(0), lfo2(0), env(0) { };
+     fine(0.), fm(0.), pwm(0.5), pwm_lfo(0), amp(0.5), wave(0), lfo1(0), lfo2(0), env(0) { };
 
    void set_wave(int wav) {
      wave = wav;
@@ -50,7 +50,7 @@ const TableSet<float> *tritab = &triangle;
    }
    
      const std::vector<float>
-       &operator()(float amp, const std::vector<float> &fm) {
+     &operator()(float amp, const std::vector<float> &fm, float pw) {
        sig.resize(fm.size());
        float a = ampsm(amp,0.01f,osc.fs()/fm.size());
        if(wave < 3) {
@@ -60,7 +60,9 @@ const TableSet<float> *tritab = &triangle;
 	 return sig;
        }
        else {
-	float pwms = smooth(pwm,0.01f, osc.fs()/fm.size());
+	 float pwmm = pw + pwm;
+	 float pwms = smooth(pwmm > 0.01 ? (pwmm < 0.99 ? pwmm : 0.99) : 0.01,
+			     0.01f, osc.fs()/fm.size());
         float off = a*(2*pwms - 1.f);
 	auto &s1 = osc(a,fm,pwms);
 	auto &s2 = oscb(a,fm);
@@ -114,11 +116,11 @@ const TableSet<float> *tritab = &triangle;
  }
 
 struct OscParam {
-  std::array<const char *, 9> params;
+  std::array<const char *, 10> params;
   std::vector<std::vector<std::string>> pnames;
 
 OscParam(std::size_t np) : params({ "Coarse Freq ", "Fine Tune ", "FM Amount ",
-      "LFO1 Amount ", "LFO2 Amount ", "Aux Env ",  "PW ", "Waveform ", "Osc "}),
+      "LFO1 Amount ", "LFO2 Amount ", "Aux Env ",  "PW ", "LFO1 PWM ", "Waveform ", "Osc "}),
     pnames(np) {
     std::size_t n = 0;
     char mem[4];
