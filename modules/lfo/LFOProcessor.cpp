@@ -34,8 +34,8 @@ LatticeProcessorModule::ChannelData LFOProcessor::createChannels()
   addChannel({ "inverted unipolar triangle", ChannelType::output });
   addChannel({ "bipolar triangle", ChannelType::output });
   addChannel({ "inverted bipolar triangle", ChannelType::output });
-  addChannel({ "down saw", ChannelType::output });
   addChannel({ "up saw", ChannelType::output });
+  addChannel({ "down saw", ChannelType::output });
   addChannel({ "S&H", ChannelType::output });	
   return {getChannels(), getNumberOfChannels()};
 }
