@@ -7,57 +7,29 @@
 #include "FourPole.h"
 #include <iterator>
 
-
+const static Aurora::TableSet<float> squareWave(Aurora::SQUARE);
+const static Aurora::TableSet<float> triangleWave(Aurora::TRIANGLE);
+const static Aurora::TableSet<float> sawWave(Aurora::SAW);
+static float add(float a, float b) { return a + b; }
 
 class BlSynthProcessor : public LatticeProcessorModule
 {
-    
-    /* Basic synth class thata contains Aurora::Env, Aurora::BlOsc,
-       and Aurora::TableSet objects */
-    struct Synth {
+      float sr = Aurora::def_sr;
+      float att = 0.01f,dec=0.01f,sus=1.f,rel=0.1f;
+      Aurora::Env<float> env;
+      Aurora::BlOsc<float, Aurora::lookupi<float>> osc;
+      Aurora::BlOsc<float, Aurora::lookupi<float>> sawOsc1;
+      Aurora::BlOsc<float, Aurora::lookupi<float>> sawOsc2;
+      Aurora::FourPole<float> filter;
+      std::vector<float> buf;
+      Aurora::BinOp<float, add> mix;
+      bool isNoteOn = false;
       ParamSmooth psm;
-        
-    public:
-        Synth(float rt, float sr);
-        void setWaveform(int waveForm);
-        void setBlockSize(std::size_t blockSize);
-        void setSampleRate(std::size_t sr);
-        
-        
-      const std::vector<float> &operator()(float, float, float, float, float,float, bool);
-        
-        void setAttack(float value)     {    att = value;           }
-        void setDecay(float value)      {    dec = value;           }
-        void setSustain(float value)    {    sus = value;           }
-        void setRelease(float value)    {    env.release(value);    }
-
-        float att = 0.01f, dec = 0.1f, sus=.8f, detune = 1, pwm = 0.5;
-        Aurora::TableSet<float> squareWave;
-        Aurora::TableSet<float> triangleWave;
-        Aurora::TableSet<float> sawWave;
-        std::vector<float> sineWave;
-        Aurora::Env<float> env;
-        Aurora::Osc<float, Aurora::lookupi<float>> sinOsc;
-        Aurora::BlOsc<float, Aurora::lookupi<float>> osc;
-        Aurora::BlOsc<float, Aurora::lookupi<float>> sawOsc1;
-        Aurora::BlOsc<float, Aurora::lookupi<float>> sawOsc2;
-        static float add(float a, float b) { return a + b; }
-        Aurora::BinOp<float, add> mix;
-        int currentWave = 2;
-        Aurora::OnePole<float> pwmTone;
-	std::vector<float> pwmChanges;
-        Aurora::FourPole<float> filter;
-        std::vector<float> buf;
-    };
+      float vel;
     
 public:
     BlSynthProcessor();
-    BlSynthProcessor(const BlSynthProcessor& obj)
-    :synth(obj.synth)
-    {
-        
-    }
-
+    
     virtual ~BlSynthProcessor() {}
     
 
@@ -99,33 +71,10 @@ public:
         return 32;
     }
 
-	/* override this method if you want to draw to the Lattice generic editor viewport */
-	const char* getSVGXml() override;
-
-	/* override this method and return true if you wish to enable drawing on the generic editor viewport */
-	/* override this method and return true if you wish to enable drawing on the generic editor viewport */
-	bool canDraw() override {
-		auto draw = okToDraw;
-		okToDraw = false;
-		return draw;
-	}
-
     int getModuleType() override
     {
         return ModuleType::SynthProcessor::standard;
     }
-
-	static int remap(float value, float rangeMin, float rangeMax, float newRangeMin, float newRangeMax)
-	{
-		return static_cast<int>(newRangeMin + (value - rangeMin) * (newRangeMax - newRangeMin) / (rangeMax - rangeMin));
-	}
-private:
-    BlSynthProcessor::Synth synth;
-    bool isNoteOn = false;
-	bool okToDraw = true;
-	int waveform = 1;
-	float vel = 1;
-    std::string svgText = "";
 
 };
 
