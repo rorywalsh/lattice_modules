@@ -21,24 +21,15 @@ LatticeProcessorModule::ChannelData TWProcessor::createChannels()
 LatticeProcessorModule::ParameterData TWProcessor::createParameters()
 {
     addParameter({ "True Bass", {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
-    addParameter({"16'", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 0.f, 0.001f, 1.f),
-	  Parameter::Type::Slider, true});
-    addParameter({"5 1/3'", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 0.f, 0.001f, 1.f),
-	   Parameter::Type::Slider, true});
-    addParameter({"8'", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 0.f, 0.001f, 1.f),
-	   Parameter::Type::Slider, true});
-    addParameter({"4'", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 0.f, 0.001f, 1.f),
-	   Parameter::Type::Slider, true});
-    addParameter({"2 2/3'", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 0.f, 0.001f, 1.f),
-	   Parameter::Type::Slider, true});
-    addParameter({"2'", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 0.f, 0.001f, 1.f),
-	   Parameter::Type::Slider, true});
-    addParameter({"1 5/3'", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 0.f, 0.001f, 1.f),
-	   Parameter::Type::Slider, true});
-    addParameter({"1 1/3'", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 0.f, 0.001f, 1.f),
-	   Parameter::Type::Slider, true});
-    addParameter({"1'", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 0.f, 0.001f, 1.f),
-	   Parameter::Type::Slider, true});
+    addParameter({"16'", {0.f, 1.f, 0.f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
+    addParameter({"5 1/3'",{0.f, 1.f, 0.f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
+    addParameter({"8'", {0.f, 1.f, 0.f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
+    addParameter({"4'", {0.f, 1.f, 0.f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
+    addParameter({"2 2/3'", {0.f, 1.f, 0.f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
+    addParameter({"2'", {0.f, 1.f, 0.f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
+    addParameter({"1 5/3'",{0.f, 1.f, 0.f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
+    addParameter({"1 1/3'",{0.f, 1.f, 0.f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
+    addParameter({"1'",{0.f, 1.f, 0.f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
     return {getParameters(), getNumberOfParameters()};
 }
 
