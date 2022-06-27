@@ -28,15 +28,14 @@ public:
     
     const char* getModuleName() override
     {
-        return "Feedback Delay";
+        return "Four Tap Delay";
     }
 
     
 private:
-    Aurora::Del<float, Aurora::vdelayi> delayL;
-    Aurora::Del<float, Aurora::vdelayi> delayR;
-    std::vector<float> inL;
-    std::vector<float> inR;
-    ParamSmooth timeL, timeR;
+    Aurora::Del<float> delay;
+    Aurora::Tap<float,Aurora::vdelayi> tap;
+    std::vector<float> in;
+    std::vector<ParamSmooth> smoothers;
     int samplingRate;
 };
