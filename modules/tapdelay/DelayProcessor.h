@@ -34,7 +34,7 @@ public:
     
 private:
     Aurora::Del<float> delay;
-    Aurora::Tap<float> tap;
+    Aurora::Tap<float,Aurora::vdelayi> tap;
     std::vector<float> in;
     std::vector<ParamSmooth> smoothers;
     int samplingRate;
