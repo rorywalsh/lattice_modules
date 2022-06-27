@@ -23,7 +23,7 @@ LatticeProcessorModule::ChannelData GainProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData GainProcessor::createParameters()
 {
-    addParameter({"Gain", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f)});
+    addParameter({"Gain", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 1.f, 0.001f, 1.f), Parameter::Type::Slider, true});
     return {getParameters(), getNumberOfParameters()};
 }
 

@@ -57,7 +57,7 @@ LatticeProcessorModule::ChannelData SimpleSynthProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData SimpleSynthProcessor::createParameters()
 {
-    addParameter({"Wave", {1, 3, 1, 1, 1}});
+    addParameter({"Wave", {1, 3, 1, 1, 1}, Parameter::Type::Slider, true});
     addParameter({"Attack", {0, 1, synth.getAttack(), 0.001, 1}});
     addParameter({"Decay", {0, 2, synth.getDecay(), 0.001, 1}});
     addParameter({"Sustain", {0, 1, synth.getSustain(), 0.001, 1}});

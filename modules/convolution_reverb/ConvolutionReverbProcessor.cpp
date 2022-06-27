@@ -22,10 +22,10 @@ LatticeProcessorModule::ChannelData ConvolutionReverbProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData ConvolutionReverbProcessor::createParameters()
 {
-    addParameter({ "Reverb Gain", {0, 1.f, .5f, .01f, 1}});
-    addParameter({ "Stereo Width", {0, 1.f, .5f, .01f, 1}});
-    addParameter({ "Bypass", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
-    addParameter({ "Load IR", {0, 1, 0, 1, 1}, Parameter::Type::FileButton});
+    addParameter({ "Reverb Gain", {0, 1.f, .5f, .01f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Stereo Width", {0, 1.f, .5f, .01f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Bypass", {0, 1, 0, 1, 1}, Parameter::Type::Switch, true});
+    addParameter({ "Load IR", {0, 1, 0, 1, 1}, Parameter::Type::FileButton, true});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

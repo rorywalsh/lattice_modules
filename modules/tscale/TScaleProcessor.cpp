@@ -28,10 +28,10 @@ LatticeProcessorModule::ChannelData  TScaleProcessor::createChannels()
 LatticeProcessorModule::ParameterData TScaleProcessor::createParameters()
 {
     addParameter({ "Input Signal", {0, 1, 1, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
-    addParameter({ "Pitchscale", {0.001, 2, 1, 0.001, 1}});
-    addParameter({ "Timescale", {-2, 2, 1, 0.001, 1}});
-    addParameter({ "Scrub", {0, 1, 0, 0.001, 1}});
-    addParameter({ "Buffer Size", {0.5, 60, 10, 0.5, 1}});
+    addParameter({ "Pitchscale", {0.001, 2, 1, 0.001, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Timescale", {-2, 2, 1, 0.001, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Scrub", {0, 1, 0, 0.001, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Buffer Size", {0.5, 60, 10, 0.5, 1}, Parameter::Type::Slider, true});
     return ParameterData(getParameters(), getNumberOfParameters());
     
 }

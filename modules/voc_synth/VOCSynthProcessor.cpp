@@ -25,13 +25,13 @@ LatticeProcessorModule::ChannelData VOCSynthProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData VOCSynthProcessor::createParameters()
 {
-  addParameter({ "Keep Formants", {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
-  addParameter({ "Threshold", {-60, -6, -40, 1, 1}});
-  addParameter({ "Slew Time", {0, 0.5, 0.01, 0.001, 1}});
-  addParameter({ "Attack", {0, 1., 0.01, 0.001, 1}});
-  addParameter({ "Decay", {0, 1., 0.01, 0.001, 1}});
-  addParameter({ "Sustain", {0, 1., 1., 0.001, 1}});
-  addParameter({ "Release", {0, 1., 0.1, 0.001, 1}});
+  addParameter({ "Keep Formants", {0, 1, 0, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch, true});
+  addParameter({ "Threshold", {-60, -6, -40, 1, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Slew Time", {0, 0.5, 0.01, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Attack", {0, 1., 0.01, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Decay", {0, 1., 0.01, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Sustain", {0, 1., 1., 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Release", {0, 1., 0.1, 0.001, 1}, Parameter::Type::Slider, true});
   return ParameterData(getParameters(), getNumberOfParameters());
 }
 

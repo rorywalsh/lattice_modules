@@ -41,10 +41,8 @@ class TWProcessor : public LatticeProcessorModule
     
  private:
   std::vector<ParamSmooth> sm;
-  std::vector<ParamSmooth> gsm;
   Aurora::Tonegen<float> tg;
   bool keys[73] = {0};
   float fs = 44100;
 
 };
-

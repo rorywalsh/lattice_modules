@@ -11,10 +11,10 @@ ChorusProcessor::ChorusProcessor()
 
 LatticeProcessorModule::ParameterData ChorusProcessor::createParameters()
 {
-    addParameter({ "Delay Time (L)", {0, 5, .017f, .001f, 1}});
-    addParameter({ "LFO Frequency (L)", {0, 10, .93, .001f, 1}});
-    addParameter({ "Delay Time (R)", {0, 5, .013f, .001f, 1}});
-	addParameter({ "LFO Frequency (R)", {0, 10, .083f, .001f, 1} });
+    addParameter({ "Delay Time (L)", {0, 5, .017f, .001f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "LFO Frequency (L)", {0, 10, .93, .001f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Delay Time (R)", {0, 5, .013f, .001f, 1}, Parameter::Type::Slider, true});
+	addParameter({ "LFO Frequency (R)", {0, 10, .083f, .001f, 1}, Parameter::Type::Slider, true });
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

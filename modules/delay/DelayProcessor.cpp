@@ -23,12 +23,12 @@ LatticeProcessorModule::ChannelData  DelayProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData DelayProcessor::createParameters()
 {
-    addParameter({ "Delay Time Left", {0, 2, .1f, .01f, 1}});
-    addParameter({ "Feedback Left", {0, 1, .5f, .01f, 1}});
-    addParameter({ "Dry Mix Left", {0, 1, .5f, .01f, 1}});
-    addParameter({ "Delay Time Right", {0, 2, .1f, .01f, 1}});
-    addParameter({ "Feedback Right", {0, 1, .5f, .01f, 1}});
-    addParameter({ "Dry Mix Right", {0, 1, .5f, .01f, 1}});
+    addParameter({ "Delay Time Left", {0, 2, .1f, .01f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Feedback Left", {0, 1, .5f, .01f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Dry Mix Left", {0, 1, .5f, .01f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Delay Time Right", {0, 2, .1f, .01f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Feedback Right", {0, 1, .5f, .01f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Dry Mix Right", {0, 1, .5f, .01f, 1}, Parameter::Type::Slider, true});
     addParameter({ "Enabled", {0, 1, 1, 1, 1}, LatticeProcessorModule::Parameter::Type::Switch});
     return ParameterData(getParameters(), getNumberOfParameters());
     

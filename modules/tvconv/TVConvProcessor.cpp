@@ -22,9 +22,9 @@ LatticeProcessorModule::ChannelData TVConvProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData TVConvProcessor::createParameters()
 {
-    addParameter({ "Gain", {0, 1.f, .1f, .01f, 1}});
+    addParameter({ "Gain", {0, 1.f, .1f, .01f, 1}, Parameter::Type::Slider, true});
     addParameter({ "Filter Length", {0, 1.f, .5f, .01f, 1}});
-    addParameter({ "Bypass", {0, 1, 0, 1, 1},  Parameter::Type::Switch});
+    addParameter({ "Bypass", {0, 1, 0, 1, 1},  Parameter::Type::Switch, true});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

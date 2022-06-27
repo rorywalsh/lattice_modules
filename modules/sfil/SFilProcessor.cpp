@@ -24,8 +24,8 @@ LatticeProcessorModule::ChannelData  SFilProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData SFilProcessor::createParameters()
 {
-  addParameter({ "Amplitude Prod", {0, 1, 0, 0.001, 1}});
-  addParameter({ "Frequency Sum", {0, 1, 0, 0.001, 1}});
+  addParameter({ "Amplitude Prod", {0, 1, 0, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Frequency Sum", {0, 1, 0, 0.001, 1}, Parameter::Type::Slider, true});
     return ParameterData(getParameters(), getNumberOfParameters());
     
 }

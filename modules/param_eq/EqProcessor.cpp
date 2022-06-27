@@ -19,9 +19,9 @@ LatticeProcessorModule::ChannelData EqProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData EqProcessor::createParameters()
 {
-    addParameter({ "Frequency", {1, 22050, 100, 1, .5f}});
-	addParameter({ "Bandwidth", {1, 22050, 100, 1, .5f}});
-	addParameter({ "Output Gain", {0, 2.f, 0.5f, 0.01f, 1}});
+    addParameter({ "Frequency", {1, 22050, 100, 1, .5f}, Parameter::Type::Slider, true});
+	addParameter({ "Bandwidth", {1, 22050, 100, 1, .5f}, Parameter::Type::Slider, true});
+	addParameter({ "Output Gain", {0, 2.f, 0.5f, 0.01f, 1}, Parameter::Type::Slider, true});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

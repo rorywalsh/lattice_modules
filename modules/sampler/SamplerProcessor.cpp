@@ -24,27 +24,27 @@ LatticeProcessorModule::ChannelData SamplerProcessor::createChannels()
 LatticeProcessorModule::ParameterData SamplerProcessor::createParameters()
 {
   addParameter({ "Load Sample Pack", {0, 1, 0, 1, 1},  Parameter::Type::FileButton});
-  addParameter({ "Vibrato LFO", {0, 1, 0, 0.001, 1}});
-  addParameter({ "Filter Freq", {0, 15000, 5000, 0.5, 1}});
-  addParameter({ "Filter LFO", {0, 1, 0, 0.001, 1}});
-  addParameter({ "Filter Env", {-10000, 10000, 0, 0.5, 1}});
-  addParameter({ "Filter Key Scale", {0, 1, 1, 0.001, 1}});
-  addParameter({ "Filter Attack", {0, 1., 0.01, 0.001, 1}});
-  addParameter({ "Filter Decay", {0, 1., 0.01, 0.001, 1}});
-  addParameter({ "Filter Sustain", {0, 1., 1., 0.001, 1}});
-  addParameter({ "Filter Release", {0, 1., 0.1, 0.001, 1}});
-  addParameter({ "Filter Velocity", {0, 1, 0, 0.001, 1}});
-  addParameter({ "Filter Resonance", {0, 1., 0.f, 0.001, 1}});
-  addParameter({ "Amp Attack", {0, 1., 0.01, 0.001, 1}});
-  addParameter({ "Amp Decay", {0, 1., 0.01, 0.001, 1}});
-  addParameter({ "Amp Sustain", {0, 1., 1., 0.001, 1}});
-  addParameter({ "Amp Release", {0, 1., 0.1, 0.001, 1}});
-  addParameter({ "Amp Velocity", {0, 1, 0, 0.001, 1}});
-  addParameter({ "Pan LFO", {0, 1, 0, 0.001, 1}});
+  addParameter({ "Vibrato LFO", {0, 1, 0, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Filter Freq", {0, 15000, 5000, 0.5, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Filter LFO", {0, 1, 0, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Filter Env", {-10000, 10000, 0, 0.5, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Filter Key Scale", {0, 1, 1, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Filter Attack", {0, 1., 0.01, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Filter Decay", {0, 1., 0.01, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Filter Sustain", {0, 1., 1., 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Filter Release", {0, 1., 0.1, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Filter Velocity", {0, 1, 0, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Filter Resonance", {0, 1., 0.f, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Amp Attack", {0, 1., 0.01, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Amp Decay", {0, 1., 0.01, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Amp Sustain", {0, 1., 1., 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Amp Release", {0, 1., 0.1, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Amp Velocity", {0, 1, 0, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Pan LFO", {0, 1, 0, 0.001, 1}, Parameter::Type::Slider, true});
   
-  addParameter({ "LFO Freq", {0.01, 100, 1, 0.01, 1}});
-  addParameter({ "LFO Wave", {0, 3, 0, 1, 1}});
-  addParameter({ "Glide Time", {0, 1, 0, 0.001, 1}});
+  addParameter({ "LFO Freq", {0.01, 100, 1, 0.01, 1}, Parameter::Type::Slider, true});
+  addParameter({ "LFO Wave", {0, 3, 0, 1, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Glide Time", {0, 1, 0, 0.001, 1}, Parameter::Type::Slider, true});
  
   return {getParameters(), getNumberOfParameters()};
 }

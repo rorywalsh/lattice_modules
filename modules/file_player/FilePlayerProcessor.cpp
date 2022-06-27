@@ -24,8 +24,8 @@ LatticeProcessorModule::ParameterData FilePlayerProcessor::createParameters()
     addParameter({ "Play", {0, 1, 0, 1, 1},  Parameter::Type::Switch });
     addParameter({ "Oneshot Midi", {0, 1, 0, 1, 1},  Parameter::Type::Switch });
     addParameter({ "Load Soundfile", {0, 1, 0, 1, 1},  Parameter::Type::FileButton});
-    addParameter({ "Playback Rate", {-2, 2, 1, 0.001, 1}});
-    addParameter({ "Gain", {0, 1, .6, 0.001, 1}});
+    addParameter({ "Playback Rate", {-2, 2, 1, 0.001, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Gain", {0, 1, .6, 0.001, 1}, Parameter::Type::Slider, true});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

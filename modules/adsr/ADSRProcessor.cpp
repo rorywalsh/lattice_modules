@@ -21,8 +21,8 @@ LatticeProcessorModule::ChannelData ADSRProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData ADSRProcessor::createParameters()
 {
-  addParameter({ "Gate", {0, 1, 0, 1, 1}, Parameter::Type::Momentary});
-  addParameter({ "Retrigger", {0, 1, 0, 1, 1}, Parameter::Type::Momentary});
+  addParameter({ "Gate", {0, 1, 0, 1, 1}, Parameter::Type::Momentary, true});
+  addParameter({ "Retrigger", {0, 1, 0, 1, 1}, Parameter::Type::Momentary, true});
   addParameter({"Attack", {0.f, 1.f, 0.01f, 0.001f, 1.f}});
   addParameter({"Decay", {0.f, 1.f, 0.01f, 0.001f, 1.f}});
   addParameter({"Sustain",{0.f, 1.f, 1.f, 0.001f, 1.f}});

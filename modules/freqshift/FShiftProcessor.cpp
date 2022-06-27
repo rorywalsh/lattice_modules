@@ -23,10 +23,10 @@ LatticeProcessorModule::ChannelData FShiftProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData FShiftProcessor::createParameters()
 {
-  addParameter({"Shift Amount", {-1.f, 1.f, 0.f, 0.001f, 1.f}});
-  addParameter({"Scale", {5.f, 5000.f, 5.f, 1.f, .3f}});
-  addParameter({"Mixture (A-B)", {0,1, 0.5f, 0.001f, 1.f}});
-  addParameter({"Squelch Threshold", {-90,0,-60.f, 1.f, 1.f}});
+  addParameter({"Shift Amount", {-1.f, 1.f, 0.f, 0.001f, 1.f}, Parameter::Type::Slider, true});
+  addParameter({"Scale", {5.f, 5000.f, 5.f, 1.f, .3f}, Parameter::Type::Slider, true});
+  addParameter({"Mixture (A-B)", {0,1, 0.5f, 0.001f, 1.f}, Parameter::Type::Slider, true});
+  addParameter({"Squelch Threshold", {-90,0,-60.f, 1.f, 1.f}, Parameter::Type::Slider, true});
   return {getParameters(), getNumberOfParameters()};
 }
 

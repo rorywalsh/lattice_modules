@@ -25,8 +25,8 @@ LatticeProcessorModule::ChannelData  SVocProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData SVocProcessor::createParameters()
 {
-  addParameter({ "Formant Depth", {0, 1, 1, 0.001, 1}});
-  addParameter({ "Formant Gain", {0, 4, 1, 0.001, 1}});
+  addParameter({ "Formant Depth", {0, 1, 1, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Formant Gain", {0, 4, 1, 0.001, 1}, Parameter::Type::Slider, true});
   return ParameterData(getParameters(), getNumberOfParameters());
     
 }

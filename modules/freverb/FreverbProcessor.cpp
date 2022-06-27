@@ -11,10 +11,10 @@ FreverbProcessor::FreverbProcessor()
 
 LatticeProcessorModule::ParameterData FreverbProcessor::createParameters()
 {
-    addParameter({ "Reverb Time", {0, 10., 1.f, .01f, 1}});
-    addParameter({ "Lowpass Frequency", {100, 20000, 10000.f, 1.f, 1}});
-    addParameter({ "Reverb Mix", {0, 1.f, .5f, 0.001f, 1}});
-    addParameter({ "Stereo Width", {0, 1.f, .5f, 0.001f, 1}});
+    addParameter({ "Reverb Time", {0, 10., 1.f, .01f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Lowpass Frequency", {100, 20000, 10000.f, 1.f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Reverb Mix", {0, 1.f, .5f, 0.001f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Stereo Width", {0, 1.f, .5f, 0.001f, 1}, Parameter::Type::Slider, true});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

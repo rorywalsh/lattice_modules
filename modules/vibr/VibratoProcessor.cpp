@@ -11,8 +11,8 @@ VibratoProcessor::VibratoProcessor()
 
 LatticeProcessorModule::ParameterData VibratoProcessor::createParameters()
 {
-    addParameter({ "Depth", {0, 1, 0, .001f, 1}});
-    addParameter({ "Rate", {0, 20, 7, .001f, 1}});
+    addParameter({ "Depth", {0, 1, 0, .001f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Rate", {0, 20, 7, .001f, 1}, Parameter::Type::Slider, true});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

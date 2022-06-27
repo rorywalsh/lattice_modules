@@ -23,13 +23,13 @@ LatticeProcessorModule::ChannelData KSSynthProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData KSSynthProcessor::createParameters()
 {
-    addParameter({"Decay Time", {0.1, 10, 3, 0.1, 1}});
-    addParameter({"Release Time", {0.1, 4, 0.5, 0.1, 1}});
-    addParameter({"Detune", {0, 0.1, 0, 0.001, 1}});
-    addParameter({"Pan Spread", {0, 1., 0.5, 0.001, 1}});
-    addParameter({"Pluck Pos", {0, 1., 0.1, 0.001, 1}});
-    addParameter({"Input Gain", {0, 1., 0.1, 0.001, 1}});
-    addParameter({"Volume", {0, 1., 0.1, 0.001, 1}});
+    addParameter({"Decay Time", {0.1, 10, 3, 0.1, 1}, Parameter::Type::Slider, true});
+    addParameter({"Release Time", {0.1, 4, 0.5, 0.1, 1}, Parameter::Type::Slider, true});
+    addParameter({"Detune", {0, 0.1, 0, 0.001, 1}, Parameter::Type::Slider, true});
+    addParameter({"Pan Spread", {0, 1., 0.5, 0.001, 1}, Parameter::Type::Slider, true});
+    addParameter({"Pluck Pos", {0, 1., 0.1, 0.001, 1}, Parameter::Type::Slider, true});
+    addParameter({"Input Gain", {0, 1., 0.1, 0.001, 1}, Parameter::Type::Slider, true});
+    addParameter({"Volume", {0, 1., 0.1, 0.001, 1}, Parameter::Type::Slider, true});
     addParameter({ "Pluck", {0, 1, 1, 1, 1},  Parameter::Type::Switch});
     return ParameterData(getParameters(), getNumberOfParameters());
 }

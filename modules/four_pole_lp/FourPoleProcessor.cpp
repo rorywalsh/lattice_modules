@@ -21,8 +21,8 @@ LatticeProcessorModule::ChannelData FourPoleProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData FourPoleProcessor::createParameters()
 {
-    addParameter({ "Frequency", {1, 22050, 100, 1, .5f}});
-	addParameter({ "Resonance", {0, 1, 0, 0.001f, 1.f}});
+    addParameter({ "Frequency", {1, 22050, 100, 1, .5f}, Parameter::Type::Slider, true});
+	addParameter({ "Resonance", {0, 1, 0, 0.001f, 1.f}, Parameter::Type::Slider, true});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

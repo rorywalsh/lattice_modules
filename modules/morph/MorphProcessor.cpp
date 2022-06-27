@@ -24,8 +24,8 @@ LatticeProcessorModule::ChannelData  MorphProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData MorphProcessor::createParameters()
 {
-  addParameter({ "Amplitude Interpolation", {0, 1, 0, 0.001, 1}});
-  addParameter({ "Frequency Interpolation", {0, 1, 0, 0.001, 1}});
+  addParameter({ "Amplitude Interpolation", {0, 1, 0, 0.001, 1}, Parameter::Type::Slider, true});
+  addParameter({ "Frequency Interpolation", {0, 1, 0, 0.001, 1}, Parameter::Type::Slider, true});
   return ParameterData(getParameters(), getNumberOfParameters());
     
 }

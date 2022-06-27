@@ -19,8 +19,8 @@ LatticeProcessorModule::ChannelData BitCrunchProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData BitCrunchProcessor::createParameters()
 {
-    addParameter({ "Bit Depth", {2, 32, 32, 0.001f, 1.f}, Parameter::Type::Slider});
-    addParameter({ "Sample Rate", {0, 1, 1, .0001f, 1.f}, Parameter::Type::Slider});
+    addParameter({ "Bit Depth", {2, 32, 32, 0.001f, 1.f}, Parameter::Type::Slider, true});
+    addParameter({ "Sample Rate", {0, 1, 1, .0001f, 1.f}, Parameter::Type::Slider, true});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 

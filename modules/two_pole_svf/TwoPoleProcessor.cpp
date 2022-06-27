@@ -19,10 +19,10 @@ LatticeProcessorModule::ChannelData TwoPoleProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData TwoPoleProcessor::createParameters()
 {
-    addParameter({ "Frequency", {1, 22050, 100, 1, .5f}});
-    addParameter({ "Q", {0.5, 100, 1, 0.001f, 1.f}});
-    addParameter({ "Filter Type", {0, 2.f, 0.f, 0.001f, 1.f}});
-    addParameter({ "Overdrive", {0, 1, 0, 0.001f, 1.f}});
+    addParameter({ "Frequency", {1, 22050, 100, 1, .5f}, Parameter::Type::Slider, true});
+    addParameter({ "Q", {0.5, 100, 1, 0.001f, 1.f}, Parameter::Type::Slider, true});
+    addParameter({ "Filter Type", {0, 2.f, 0.f, 0.001f, 1.f}, Parameter::Type::Slider, true});
+    addParameter({ "Overdrive", {0, 1, 0, 0.001f, 1.f}, Parameter::Type::Slider, true});
     return ParameterData(getParameters(), getNumberOfParameters());	
 }
 

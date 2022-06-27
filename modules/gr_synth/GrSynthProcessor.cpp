@@ -41,14 +41,14 @@ LatticeProcessorModule::ChannelData GrSynthProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData GrSynthProcessor::createParameters()
 {
-  addParameter({"density", {1, 300, 40, 1, 1}});
-  addParameter({"grain size", {0.01f, 0.1f, 0.05f, 0.005f, 1}});
-  addParameter({"attack", {0.005f, 5.f, 0.005f, 0.005f, 1}});
-  addParameter({"decay", {0.005f, 5.f, 0.005f, 0.005f, 1}});
-  addParameter({"sustain", {0, 1.f, 1.f, 0.005f, 1}});
-  addParameter({"release", {0.005f, 5.f, 0.1f, 0.005f, 1}});
-  addParameter({"volume", {0.f, 1.f, 0.5f, 0.005f, 1}});
-  addParameter({"pan spread", {0.f, 1.f, 0.5f, 0.005f, 1}});
+  addParameter({"density", {1, 300, 40, 1, 1}, Parameter::Type::Slider, true});
+  addParameter({"grain size", {0.01f, 0.1f, 0.05f, 0.005f, 1}, Parameter::Type::Slider, true});
+  addParameter({"attack", {0.005f, 5.f, 0.005f, 0.005f, 1}, Parameter::Type::Slider, true});
+  addParameter({"decay", {0.005f, 5.f, 0.005f, 0.005f, 1}, Parameter::Type::Slider, true});
+  addParameter({"sustain", {0, 1.f, 1.f, 0.005f, 1}, Parameter::Type::Slider, true});
+  addParameter({"release", {0.005f, 5.f, 0.1f, 0.005f, 1}, Parameter::Type::Slider, true});
+  addParameter({"volume", {0.f, 1.f, 0.5f, 0.005f, 1}, Parameter::Type::Slider, true});
+  addParameter({"pan spread", {0.f, 1.f, 0.5f, 0.005f, 1}, Parameter::Type::Slider, true});
   return ParameterData(getParameters(), getNumberOfParameters());
 }
 
