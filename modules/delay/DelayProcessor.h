@@ -33,8 +33,8 @@ public:
 
     
 private:
-    Aurora::Del<float, Aurora::vdelay> delayL;
-    Aurora::Del<float, Aurora::vdelay> delayR;
+    Aurora::Del<float, Aurora::vdelayi> delayL;
+    Aurora::Del<float, Aurora::vdelayi> delayR;
     std::vector<float> inL;
     std::vector<float> inR;
     ParamSmooth timeL, timeR;

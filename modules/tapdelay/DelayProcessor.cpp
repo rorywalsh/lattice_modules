@@ -4,7 +4,7 @@
 
 
 DelayProcessor::DelayProcessor():
-  delay(10.f), in(Aurora::def_vsize), dt(4)
+  delay(10.f), in(Aurora::def_vsize), smoothers(4)
 { }
 
 
@@ -44,7 +44,7 @@ void DelayProcessor::process(float** buffer, int /*numChannels*/, std::size_t bl
     delay(in);
     auto &out = tap.vector();
     std::size_t n = 0;
-    for(auto &sm : dt) {
+    for(auto &sm : smoothers) {
       tap(delay,sm(getParameter(parms[n]),0.1,samplingRate/blockSize));    
       std::copy(out.begin(),out.end(),buffer[n++]);
     }  
