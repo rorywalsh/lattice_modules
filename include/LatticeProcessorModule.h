@@ -186,11 +186,13 @@ public:
         int channel = 0;
         /** MIDI velocity as a float between 0 and 1 */
         float velocity;
+        
+        int offset = 0;
 
         /** Creates a simple MIDI message that can be added to a incoming MIDI vector in process()
          */
-    LatticeMidiMessage(LatticeMidiMessage::Type type = Type::noteOn, int chan = 0 , int noteNum = 0, float vel = 0)
-            : msgType(type), note(noteNum), channel(chan), velocity(vel)
+    LatticeMidiMessage(LatticeMidiMessage::Type type = Type::noteOn, int chan = 0 , int noteNum = 0, float vel = 0, int offset = 0)
+            : msgType(type), note(noteNum), channel(chan), velocity(vel), offset(0)
         {}
 
     };
