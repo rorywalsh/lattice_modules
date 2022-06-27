@@ -18,7 +18,7 @@ LatticeProcessorModule::ChannelData MidiArpProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData MidiArpProcessor::createParameters()
 {
-    addParameter({ "Speed", {0, 1, .5, 0.01, 1}});
+    addParameter({ "Note Duration", {0, 1, .5, 0.01, 1}});
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
@@ -42,19 +42,16 @@ void MidiArpProcessor::triggerParameterUpdate(const std::string& parameterID, fl
 void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std::size_t blockSize, const HostData, std::vector<LatticeMidiMessage>& midiMessages)
 {
 	int numSamples = blockSize;
-    
-    // get note duration
-    auto noteDuration = static_cast<int> (std::ceil (samplingRate * 0.25f * (0.1f + (1.0f - (getParameter("Speed"))))));
+
+    auto noteDuration = static_cast<int> (samplingRate * getParameter("Note Duration"));
 
     for (auto& message : midiMessages)
     {
         if(message.msgType == LatticeMidiMessage::Type::noteOn)
             notes.insert (message.note);
-        else if(message.msgType == LatticeMidiMessage::Type::noteOn)
+        else if(message.msgType == LatticeMidiMessage::Type::noteOff)
             notes.erase(message.note);
     }
-
-    //midiMessages.clear();
 
     if ((time + numSamples) >= noteDuration)
     {
@@ -74,7 +71,6 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
             lastNotePlayed = *it;
             midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, lastNotePlayed, .5f, offset));
         }
-
     }
 
     time = (time + numSamples) % noteDuration;
