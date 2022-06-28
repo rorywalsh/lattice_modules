@@ -2,6 +2,7 @@
 #include "LatticeProcessorModule.h"
 #include <iterator>
 #include <set>
+#include <unordered_set>
 
 class MidiArpProcessor : public LatticeProcessorModule
 {
@@ -44,13 +45,27 @@ public:
 	}
 
 private:
+    
+    enum Type{
+        up = 0,
+        down,
+        upAndDown,
+        unsorted,
+        random
+    };
+    
+    int arpType;
+    
 	int sampleIndex = 0;
     int samplingRate = 44100;
     int noteIndex = 0;
     int currentNote = 0;
     int lastNotePlayed = -1;
     int time;
+    int incr = 1;
     //std::vector<LatticeMidiMessage> notes;
     std::set<int> notes;
+    std::unordered_set<int> unorderedNotes;
+    std::vector<std::string> modes;
 };
 
