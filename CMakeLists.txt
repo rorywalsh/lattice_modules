@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project (LatticeModules)
 
 if(NOT DEFINED BUILD_VERSION)
-	set(BUILD_VERSION 0.1.185)
+	set(BUILD_VERSION 0.1.186)
 endif()
 
 
@@ -68,3 +68,4 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/modules/two_pole_svf)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/voc_synth)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/waveform_viewer)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/midi_arp)
+add_subdirectory(${CMAKE_SOURCE_DIR}/modules/midi_delay)
