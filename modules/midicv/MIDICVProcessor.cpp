@@ -49,6 +49,7 @@ void MIDICVProcessor::stopNote(int midiNoteNumber, float velocity)
 
 void MIDICVProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
 {
+  std::cout << "test\n";
   for(int n = 0; n < blockSize; n++) {
     buffer[0][n] = smf(freq, getParameter("Frequency Slew Time"), sr);
     buffer[1][n] = smv(amp, getParameter("Velocity Slew Time"), sr);
