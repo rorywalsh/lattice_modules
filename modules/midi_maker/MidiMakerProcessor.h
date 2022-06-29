@@ -50,9 +50,13 @@ public:
 
     int getRandomMajorNote(int lowestNote, int range)
     {
-        return rand() % range + lowestNote;
+        return lowestNote + major[rand() % range];
     }
 
+    int getRandomMinorNote(int lowestNote, int range)
+    {
+        return lowestNote + minor[rand() % range];
+    }
 
 	/* override this method if you want to draw to the Lattice generic editor viewport */
 	const char* getSVGXml() override;
@@ -79,11 +83,15 @@ private:
     int lastNotePlayed = 0;
     int samplingRate = 44100;
     int noteIndex = 0;
-    int major[8] = { 2, 2, 1, 2, 2, 2, 1 };
-    int minor[8] = { 2, 1, 2, 2, 1, 2, 2 };
-    std::vector<int> notes;
+    int majorIntervals[8] = { 2, 2, 1, 2, 2, 2, 1 };
+    int minorIntervals[8] = { 2, 1, 2, 2, 1, 2, 2 };
+    
+    std::vector<int> major;
+    std::vector<int> minor;
+    std::vector<int> chromaticNotes;
     std::vector<int> majorNotes;
     std::vector<int> minorNotes;
+    std::vector<int> outgoingNotes;
     std::vector<int> amps;
     std::vector<float> inL;
     std::vector<float> inR;

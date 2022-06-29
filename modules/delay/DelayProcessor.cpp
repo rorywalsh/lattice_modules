@@ -3,7 +3,7 @@
 #include <iterator>
 
 
-DelayProcessor::DelayProcessor():
+DelayProcessor::DelayProcessor():  
   delayL(2.f),
   delayR(2.f),
   inL(Aurora::def_vsize),
