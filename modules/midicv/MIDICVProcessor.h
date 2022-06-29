@@ -28,7 +28,7 @@ public:
 
     int getModuleType() override
     {
-        return ModuleType::MidiProcessor::uncategorised;
+        return ModuleType::AudioProcessor::uncategorised;
     }
     
 private:
