@@ -94,8 +94,6 @@ private:
     std::vector<int> minorNotes;
     std::vector<int> outgoingNotes;
     std::vector<int> amps;
-    std::vector<float> inL;
-    std::vector<float> inR;
     bool playNote = true;
 	std::atomic<bool> canUpdate{ true };
 	bool okToDraw = true;

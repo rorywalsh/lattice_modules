@@ -18,6 +18,7 @@ LatticeProcessorModule::ChannelData MidiDelayProcessor::createChannels()
 LatticeProcessorModule::ParameterData MidiDelayProcessor::createParameters()
 {
     addParameter({ "Delay Time", {0, 10, 0, 0.01, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Velocity", {0, 1, 0.5f, 0.001, 1}, Parameter::Type::Slider, true});
     addParameter({ "Transpose", {-24, 24, 0, 1, 1} });
     return ParameterData(getParameters(), getNumberOfParameters());
 }
@@ -47,24 +48,26 @@ void MidiDelayProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, st
     for (auto& message : midiMessages)
     {
         if(message.msgType == LatticeMidiMessage::Type::noteOn)
-            outgoingNotes.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, message.note + getParameter("Transpose"), .5f, message.offset + sampleIndex + delay));
+            outgoingNotes.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, message.note + getParameter("Transpose"), getParameter("Velocity"), message.offset + sampleIndex + delay));
         
         else if ( message.msgType == LatticeMidiMessage::Type::noteOff )
-            outgoingNotes.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOff, 1, message.note + getParameter("Transpose"), .5f, message.offset + sampleIndex+delay));
+            outgoingNotes.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOff, 1, message.note + getParameter("Transpose"), getParameter("Velocity"), message.offset + sampleIndex+delay));
         
     }
 
     midiMessages.clear();
-    for (int i = outgoingNotes.size()-1 ; i >= 0 ; i--)
+    for (int i = 0; i < blockSize; i++, sampleIndex++)
     {
-        if (sampleIndex >= outgoingNotes[i].offset)
+        for (int i = outgoingNotes.size()-1 ; i >= 0 ; i--)
         {
-            midiMessages.push_back(LatticeMidiMessage(outgoingNotes[i].msgType, 1, outgoingNotes[i].note, .5f));
-            outgoingNotes.erase(outgoingNotes.begin() + i);
+            if (sampleIndex >= outgoingNotes[i].offset)
+            {
+                midiMessages.push_back(LatticeMidiMessage(outgoingNotes[i].msgType, 1, outgoingNotes[i].note, getParameter("Velocity")));
+                outgoingNotes.erase(outgoingNotes.begin() + i);
+            }
         }
     }
-    
-    sampleIndex += blockSize;
+
 
 }
    
