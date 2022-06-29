@@ -21,10 +21,10 @@ LatticeProcessorModule::ChannelData  DelayProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData DelayProcessor::createParameters()
 {
-    addParameter({ "Delay Time 1", {0, 10, .5f, .001f, 1}});
-    addParameter({ "Delay Time 2", {0, 10, 1.f, .001f, 1}});
-    addParameter({ "Delay Time 3", {0, 10, 2.f, .001f, 1}});
-    addParameter({ "Delay Time 4", {0, 10, 3.f, .001f, 1}});
+    addParameter({ "Delay Time 1", {0, 10, .5f, .001f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Delay Time 2", {0, 10, 1.f, .001f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Delay Time 3", {0, 10, 2.f, .001f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Delay Time 4", {0, 10, 3.f, .001f, 1}, Parameter::Type::Slider, true});
     return ParameterData(getParameters(), getNumberOfParameters());
     
 }
