@@ -50,7 +50,8 @@ public:
 
     int getRandomMajorNote(int lowestNote, int range)
     {
-        return lowestNote + major[rand() % range];
+        int index = rand() % range;
+        return lowestNote + major[index];
     }
 
     int getRandomMinorNote(int lowestNote, int range)

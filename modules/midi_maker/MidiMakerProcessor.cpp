@@ -10,8 +10,8 @@ MidiMakerProcessor::MidiMakerProcessor()
     modes.push_back("Major");
     modes.push_back("Minor");
 
-    major.push_back(24);
-    minor.push_back(24);
+    major.push_back(0);
+    minor.push_back(0);
     
     for (int i = 0; i < 128; i++)
     {
@@ -30,8 +30,6 @@ LatticeProcessorModule::ChannelData MidiMakerProcessor::createChannels()
 {
     return ChannelData(getChannels(), getNumberOfChannels());
 }
-
-
 
 LatticeProcessorModule::ParameterData MidiMakerProcessor::createParameters()
 {
