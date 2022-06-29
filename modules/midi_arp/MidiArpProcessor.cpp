@@ -29,9 +29,7 @@ LatticeProcessorModule::ParameterData MidiArpProcessor::createParameters()
     addParameter({ "Up and Down", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
     addParameter({ "Unsorted", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
     addParameter({ "Random", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
-    //addParameter({ "Enable Second Voice", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
-    //addParameter({ "Second Voice (Semitone Difference)", {-24, 24, 7, 1, 1}});
-    //addParameter({ "Second Voice (Delay)", {0, 2, 0, .001f, 1}});
+    addParameter({ "Transpose", {-24, 24, 0, 1, 1}});
 
     return ParameterData(getParameters(), getNumberOfParameters());
 }
@@ -41,8 +39,10 @@ void MidiArpProcessor::hostParameterChanged(const char* parameterID, float newVa
    
     const std::string paramName = getParameterNameFromId(parameterID);
     
-    if(paramName == "BPM")
+    if(paramName == "BPM" || paramName == "Transpose")
         return;
+    
+    currentNote = 0;
     
     auto it = find(modes.begin(), modes.end(), paramName);
     int index = it - modes.begin();
@@ -90,23 +90,19 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
         if(message.msgType == LatticeMidiMessage::Type::noteOn)
         {
             if(arpType == Type::unsorted)
-                unorderedNotes.insert (message.note);
+                unorderedNotes.insert (message.note + getParameter("Transpose"));
             else
-                notes.insert (message.note);
+                notes.insert (message.note + getParameter("Transpose"));
         }
         else if ( message.msgType == LatticeMidiMessage::Type::noteOff )
         {
             if ( arpType == Type::unsorted )
             {
-                unorderedNotes.erase (message.note);
-                if(getParameter("Enable Second Voice") == 1)
-                    unorderedNotes.erase (message.note + getParameter("Second Voice (Semitone Difference)"));
+                unorderedNotes.erase (message.note + getParameter("Transpose"));
             }
             else
             {
-                notes.erase (message.note);
-                if(getParameter("Enable Second Voice") == 1)
-                    notes.erase (message.note + getParameter("Second Voice (Semitone Difference)"));
+                notes.erase (message.note + getParameter("Transpose"));
             }
         }
     }
@@ -119,12 +115,6 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
 
         if (lastNotePlayed > 0)
         {
-            if(getParameter("Enable Second Voice") == 1)
-            {
-                auto delay = static_cast<int>((samplingRate / blockSize) * getParameter("Second Voice (Delay)"));
-                midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOff, 1, lastNotePlayed + getParameter("Second Voice (Semitone Difference)"), .0f, offset+delay));
-            }
-            
             midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOff, 1, lastNotePlayed, .0f, offset));
             lastNotePlayed = -1;
         }
@@ -154,23 +144,17 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
                 };
                 
                 std::set<int>::iterator it = notes.begin();
-                std::advance(it, currentNote);
+                std::advance(it, std::min(currentNote, (int)notes.size()));
                 lastNotePlayed = *it;
             }
             else
             {
                 currentNote = (currentNote + 1) % unorderedNotes.size();
                 std::unordered_set<int>::iterator it = unorderedNotes.begin();
-                std::advance(it, currentNote);
+                std::advance(it, std::min(currentNote, (int)notes.size()));
                 lastNotePlayed = *it;
             }
             midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, lastNotePlayed, .5f, offset));
-            
-            if(getParameter("Enable Second Voice") == 1)
-            {
-                auto delay = static_cast<int>((samplingRate / blockSize) * getParameter("Second Voice (Delay)"));
-                midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, lastNotePlayed + getParameter("Second Voice (Semitone Difference)"), .5f, offset+delay));
-            }
         }
     }
 
