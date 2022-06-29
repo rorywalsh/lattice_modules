@@ -24,7 +24,7 @@ public:
 
     void stopNote(int midiNoteNumber, float velocity) override;
 
-    const char* getModuleName() override {    return "Midi converter";     }   
+    const char* getModuleName() override {    return "Midi Converter";     }   
 
     int getModuleType() override
     {

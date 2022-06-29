@@ -48,6 +48,12 @@ public:
         return rand() % range + lowestNote;
     }
 
+    int getRandomMajorNote(int lowestNote, int range)
+    {
+        return rand() % range + lowestNote;
+    }
+
+
 	/* override this method if you want to draw to the Lattice generic editor viewport */
 	const char* getSVGXml() override;
 
@@ -73,7 +79,11 @@ private:
     int lastNotePlayed = 0;
     int samplingRate = 44100;
     int noteIndex = 0;
+    int major[8] = { 2, 2, 1, 2, 2, 2, 1 };
+    int minor[8] = { 2, 1, 2, 2, 1, 2, 2 };
     std::vector<int> notes;
+    std::vector<int> majorNotes;
+    std::vector<int> minorNotes;
     std::vector<int> amps;
     std::vector<float> inL;
     std::vector<float> inR;
@@ -81,5 +91,6 @@ private:
 	std::atomic<bool> canUpdate{ true };
 	bool okToDraw = true;
     std::string svgText;
+    std::vector<std::string> modes;
 };
 

@@ -6,6 +6,18 @@
 
 MidiMakerProcessor::MidiMakerProcessor()
 {
+    modes.push_back("Chromatic");
+    modes.push_back("Major");
+    modes.push_back("Minor");
+
+    majorNotes.push_back(0);
+    minorNotes.push_back(0);
+    for (int i = 1; i < 128; i++)
+    {
+        const int lastMajor = majorNotes[majorNotes.size() - 1];
+        majorNotes.push_back(lastMajor + major[i % 7]);
+    }
+
     for( int i = 0 ; i < 8  ; i++)
     {
         notes.push_back(getRandomNote(48, 60));
@@ -21,19 +33,24 @@ LatticeProcessorModule::ChannelData MidiMakerProcessor::createChannels()
 
 LatticeProcessorModule::ParameterData MidiMakerProcessor::createParameters()
 {
-    addParameter({ "Number of Notes in Loop", {1, 32, 8, 1, 1}});
-    addParameter({ "Tempo", {0, 20, 1, 0.2, 1}});
-    addParameter({ "Lowest Note", {20, 128, 48, 1, 1}});
-    addParameter({ "Range in semitones", {0, 60, 12, 1, 1}});
-	addParameter({ "Generate new pattern", {0, 1, 1, 1, 1},  Parameter::Type::Trigger });
-	addParameter({ "Permit silences", {0, 1, 0, 1, 1},  Parameter::Type::Switch });
-	addParameter({ "Play Midi", {0, 1, 0, 1, 1},  Parameter::Type::Switch });
+    addParameter({ "Number of Notes in Loop", {1, 32, 8, 1, 1}, Parameter::Type::Slider, true });
+    addParameter({ "Tempo", {0, 20, 1, 0.2, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Lowest Note (Root)", {20, 128, 48, 1, 1}, Parameter::Type::Slider, true });
+    addParameter({ "Range in semitones", {0, 60, 12, 1, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Chromatic", {0, 1, 1, 1, 1},  Parameter::Type::Switch});
+    //addParameter({ "Major", {0, 1, 0, 1, 1},  Parameter::Type::Switch});
+    //addParameter({ "Minor", {0, 1, 0, 1, 1},  Parameter::Type::Switch});
+	addParameter({ "Generate new pattern", {0, 1, 1, 1, 1},  Parameter::Type::Trigger, true });
+	addParameter({ "Permit silences", {0, 1, 0, 1, 1},  Parameter::Type::Switch, true });
+	addParameter({ "Play Midi", {0, 1, 0, 1, 1},  Parameter::Type::Switch, true });
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
 void MidiMakerProcessor::hostParameterChanged(const char* parameterID, float /*newValue*/)
 {
-    if(getParameterNameFromId(parameterID) == "Generate new pattern")
+    const std::string paramName = getParameterNameFromId(parameterID);
+
+    if(paramName == "Generate new pattern")
     {
 		std::vector<int> newNotes;
 		canUpdate.store(false);
@@ -43,16 +60,54 @@ void MidiMakerProcessor::hostParameterChanged(const char* parameterID, float /*n
             auto addSilence = (int)getParameter("Permit silences");
             if(addSilence > 0)
             {
-                if(getRandomNote(0, 100) > 20)
-                    newNotes.push_back(getRandomNote((int)getParameter("Lowest Note"), (int)getParameter("Range in semitones")));
-                else
-					newNotes.push_back(0);
+                if (getParameter("Chromatic") == 1)
+                {
+                    if (getRandomNote(0, 100) > 20)
+                        newNotes.push_back(getRandomNote((int)getParameter("Lowest Note"), (int)getParameter("Range in semitones")));
+                    else
+                        newNotes.push_back(0);
+                }
+                else if (getParameter("Major") == 1)
+                {
+
+                }
+                else if (getParameter("Minor") == 1)
+                {
+
+                }
             }
             else
             {
-				newNotes.push_back(getRandomNote((int)getParameter("Lowest Note"), (int)getParameter("Range in semitones")));
+                if (getParameter("Chromatic") == 1)
+                {
+                    newNotes.push_back(getRandomNote((int)getParameter("Lowest Note"), (int)getParameter("Range in semitones")));
+                }
+                else if (getParameter("Major") == 1)
+                {
+
+                }
+                else if (getParameter("Minor") == 1)
+                {
+
+                }
             }
         }
+
+        auto it = find(modes.begin(), modes.end(), paramName);
+        int index = it - modes.begin();
+
+        for (int i = 0; i < modes.size(); i++)
+        {
+            if (modes[i] == paramName)
+            {
+                updateHostParameter(modes[i].c_str(), 1.f);
+            }
+            else
+            {
+                updateHostParameter(modes[i].c_str(), 0.f);
+            }
+        }
+
 		notes = newNotes;
 		canUpdate.store(true);
 		okToDraw = true;
@@ -101,7 +156,7 @@ void MidiMakerProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, st
 const char* MidiMakerProcessor::getSVGXml()
 {
 	const float width = 200;
-	const float height = 40;
+	const float height = 60;
 	svg::Dimensions dimensions(width, height);
 	svg::Document doc("rms.svg", svg::Layout(dimensions, svg::Layout::TopLeft));
 

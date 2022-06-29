@@ -37,7 +37,7 @@ with open("CMakeLists.txt", "w") as f:
     f.write(newFileText)
 
 
-os.system('git add examples')
+os.system('git add modules')
 os.system('git add docs')
 os.system('git add include')
 os.system('git add README.md')

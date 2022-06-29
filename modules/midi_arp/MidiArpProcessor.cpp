@@ -29,8 +29,7 @@ LatticeProcessorModule::ParameterData MidiArpProcessor::createParameters()
     addParameter({ "Up and Down", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
     addParameter({ "Unsorted", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
     addParameter({ "Random", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
-    addParameter({ "Transpose", {-24, 24, 0, 1, 1}});
-
+ 
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
@@ -90,19 +89,19 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
         if(message.msgType == LatticeMidiMessage::Type::noteOn)
         {
             if(arpType == Type::unsorted)
-                unorderedNotes.insert (message.note + getParameter("Transpose"));
+                unorderedNotes.insert (message.note);
             else
-                notes.insert (message.note + getParameter("Transpose"));
+                notes.insert (message.note);
         }
         else if ( message.msgType == LatticeMidiMessage::Type::noteOff )
         {
             if ( arpType == Type::unsorted )
             {
-                unorderedNotes.erase (message.note + getParameter("Transpose"));
+                unorderedNotes.erase (message.note);
             }
             else
             {
-                notes.erase (message.note + getParameter("Transpose"));
+                notes.erase (message.note);
             }
         }
     }
