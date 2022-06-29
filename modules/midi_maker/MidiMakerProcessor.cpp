@@ -10,18 +10,20 @@ MidiMakerProcessor::MidiMakerProcessor()
     modes.push_back("Major");
     modes.push_back("Minor");
 
-    majorNotes.push_back(0);
-    minorNotes.push_back(0);
-    for (int i = 1; i < 128; i++)
+    major.push_back(0);
+    minor.push_back(0);
+    
+    for (int i = 0; i < 128; i++)
     {
-        const int lastMajor = majorNotes[majorNotes.size() - 1];
-        majorNotes.push_back(lastMajor + major[i % 7]);
+        const int lastMajor = major[major.size() - 1];
+        major.push_back(lastMajor + majorIntervals[i % 7]);
+        
+        const int lastMinor = minor[minor.size() - 1];
+        minor.push_back(lastMinor + minorIntervals[i % 7]);
+        
+        chromaticNotes.push_back(12 + (rand() % 72));
     }
 
-    for( int i = 0 ; i < 8  ; i++)
-    {
-        notes.push_back(getRandomNote(48, 60));
-    }
 }
 
 LatticeProcessorModule::ChannelData MidiMakerProcessor::createChannels()
@@ -29,17 +31,13 @@ LatticeProcessorModule::ChannelData MidiMakerProcessor::createChannels()
     return ChannelData(getChannels(), getNumberOfChannels());
 }
 
-
-
 LatticeProcessorModule::ParameterData MidiMakerProcessor::createParameters()
 {
     addParameter({ "Number of Notes in Loop", {1, 32, 8, 1, 1}, Parameter::Type::Slider, true });
     addParameter({ "Tempo", {0, 20, 1, 0.2, 1}, Parameter::Type::Slider, true});
-    addParameter({ "Lowest Note (Root)", {20, 128, 48, 1, 1}, Parameter::Type::Slider, true });
+    addParameter({ "Lowest Note (Root)", {24, 128, 48, 1, 1}, Parameter::Type::Slider, true });
     addParameter({ "Range in semitones", {0, 60, 12, 1, 1}, Parameter::Type::Slider, true});
-    addParameter({ "Chromatic", {0, 1, 1, 1, 1},  Parameter::Type::Switch});
-    //addParameter({ "Major", {0, 1, 0, 1, 1},  Parameter::Type::Switch});
-    //addParameter({ "Minor", {0, 1, 0, 1, 1},  Parameter::Type::Switch});
+    addParameter({ "Tuning", {0, 2, 0, 1, 1},  Parameter::Type::Slider, true});
 	addParameter({ "Generate new pattern", {0, 1, 1, 1, 1},  Parameter::Type::Trigger, true });
 	addParameter({ "Permit silences", {0, 1, 0, 1, 1},  Parameter::Type::Switch, true });
 	addParameter({ "Play Midi", {0, 1, 0, 1, 1},  Parameter::Type::Switch, true });
@@ -52,7 +50,9 @@ void MidiMakerProcessor::hostParameterChanged(const char* parameterID, float /*n
 
     if(paramName == "Generate new pattern")
     {
-		std::vector<int> newNotes;
+        chromaticNotes.clear();
+        minorNotes.clear();
+        majorNotes.clear();
 		canUpdate.store(false);
  
         for( int i = 0 ; i < getParameter("Number of Notes in Loop")  ; i++)
@@ -60,55 +60,29 @@ void MidiMakerProcessor::hostParameterChanged(const char* parameterID, float /*n
             auto addSilence = (int)getParameter("Permit silences");
             if(addSilence > 0)
             {
-                if (getParameter("Chromatic") == 1)
-                {
                     if (getRandomNote(0, 100) > 20)
-                        newNotes.push_back(getRandomNote((int)getParameter("Lowest Note"), (int)getParameter("Range in semitones")));
+                    {
+                        chromaticNotes.push_back(getRandomNote((int)getParameter("Lowest Note (Root)"), (int)getParameter("Range in semitones")));
+                        majorNotes.push_back(getRandomMajorNote((int)getParameter("Lowest Note (Root)"), (int)getParameter("Range in semitones")));
+                        minorNotes.push_back(getRandomMinorNote((int)getParameter("Lowest Note (Root)"), (int)getParameter("Range in semitones")));
+                    }
                     else
-                        newNotes.push_back(0);
-                }
-                else if (getParameter("Major") == 1)
-                {
-
-                }
-                else if (getParameter("Minor") == 1)
-                {
-
-                }
+                    {
+                        chromaticNotes.push_back(0);
+                        majorNotes.push_back(0);
+                        minorNotes.push_back(0);
+                        
+                    }
+           
             }
             else
             {
-                if (getParameter("Chromatic") == 1)
-                {
-                    newNotes.push_back(getRandomNote((int)getParameter("Lowest Note"), (int)getParameter("Range in semitones")));
-                }
-                else if (getParameter("Major") == 1)
-                {
-
-                }
-                else if (getParameter("Minor") == 1)
-                {
-
-                }
+                chromaticNotes.push_back(getRandomNote((int)getParameter("Lowest Note (Root)"), (int)getParameter("Range in semitones")));
+                majorNotes.push_back(getRandomMajorNote((int)getParameter("Lowest Note (Root)"), (int)getParameter("Range in semitones")));
+                minorNotes.push_back(getRandomMinorNote((int)getParameter("Lowest Note (Root)"), (int)getParameter("Range in semitones")));
             }
         }
 
-        auto it = find(modes.begin(), modes.end(), paramName);
-        int index = it - modes.begin();
-
-        for (int i = 0; i < modes.size(); i++)
-        {
-            if (modes[i] == paramName)
-            {
-                updateHostParameter(modes[i].c_str(), 1.f);
-            }
-            else
-            {
-                updateHostParameter(modes[i].c_str(), 0.f);
-            }
-        }
-
-		notes = newNotes;
 		canUpdate.store(true);
 		okToDraw = true;
     }
@@ -129,11 +103,18 @@ void MidiMakerProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, st
 {
 	int numSamples = blockSize;
 
+    if(getParameter("Tuning") == 0)
+        outgoingNotes = chromaticNotes;
+    else if(getParameter("Tuning") == 1)
+        outgoingNotes = majorNotes;
+    else if(getParameter("Tuning") == 2)
+        outgoingNotes = minorNotes;
+    
     if (getParameter("Play Midi") == 1 && canUpdate.load())
     {
         for (int i = 0; i < numSamples; i++, sampleIndex++)
         {
-            const int newNote = noteIndex <= notes.size() ? notes[noteIndex] : 0;
+            const int newNote = noteIndex <= outgoingNotes.size() ? outgoingNotes[noteIndex] : 0;
             if (sampleIndex == 1)
             {
                 midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOff, 1, lastNotePlayed, .0f)); //turn off previous note.
@@ -142,7 +123,7 @@ void MidiMakerProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, st
                 lastNotePlayed = newNote;
                 playNote = !playNote;
                     
-                noteIndex = (noteIndex < notes.size()-1 ? noteIndex+1 : 0);
+                noteIndex = (noteIndex < outgoingNotes.size()-1 ? noteIndex+1 : 0);
             }
             sampleIndex = sampleIndex > samplingRate/getParameter("Tempo") ? 0 : sampleIndex + 1;
         }
@@ -155,17 +136,24 @@ void MidiMakerProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, st
 
 const char* MidiMakerProcessor::getSVGXml()
 {
+    if(getParameter("Tuning") == 0)
+        outgoingNotes = chromaticNotes;
+    else if(getParameter("Tuning") == 1)
+        outgoingNotes = majorNotes;
+    else if(getParameter("Tuning") == 2)
+        outgoingNotes = minorNotes;
+    
 	const float width = 200;
 	const float height = 60;
 	svg::Dimensions dimensions(width, height);
 	svg::Document doc("rms.svg", svg::Layout(dimensions, svg::Layout::TopLeft));
 
 
-	for (int i = 0; i < notes.size(); i++)
+	for (int i = 0; i < outgoingNotes.size(); i++)
 	{
-		double x = remap(float(i), 0.f, static_cast<float>(notes.size()), 0.f, width);
-		double y = remap(notes[i], (int)getParameter("Lowest Note"), (int)getParameter("Lowest Note") + (int)getParameter("Range in semitones"), 0, height);
-		doc << svg::Rectangle(svg::Point(x, height-y), width/notes.size(), y, svg::Fill(svg::Color("#00ABD1")), svg::Stroke(1, svg::Color("#77C1A4"), 2));
+		double x = remap(float(i), 0.f, static_cast<float>(outgoingNotes.size()), 0.f, width);
+		double y = remap(outgoingNotes[i], (int)getParameter("Lowest Note"), (int)getParameter("Lowest Note") + (int)getParameter("Range in semitones"), 0, height);
+		doc << svg::Rectangle(svg::Point(x, height-y), width/outgoingNotes.size(), y, svg::Fill(svg::Color("#00ABD1")), svg::Stroke(1, svg::Color("#77C1A4"), 2));
 	}
 
 	svgText =  doc.toString();

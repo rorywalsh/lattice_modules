@@ -18,8 +18,6 @@ LatticeProcessorModule::ChannelData MidiArpProcessor::createChannels()
     return ChannelData(getChannels(), getNumberOfChannels());
 }
 
-
-
 LatticeProcessorModule::ParameterData MidiArpProcessor::createParameters()
 {
     addParameter({ "Enabled", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
@@ -148,9 +146,9 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
             }
             else
             {
-                currentNote = (currentNote + 1) % unorderedNotes.size();
+                currentNote = (currentNote < unorderedNotes.size() - 1 ? currentNote + 1 : 0);
                 std::unordered_set<int>::iterator it = unorderedNotes.begin();
-                std::advance(it, std::min(currentNote, (int)notes.size()));
+                std::advance(it, std::min(currentNote, (int)unorderedNotes.size()));
                 lastNotePlayed = *it;
             }
             midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, lastNotePlayed, .5f, offset));
