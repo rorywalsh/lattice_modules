@@ -36,7 +36,7 @@ LatticeProcessorModule::ParameterData MidiChordProcessor::createParameters()
 {
     for ( int i = 0 ; i < chords.size() ; i++)
     {
-        addParameter({ chords[i].c_str(), {0, 1, 1, 1, 1}, Parameter::Type::Switch, true});
+        addParameter({ chords[i].c_str(), {0, 1, (i==0 ? 1 : 0), 1, 1}, Parameter::Type::Switch, true});
     }
     
     return ParameterData(getParameters(), getNumberOfParameters());
@@ -58,7 +58,6 @@ void MidiChordProcessor::hostParameterChanged(const char* parameterID, float new
             updateHostParameter(chords[i].c_str(), 0.f);
         }
     }
-    
 }
 
 void MidiChordProcessor::prepareProcessor(int sr, std::size_t /*block*/)
@@ -75,8 +74,7 @@ void MidiChordProcessor::triggerParameterUpdate(const std::string& parameterID, 
 }
 
 void MidiChordProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std::size_t blockSize, const HostData, std::vector<LatticeMidiMessage>& midiMessages)
-{    
-
+{
  
     for (auto& message : midiMessages)
     {
@@ -90,7 +88,8 @@ void MidiChordProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, st
         {
             outgoingNotes.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOff, 1, message.note, 0, message.offset + sampleIndex));
             auto it = find(notes.begin(), notes.end(), message.note);
-            notes.erase(it);
+            if(notes.size()>0)
+                notes.erase(it);
         }
         
     }

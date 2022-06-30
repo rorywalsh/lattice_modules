@@ -27,7 +27,7 @@ LatticeProcessorModule::ParameterData MidiSeqProcessor::createParameters()
         addParameter({ velParams[i].c_str(), {0, 1, .5f, 0.001f, 1}, Parameter::Type::Slider, true });
     }
 
-    addParameter({ "BPM", {20, 600, 120, 1, 1}, Parameter::Type::Slider, true });
+    addParameter({ "BPM", {1, 600, 120, 1, 1}, Parameter::Type::Slider, true });
     addParameter({ "Randomise Notes", {0, 10, 0, 1, 1}, Parameter::Type::Trigger});
     addParameter({ "Randomise Velocities", {0, 1, 0, 1, 1}, Parameter::Type::Trigger});
     addParameter({ "Play", {0, 1, 0, 1, 1},  Parameter::Type::Switch, true });

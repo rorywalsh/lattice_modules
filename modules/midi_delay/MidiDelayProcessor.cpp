@@ -62,7 +62,10 @@ void MidiDelayProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, st
         {
             if (sampleIndex >= outgoingNotes[i].offset)
             {
-                midiMessages.push_back(LatticeMidiMessage(outgoingNotes[i].msgType, 1, outgoingNotes[i].note, getParameter("Velocity")));
+                if(outgoingNotes[i].note > 0)
+                {
+                    midiMessages.push_back(LatticeMidiMessage(outgoingNotes[i].msgType, 1, outgoingNotes[i].note, getParameter("Velocity")));
+                }
                 outgoingNotes.erase(outgoingNotes.begin() + i);
             }
         }
