@@ -39,7 +39,7 @@ void MidiArpProcessor::hostParameterChanged(const char* parameterID, float newVa
     if(paramName == "BPM" || paramName == "Transpose")
         return;
     
-    currentNote = 0;
+    currentNoteIndex = 0;
     
     auto it = find(modes.begin(), modes.end(), paramName);
     int index = it - modes.begin();
@@ -64,7 +64,7 @@ void MidiArpProcessor::prepareProcessor(int sr, std::size_t /*block*/)
     samplingRate = sr;
     notes.clear();
     unorderedNotes.clear();
-    currentNote = 0;
+    currentNoteIndex = 0;
 }
 
 
@@ -90,17 +90,14 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
                 unorderedNotes.insert (message.note);
             else
                 notes.insert (message.note);
+            
         }
         else if ( message.msgType == LatticeMidiMessage::Type::noteOff )
         {
             if ( arpType == Type::unsorted )
-            {
                 unorderedNotes.erase (message.note);
-            }
             else
-            {
                 notes.erase (message.note);
-            }
         }
     }
 
@@ -110,10 +107,10 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
     {
         if (sampleIndex == 1)
         {
-            if (lastNotePlayed > 0)
+            if (canPlayNote)
             {
                 midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOff, 1, lastNotePlayed, .0f));
-                lastNotePlayed = -1;
+                canPlayNote = false;
             }
 
             if (notes.size() > 0 || unorderedNotes.size() > 0)
@@ -123,42 +120,70 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
                     switch(arpType)
                     {
                         case(Type::up):
-                            currentNote = (currentNote < notes.size() - 1 ? currentNote + 1 : 0);
+                            currentNoteIndex = (currentNoteIndex < notes.size() - 1 ? currentNoteIndex + 1 : 0);
                             break;
                         case(Type::down):
-                            currentNote = (currentNote > 0 ? currentNote - 1 : notes.size() - 1 );
+                            currentNoteIndex = (currentNoteIndex > 0 ? currentNoteIndex - 1 : notes.size() - 1 );
                             break;
                         case(Type::upAndDown):
-                            currentNote += incr;
-                            if(currentNote == 0 || currentNote >= notes.size()-1)
+                            currentNoteIndex += incr;
+                            if(currentNoteIndex == 0 || currentNoteIndex >= notes.size()-1)
                                 incr = -incr;
                             break;
                         case(Type::random):
-                            currentNote = rand() % notes.size();
+                            currentNoteIndex = rand() % notes.size();
                             break;
                         default:
-                            currentNote = 0;
+                            currentNoteIndex = 0;
                     };
                     
-                    std::set<int>::iterator it = notes.begin();
-                    std::advance(it, std::min(currentNote, (int)notes.size()));
-                    lastNotePlayed = *it;
+                    std::set<int>::iterator itA = notes.begin();
+                    std::advance(itA, std::min(currentNoteIndex, (int)notes.size()));
+                    
+                    if(lastNotePlayed != *itA)
+                    {
+                        midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, *itA, .5f));
+                        lastNotePlayed = *itA;
+                    }
+                    else
+                    {
+                        //if a new note is injected below the current lowest note we need to iterate to avoid repeated notes..
+                        std::set<int>::iterator itB = notes.begin();
+                        std::advance(itB, std::min(1, (int)notes.size()-1));
+                        midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, *itB, .5f));
+                        lastNotePlayed = *itB;
+                    }
+                    
                 }
-                else
+                else //unsorted set of notes
                 {
-                    currentNote = (currentNote < unorderedNotes.size() - 1 ? currentNote + 1 : 0);
-                    std::unordered_set<int>::iterator it = unorderedNotes.begin();
-                    std::advance(it, std::min(currentNote, (int)unorderedNotes.size()));
-                    lastNotePlayed = *it;
+                    currentNoteIndex = (currentNoteIndex < unorderedNotes.size() - 1 ? currentNoteIndex + 1 : 0);
+                    std::unordered_set<int>::iterator itA = unorderedNotes.begin();
+                    std::advance(itA, std::min(currentNoteIndex, (int)unorderedNotes.size()));
+                    
+                    if(lastNotePlayed != *itA)
+                    {
+                        midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, *itA, .5f));
+                        lastNotePlayed = *itA;
+                    }
+                    else
+                    {
+                        //if a new note is injected below the current lowest note we need to iterate to avoid repeated notes..
+                        std::unordered_set<int>::iterator itB = unorderedNotes.begin();
+                        std::advance(itB, std::min(1, (int)unorderedNotes.size()-1));
+                        midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, *itB, .5f));
+                        lastNotePlayed = *itB;
+                    }
+
                 }
-                midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, lastNotePlayed, .5f));
+                
+                canPlayNote = true;
             }
         }
         sampleIndex = sampleIndex >= noteDuration ? 0 : sampleIndex + 1;
     }
 
 }
-   
 
 // the class factories
 #ifdef WIN32

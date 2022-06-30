@@ -39,11 +39,6 @@ public:
         return ModuleType::MidiProcessor::modifier;
     }
 
-	static int remap(float value, float rangeMin, float rangeMax, float newRangeMin, float newRangeMax)
-	{
-		return static_cast<int>(newRangeMin + (value - rangeMin) * (newRangeMax - newRangeMin) / (rangeMax - rangeMin));
-	}
-
 private:
     
     enum Type{
@@ -59,7 +54,7 @@ private:
 	int sampleIndex = 0;
     int samplingRate = 44100;
     int noteIndex = 0;
-    int currentNote = 0;
+    int currentNoteIndex = 0;
     int lastNotePlayed = -1;
     int time = 0;
     int incr = 1;
@@ -67,5 +62,6 @@ private:
     std::set<int> notes;
     std::unordered_set<int> unorderedNotes;
     std::vector<std::string> modes;
+    bool canPlayNote = false;
 };
 
