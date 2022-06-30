@@ -106,7 +106,7 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
 
     midiMessages.clear();
     
-    for (int i = 0; i < numSamples; i++, sampleIndex++)
+    for (int i = 0; i < numSamples; i++)
     {
         if (sampleIndex == 1)
         {
@@ -154,7 +154,7 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
                 midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, lastNotePlayed, .5f));
             }
         }
-        sampleIndex = sampleIndex > noteDuration ? 0 : sampleIndex + 1;
+        sampleIndex = sampleIndex >= noteDuration ? 0 : sampleIndex + 1;
     }
 
 }
