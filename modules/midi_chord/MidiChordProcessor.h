@@ -2,10 +2,10 @@
 #include "LatticeProcessorModule.h"
 #include <iterator>
 
-class MidiSeqProcessor : public LatticeProcessorModule
+class MidiChordProcessor : public LatticeProcessorModule
 {
 public:
-    MidiSeqProcessor();
+    MidiChordProcessor();
     
     ChannelData createChannels() override;
     /* This function is called by he host to populate the parameter vector */
@@ -23,27 +23,35 @@ public:
     /*  Main processing function called continuously by the host on the audio thread.
         paramValues is a list of parameter values passed from the host in order of their creation */
 	void processMidi(float** buffer, int numChannels, std::size_t blockSize, const HostData data, std::vector<LatticeMidiMessage>& midiMessages) override;
+
+    void addNotesToMidiBuffer(std::vector<LatticeMidiMessage>& midiMessages, int index);
     
-    const char* getModuleName() override {    return "Simple Midi Sequencer";     }
+    const char* getModuleName() override {    return "Midi Chord";     }
     
-    int getModuleType() override
+    int getRandomNote(int lowestNote, int range)
     {
-        return ModuleType::MidiProcessor::generator;
+        return rand() % range + lowestNote;
     }
 
+
+    int getModuleType() override
+    {
+        return ModuleType::MidiProcessor::modifier;
+    }
+
+	static int remap(float value, float rangeMin, float rangeMax, float newRangeMin, float newRangeMax)
+	{
+		return static_cast<int>(newRangeMin + (value - rangeMin) * (newRangeMax - newRangeMin) / (rangeMax - rangeMin));
+	}
+
 private:
+    std::vector<std::vector<int>> intervals;
 	int sampleIndex = 0;
-    int lastNotePlayed = 0;
     int samplingRate = 44100;
-    int noteIndex = 0;
-    int numSteps = 8;
-    std::vector<std::string> noteParams;
-    std::vector<std::string> velParams;
-    
-    bool playNote = true;
-	std::atomic<bool> canUpdate{ true };
-	bool okToDraw = true;
-    std::string svgText;
+    int time = 0;
+    std::vector<int> notes;
+    std::vector<LatticeMidiMessage> outgoingNotes;
     std::vector<std::string> chords;
+    int chordIndex = 0;
 };
 

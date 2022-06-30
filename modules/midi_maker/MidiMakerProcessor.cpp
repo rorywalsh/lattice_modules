@@ -112,10 +112,10 @@ void MidiMakerProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, st
     
     if (getParameter("Play Midi") == 1 && canUpdate.load())
     {
-        for (int i = 0; i < numSamples; i++, sampleIndex++)
+        for (int i = 0; i < numSamples; i++)
         {
             const int newNote = noteIndex <= outgoingNotes.size() ? outgoingNotes[noteIndex] : 0;
-            if (sampleIndex == 1)
+            if (sampleIndex == 0)
             {
                 midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOff, 1, lastNotePlayed, .0f)); //turn off previous note.
                 if(playNote == true && newNote != 0)

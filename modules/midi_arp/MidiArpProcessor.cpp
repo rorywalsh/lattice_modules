@@ -41,8 +41,6 @@ void MidiArpProcessor::hostParameterChanged(const char* parameterID, float newVa
     
     currentNoteIndex = 0;
     
-    auto it = find(modes.begin(), modes.end(), paramName);
-    int index = it - modes.begin();
     
     for (int i = 0 ; i < modes.size() ; i++)
     {
