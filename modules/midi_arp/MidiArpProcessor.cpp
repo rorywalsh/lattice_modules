@@ -27,6 +27,7 @@ LatticeProcessorModule::ParameterData MidiArpProcessor::createParameters()
     addParameter({ "Up and Down", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
     addParameter({ "Unsorted", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
     addParameter({ "Random", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
+    addParameter({ "One-shot", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
  
     return ParameterData(getParameters(), getNumberOfParameters());
 }
@@ -152,6 +153,8 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
                         lastNotePlayed = *itB;
                     }
                     
+                    if(getParameter("One-shot") == 1 && currentNoteIndex == notes.size()-1)
+                        notes.clear();
                 }
                 else //unsorted set of notes
                 {
@@ -172,7 +175,9 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
                         midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, *itB, .5f));
                         lastNotePlayed = *itB;
                     }
-
+                    
+                    if(getParameter("One-shot") == 1 && currentNoteIndex == notes.size()-1)
+                        unorderedNotes.clear();
                 }
                 
                 canPlayNote = true;

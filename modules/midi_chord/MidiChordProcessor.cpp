@@ -109,7 +109,7 @@ void MidiChordProcessor::addNotesToMidiBuffer(std::vector<LatticeMidiMessage>& m
         {
                 midiMessages.push_back(LatticeMidiMessage(outgoingNotes[i].msgType, 1, outgoingNotes[i].note, outgoingNotes[i].velocity, outgoingNotes[i].offset));
                 midiMessages.push_back(LatticeMidiMessage(outgoingNotes[i].msgType, 1, outgoingNotes[i].note + intervals[chordIndex][0], outgoingNotes[i].velocity, outgoingNotes[i].offset));
-                midiMessages.push_back(LatticeMidiMessage(outgoingNotes[i].msgType, 1, outgoingNotes[i].note + intervals[chordIndex][0], outgoingNotes[i].velocity, outgoingNotes[i].offset));
+                midiMessages.push_back(LatticeMidiMessage(outgoingNotes[i].msgType, 1, outgoingNotes[i].note + intervals[chordIndex][1], outgoingNotes[i].velocity, outgoingNotes[i].offset));
                 midiMessages.push_back(LatticeMidiMessage(outgoingNotes[i].msgType, 1, outgoingNotes[i].note + intervals[chordIndex][2], outgoingNotes[i].velocity, outgoingNotes[i].offset));
         }
         
