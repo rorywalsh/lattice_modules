@@ -106,56 +106,57 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
 
     midiMessages.clear();
     
-    if ((time + numSamples) > noteDuration)
+    for (int i = 0; i < numSamples; i++, sampleIndex++)
     {
-        auto offset = std::max (0, std::min((int) (noteDuration - time), numSamples - 1));
-
-        if (lastNotePlayed > 0)
+        if (sampleIndex == 1)
         {
-            midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOff, 1, lastNotePlayed, .0f, offset));
-            lastNotePlayed = -1;
-        }
-
-        if (notes.size() > 0 || unorderedNotes.size() > 0)
-        {
-            if ( arpType != Type::unsorted )
+            if (lastNotePlayed > 0)
             {
-                switch(arpType)
+                midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOff, 1, lastNotePlayed, .0f));
+                lastNotePlayed = -1;
+            }
+
+            if (notes.size() > 0 || unorderedNotes.size() > 0)
+            {
+                if ( arpType != Type::unsorted )
                 {
-                    case(Type::up):
-                        currentNote = (currentNote < notes.size() - 1 ? currentNote + 1 : 0);
-                        break;
-                    case(Type::down):
-                        currentNote = (currentNote > 0 ? currentNote - 1 : notes.size() - 1 );
-                        break;
-                    case(Type::upAndDown):
-                        currentNote += incr;
-                        if(currentNote == 0 || currentNote >= notes.size()-1)
-                            incr = -incr;
-                        break;
-                    case(Type::random):
-                        currentNote = rand() % notes.size();
-                        break;
-                    default:
-                        currentNote = 0;
-                };
-                
-                std::set<int>::iterator it = notes.begin();
-                std::advance(it, std::min(currentNote, (int)notes.size()));
-                lastNotePlayed = *it;
+                    switch(arpType)
+                    {
+                        case(Type::up):
+                            currentNote = (currentNote < notes.size() - 1 ? currentNote + 1 : 0);
+                            break;
+                        case(Type::down):
+                            currentNote = (currentNote > 0 ? currentNote - 1 : notes.size() - 1 );
+                            break;
+                        case(Type::upAndDown):
+                            currentNote += incr;
+                            if(currentNote == 0 || currentNote >= notes.size()-1)
+                                incr = -incr;
+                            break;
+                        case(Type::random):
+                            currentNote = rand() % notes.size();
+                            break;
+                        default:
+                            currentNote = 0;
+                    };
+                    
+                    std::set<int>::iterator it = notes.begin();
+                    std::advance(it, std::min(currentNote, (int)notes.size()));
+                    lastNotePlayed = *it;
+                }
+                else
+                {
+                    currentNote = (currentNote < unorderedNotes.size() - 1 ? currentNote + 1 : 0);
+                    std::unordered_set<int>::iterator it = unorderedNotes.begin();
+                    std::advance(it, std::min(currentNote, (int)unorderedNotes.size()));
+                    lastNotePlayed = *it;
+                }
+                midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, lastNotePlayed, .5f));
             }
-            else
-            {
-                currentNote = (currentNote < unorderedNotes.size() - 1 ? currentNote + 1 : 0);
-                std::unordered_set<int>::iterator it = unorderedNotes.begin();
-                std::advance(it, std::min(currentNote, (int)unorderedNotes.size()));
-                lastNotePlayed = *it;
-            }
-            midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, lastNotePlayed, .5f, offset));
         }
+        sampleIndex = sampleIndex > noteDuration ? 0 : sampleIndex + 1;
     }
 
-    time = (time + numSamples) % noteDuration;
 }
    
 

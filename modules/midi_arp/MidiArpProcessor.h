@@ -61,7 +61,7 @@ private:
     int noteIndex = 0;
     int currentNote = 0;
     int lastNotePlayed = -1;
-    int time;
+    int time = 0;
     int incr = 1;
     //std::vector<LatticeMidiMessage> notes;
     std::set<int> notes;
