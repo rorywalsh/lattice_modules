@@ -58,10 +58,12 @@ private:
     int lastNotePlayed = -1;
     int time = 0;
     int incr = 1;
+    int octaves[3] = {0, 12, 24};
+    int octaveIndex = 0;
     //std::vector<LatticeMidiMessage> notes;
     std::set<int> notes;
     std::unordered_set<int> unorderedNotes;
     std::vector<std::string> modes;
-    bool canPlayNote = false;
+    bool shouldStopNote = false;
 };
 

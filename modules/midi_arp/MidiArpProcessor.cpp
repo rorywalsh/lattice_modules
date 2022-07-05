@@ -27,6 +27,7 @@ LatticeProcessorModule::ParameterData MidiArpProcessor::createParameters()
     addParameter({ "Up and Down", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
     //addParameter({ "Unsorted", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
     addParameter({ "Random", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
+    addParameter({ "Octave Range", {1, 3, 1, 1, 1}, Parameter::Type::Slider});
     addParameter({ "One-shot", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
  
     return ParameterData(getParameters(), getNumberOfParameters());
@@ -106,10 +107,18 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
     {
         if (sampleIndex == 1)
         {
-            if (canPlayNote)
+            int range = getParameter("Octave Range") - 1;
+            std::cout << currentNoteIndex << std::endl;
+            if(currentNoteIndex == notes.size()-1)
+            {
+                octaveIndex = octaveIndex < range ? octaveIndex+1 : 0;
+                std::cout << octaves[octaveIndex] << std::endl;
+            }
+            
+            if (shouldStopNote)
             {
                 midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOff, 1, lastNotePlayed, .0f));
-                canPlayNote = false;
+                shouldStopNote = false;
             }
 
             if (notes.size() > 0 || unorderedNotes.size() > 0)
@@ -141,7 +150,7 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
                     
                     if(lastNotePlayed != *itA)
                     {
-                        midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, *itA, .5f));
+                        midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, octaves[octaveIndex] + *itA, .5f));
                         lastNotePlayed = *itA;
                     }
                     else
@@ -149,41 +158,15 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
                         //if a new note is injected below the current lowest note we need to iterate to avoid repeated notes..
                         std::set<int>::iterator itB = notes.begin();
                         std::advance(itB, std::min(1, (int)notes.size()-1));
-                        midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, *itB, .5f));
+                        midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, octaves[octaveIndex] + *itB, .5f));
                         lastNotePlayed = *itB;
                     }
                     
                     if(getParameter("One-shot") == 1 && currentNoteIndex == notes.size()-1)
                         notes.clear();
                 }
-//                else //unsorted set of notes
-//                {
-//                    if(unorderedNotes.size() == 0)
-//                        continue;
-//
-//                    currentNoteIndex = (currentNoteIndex < unorderedNotes.size() - 1 ? currentNoteIndex + 1 : 0);
-//                    std::unordered_set<int>::iterator itA = unorderedNotes.begin();
-//                    std::advance(itA, std::min(currentNoteIndex, (int)unorderedNotes.size()));
-//
-//                    if(lastNotePlayed != *itA)
-//                    {
-//                        midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, *itA, .5f));
-//                        lastNotePlayed = *itA;
-//                    }
-//                    else
-//                    {
-//                        //if a new note is injected below the current lowest note we need to iterate to avoid repeated notes..
-//                        std::unordered_set<int>::iterator itB = unorderedNotes.begin();
-//                        std::advance(itB, std::min(1, (int)unorderedNotes.size()-1));
-//                        midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, *itB, .5f));
-//                        lastNotePlayed = *itB;
-//                    }
-//
-//                    if(getParameter("One-shot") == 1 && currentNoteIndex == unorderedNotes.size()-1)
-//                        unorderedNotes.clear();
-//                }
                 
-                canPlayNote = true;
+                shouldStopNote = true;
             }
         }
         sampleIndex = sampleIndex >= noteDuration ? 0 : sampleIndex + 1;
