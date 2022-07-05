@@ -9,7 +9,7 @@ MidiArpProcessor::MidiArpProcessor()
     modes.push_back("Straight Up");
     modes.push_back("Down");
     modes.push_back("Up and Down");
-    modes.push_back("Unsorted");
+    //modes.push_back("Unsorted");
     modes.push_back("Random");
 }
 
@@ -25,7 +25,7 @@ LatticeProcessorModule::ParameterData MidiArpProcessor::createParameters()
     addParameter({ "Straight Up", {0, 1, 1, 1, 1}, Parameter::Type::Switch});
     addParameter({ "Down", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
     addParameter({ "Up and Down", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
-    addParameter({ "Unsorted", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
+    //addParameter({ "Unsorted", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
     addParameter({ "Random", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
     addParameter({ "One-shot", {0, 1, 0, 1, 1}, Parameter::Type::Switch});
  
@@ -122,7 +122,7 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
                             currentNoteIndex = (currentNoteIndex < notes.size() - 1 ? currentNoteIndex + 1 : 0);
                             break;
                         case(Type::down):
-                            currentNoteIndex = (currentNoteIndex > 0 ? currentNoteIndex - 1 : notes.size() - 1 );
+                            currentNoteIndex = (currentNoteIndex > 1 ? currentNoteIndex - 1 : notes.size() - 1 );
                             break;
                         case(Type::upAndDown):
                             currentNoteIndex += incr;
@@ -137,7 +137,7 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
                     };
                     
                     std::set<int>::iterator itA = notes.begin();
-                    std::advance(itA, std::min(currentNoteIndex, (int)notes.size()));
+                    std::advance(itA, std::min(std::max(0, currentNoteIndex), (int)notes.size()));
                     
                     if(lastNotePlayed != *itA)
                     {
@@ -156,29 +156,32 @@ void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std:
                     if(getParameter("One-shot") == 1 && currentNoteIndex == notes.size()-1)
                         notes.clear();
                 }
-                else //unsorted set of notes
-                {
-                    currentNoteIndex = (currentNoteIndex < unorderedNotes.size() - 1 ? currentNoteIndex + 1 : 0);
-                    std::unordered_set<int>::iterator itA = unorderedNotes.begin();
-                    std::advance(itA, std::min(currentNoteIndex, (int)unorderedNotes.size()));
-                    
-                    if(lastNotePlayed != *itA)
-                    {
-                        midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, *itA, .5f));
-                        lastNotePlayed = *itA;
-                    }
-                    else
-                    {
-                        //if a new note is injected below the current lowest note we need to iterate to avoid repeated notes..
-                        std::unordered_set<int>::iterator itB = unorderedNotes.begin();
-                        std::advance(itB, std::min(1, (int)unorderedNotes.size()-1));
-                        midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, *itB, .5f));
-                        lastNotePlayed = *itB;
-                    }
-                    
-                    if(getParameter("One-shot") == 1 && currentNoteIndex == notes.size()-1)
-                        unorderedNotes.clear();
-                }
+//                else //unsorted set of notes
+//                {
+//                    if(unorderedNotes.size() == 0)
+//                        continue;
+//
+//                    currentNoteIndex = (currentNoteIndex < unorderedNotes.size() - 1 ? currentNoteIndex + 1 : 0);
+//                    std::unordered_set<int>::iterator itA = unorderedNotes.begin();
+//                    std::advance(itA, std::min(currentNoteIndex, (int)unorderedNotes.size()));
+//
+//                    if(lastNotePlayed != *itA)
+//                    {
+//                        midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, *itA, .5f));
+//                        lastNotePlayed = *itA;
+//                    }
+//                    else
+//                    {
+//                        //if a new note is injected below the current lowest note we need to iterate to avoid repeated notes..
+//                        std::unordered_set<int>::iterator itB = unorderedNotes.begin();
+//                        std::advance(itB, std::min(1, (int)unorderedNotes.size()-1));
+//                        midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, *itB, .5f));
+//                        lastNotePlayed = *itB;
+//                    }
+//
+//                    if(getParameter("One-shot") == 1 && currentNoteIndex == unorderedNotes.size()-1)
+//                        unorderedNotes.clear();
+//                }
                 
                 canPlayNote = true;
             }
