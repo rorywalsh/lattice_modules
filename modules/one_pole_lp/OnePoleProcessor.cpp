@@ -34,14 +34,8 @@ void OnePoleProcessor::process(float** buffer, int numChannels, std::size_t bloc
     in.resize(blockSize);
 
     std::copy(buffer[0], buffer[0] + blockSize, in.begin());
-
-	const std::vector<float>& out = lp(in, getParameter("Frequency"));
-
-
-    for (int i = 0; i < blockSize; i++)
-        for (int chan = 0; chan < numChannels; chan++)
-            buffer[chan][i] = out[i];
-
+    auto& out = lp(in, getParameter("Frequency"));
+    std::copy(out.begin(), out.end(), buffer[0]);
 }
 
 
