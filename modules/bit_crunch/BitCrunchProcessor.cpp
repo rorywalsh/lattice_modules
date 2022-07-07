@@ -32,13 +32,13 @@ void BitCrunchProcessor::prepareProcessor(int sr, std::size_t block)
 
 
 
-void BitCrunchProcessor::process(float** buffer, int numChannels, std::size_t blockSize, const HostData /*hostInfo*/)
+void BitCrunchProcessor::process(float** buffer, std::size_t blockSize)
 {
     float bitDepth = std::powf(2.f, static_cast<int>(getParameter("Bit Depth")));
     int rateReducion = (1.f - getParameter("Sample Rate")) * 50;
     std::cout << rateReducion << std::endl;
     
-    for (int c = 0 ; c < numChannels ; c++)
+    for (int c = 0 ; c < getNumberOfOutputChannels() ; c++)
     {
         for(std::size_t i = 0; i < blockSize ; i++)
         {

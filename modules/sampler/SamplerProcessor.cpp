@@ -109,7 +109,7 @@ inline static float limcf(float cf) {
 }
 
 
-void SamplerProcessor::processSamplerVoice(float** buffer, int numChannels,
+void SamplerProcessor::processSamplerVoice(float** buffer,
 			       std::size_t blockSize)
 {
   in1.resize(blockSize);

@@ -59,7 +59,7 @@ void ATuneProcessor::prepareProcessor(int sr, std::size_t/*block*/)
   fs = sr;
 }
 
-void ATuneProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void ATuneProcessor::process(float** buffer, std::size_t blockSize)
 {
   float thresh = std::pow(10, getParameter("Threshold")/20.), cps;
   int smps = blockSize, hsize = anal.hsize(), offs = 0;

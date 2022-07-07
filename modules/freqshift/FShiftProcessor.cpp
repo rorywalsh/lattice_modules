@@ -42,16 +42,16 @@ void FShiftProcessor::hostParameterChanged(const char* parameterID, float newVal
 }
 
 
-void FShiftProcessor::process(float** buffer, int /*numChannels*/, std::size_t blocksize, const HostData)
+void FShiftProcessor::process(float** buffer, std::size_t blockSize)
 {
-   in.resize(blocksize);
-   std::copy(buffer[0],buffer[0]+blocksize,in.begin());
+   in.resize(blockSize);
+   std::copy(buffer[0],buffer[0]+blockSize,in.begin());
    auto &up = fshift(in, getParameter("Shift Amount")*getParameter("Scale"));
    auto &down = fshift.downshift();
    auto gain = smooth(fshift.input_magnitude() > thresh ? 1.f : 0.f,
-		      0.1, fs/blocksize);
+		      0.1, fs/blockSize);
    auto m = getParameter("Mixture (A-B)");
-   for(std::size_t n = 0; n < blocksize; n++) { 
+   for(std::size_t n = 0; n < blockSize; n++) { 
      buffer[0][n] = (up[n]*(1-m) + down[n]*m)*gain;
      buffer[1][n]  = up[n]*gain;
      buffer[2][n]  = down[n]*gain;

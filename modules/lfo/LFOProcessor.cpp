@@ -91,7 +91,7 @@ void LFOProcessor::prepareProcessor(int sr, std::size_t block)
 }  
 
 
-void LFOProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void LFOProcessor::process(float** buffer, std::size_t blockSize)
 {
   lfo.vsize(blockSize);
   auto &saw = lfo(1,getParameter("Rate"));

@@ -32,7 +32,7 @@ void FlangerProcessor::prepareProcessor(int sr, std::size_t block)
 	flanger.reset(sr);
 }
 
-void FlangerProcessor::process(float** buffer, int numChannels, std::size_t blockSize, const HostData)
+void FlangerProcessor::process(float** buffer, std::size_t blockSize)
 {
     in.resize(blockSize);
     std::copy(buffer[0], buffer[0] + blockSize, in.begin());

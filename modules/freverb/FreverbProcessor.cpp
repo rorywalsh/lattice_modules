@@ -41,7 +41,7 @@ LatticeProcessorModule::ChannelData FreverbProcessor::createChannels()
     return ChannelData(getChannels(), getNumberOfChannels());
 }
 
-void FreverbProcessor::process(float** buffer, int numChannels, std::size_t blockSize, const HostData)
+void FreverbProcessor::process(float** buffer, std::size_t blockSize)
 {
    
     inL.resize(blockSize);

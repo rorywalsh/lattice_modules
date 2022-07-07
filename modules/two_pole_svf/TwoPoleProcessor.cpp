@@ -33,7 +33,7 @@ void TwoPoleProcessor::prepareProcessor(int sr, std::size_t block)
 }
 
 
-void TwoPoleProcessor::process(float** buffer, int numChannels, std::size_t blockSize, const HostData /*hostInfo*/)
+void TwoPoleProcessor::process(float** buffer, std::size_t blockSize)
 {
     in.resize(blockSize);
     std::copy(buffer[0], buffer[0] + blockSize, in.begin());

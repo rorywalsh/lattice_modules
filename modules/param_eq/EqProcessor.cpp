@@ -31,7 +31,7 @@ void EqProcessor::prepareProcessor(int sr, std::size_t)
 	eq.reset(sr);}
 
 
-void EqProcessor::process(float** buffer, int numChannels, std::size_t blockSize, const HostData)
+void EqProcessor::process(float** buffer, std::size_t blockSize)
 {
     in.resize(blockSize);
     
@@ -40,7 +40,7 @@ void EqProcessor::process(float** buffer, int numChannels, std::size_t blockSize
 	auto& out = eq(in, getParameter("Output Gain"), getParameter("Frequency"), getParameter("Bandwidth"));
 
     for (int i = 0; i < blockSize; i++)
-        for (int chan = 0; chan < numChannels; chan++)
+        for (int chan = 0; chan < getNumberOfOutputChannels(); chan++)
             buffer[chan][i] = out[i];
 }
 

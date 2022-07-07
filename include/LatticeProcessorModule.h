@@ -141,7 +141,7 @@ public:
     /** @struct HostData
      * @brief Data from the host
      *
-     * One of these is passed to the `LatticeProcessorModule::process()` method each time is it called. This can be used to query everything from the current host BPM to whether or not the host is actually playing. (Note: only available in effect plugins)
+     * Use getHostInfo() in your procoess block to access the hostInfo member. This can be used to query everything from the current host BPM to whether or not the host is actually playing. (Note: only available in effect and midi effect plugins)
      */
     struct HostData
     {
@@ -328,22 +328,22 @@ public:
     @param[in] blockSize The number of samples in each channel
     @param[in] info A struct filled with host information
     */
-    virtual void process(float** buffer, int numChannels, std::size_t blockSize, const HostData info)
+    virtual void process(float** buffer, std::size_t blockSize)
     {
-        unused(buffer, numChannels, blockSize, info);
+        unused(buffer, blockSize);
     }
 
     /*!
-     Use this for MIDI based effects. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages. (See above for an example of how to access the channel data.)
+     Use this for MIDI based effects. Each channel array will be blockSize samples long. This process is passed a reference to a vector of LatticeMidiMessages. (See above for an example of how to access the channel data.)
     * @param[in] buffer An array of audio channels.
     * @param[in] numChannels  The number of channels in the buffer array
     * @param[in] blockSize The number of samples in each channel
     * @param[in] midiMessages A LatticeMidiMessage vector. Read from this to access incoming MIDI data, and write to it to output MIDI data.
     * @param[in] info A struct filled with host information
     */
-    virtual void processMidi(float** buffer, int numChannels, std::size_t blockSize, const HostData info, std::vector<LatticeMidiMessage>& midiMessages)
+    virtual void processMidi(std::size_t blockSize, std::vector<LatticeMidiMessage>& midiMessages)
     {
-        unused(buffer, numChannels, blockSize, midiMessages, info);
+        unused(blockSize, midiMessages);
     }
     /*!
     This processing method is called by synth modules. No MIDI messages are passed directly to this function. Instead, the start and stop notes methods will be called. Lattice will allocating an instance of the module to each voice. Lattice will set the number of voices when it calls  getNumberOfVoices(). Buffer is an array of audio channels. Each channel array will be blockSize samples longer. This process is passed a reference to a vector of LatticeMidiMessages. (See above for an example of how to access the channel data.)
@@ -351,14 +351,14 @@ public:
    * @param[in] numChannels  The number of channels in the buffer array
    * @param[in] blockSize The number of samples in each channel
    */
-    virtual void processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
+    virtual void processSynthVoice(float** buffer, std::size_t blockSize)
     {
-        unused(buffer, numChannels, blockSize);
+        unused(buffer, blockSize);
     }
 
-    virtual void processSamplerVoice(float** buffer, int numChannels, std::size_t blockSize)
+    virtual void processSamplerVoice(float** buffer, std::size_t blockSize)
     {
-        unused(buffer, numChannels, blockSize);
+        unused(buffer, blockSize);
     }
 
     
@@ -595,6 +595,8 @@ public:
         return "";
     }
 
+
+    
     void setSamplerGlideTime(float value)
     {
         glideTime = value;
@@ -741,7 +743,21 @@ public:
       return voices;
     }
      
+    
+    HostData getHostInfo() const
+    {
+        return hostInfo;
+    }
+
+    
+    void setHostInfo(HostData info)
+    {
+        hostInfo = info;
+    }
+        
+    
 private:
+    HostData hostInfo = {};
     float glideTime = 0;
     std::vector<Channel> channels;
     int inCount = 0;

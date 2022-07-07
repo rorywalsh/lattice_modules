@@ -73,7 +73,7 @@ void MidiChordProcessor::triggerParameterUpdate(const std::string& parameterID, 
     updateParameter(parameterID, newValue);
 }
 
-void MidiChordProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std::size_t blockSize, const HostData, std::vector<LatticeMidiMessage>& midiMessages)
+void MidiChordProcessor::processMidi(std::size_t blockSize, std::vector<LatticeMidiMessage>& midiMessages)
 {
  
     for (auto& message : midiMessages)

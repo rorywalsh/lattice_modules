@@ -41,7 +41,7 @@ void TWProcessor::prepareProcessor(int sr, std::size_t block)
 
 
 
-void TWProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void TWProcessor::process(float** buffer, std::size_t blockSize)
 {
     std::size_t n = 0;
     const float st = 0.01f;

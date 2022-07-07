@@ -52,7 +52,7 @@ void TableViewerProcessor::prepareProcessor(int /*sr*/, std::size_t block)
 }
 
 
-void TableViewerProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void TableViewerProcessor::process(float** buffer, std::size_t blockSize)
 {
     std::copy(buffer[0], buffer[0] + blockSize, signal.begin());
     

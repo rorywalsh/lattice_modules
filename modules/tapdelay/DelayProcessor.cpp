@@ -36,7 +36,7 @@ void DelayProcessor::prepareProcessor(int sr, std::size_t/*block*/)
   samplingRate = sr;
 }
 
-void DelayProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void DelayProcessor::process(float** buffer, std::size_t blockSize)
 {
     const char* parms[] = {"Delay Time 1","Delay Time 2","Delay Time 3","Delay Time 4"};
     in.resize(blockSize);

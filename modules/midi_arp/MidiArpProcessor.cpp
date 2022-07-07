@@ -73,7 +73,7 @@ void MidiArpProcessor::triggerParameterUpdate(const std::string& parameterID, fl
     updateParameter(parameterID, newValue);
 }
 
-void MidiArpProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std::size_t blockSize, const HostData, std::vector<LatticeMidiMessage>& midiMessages)
+void MidiArpProcessor::processMidi(std::size_t blockSize, std::vector<LatticeMidiMessage>& midiMessages)
 {
 	int numSamples = blockSize;
 

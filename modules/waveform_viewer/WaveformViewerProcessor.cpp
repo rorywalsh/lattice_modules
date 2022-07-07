@@ -32,7 +32,7 @@ void WaveformViewerProcessor::prepareProcessor(int /*sr*/, std::size_t /*block*/
 }
 
 
-void WaveformViewerProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData hostInfo)
+void WaveformViewerProcessor::process(float** buffer, std::size_t blockSize)
 {
 	inL.resize(blockSize);
 	inR.resize(blockSize);

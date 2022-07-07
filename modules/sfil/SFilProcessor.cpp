@@ -37,7 +37,7 @@ void SFilProcessor::prepareProcessor(int sr, std::size_t/*block*/)
   syn.reset(sr);
 }
 
-void SFilProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void SFilProcessor::process(float** buffer, std::size_t blockSize)
 {
   int smps = blockSize, hsize = anal1.hsize(), offs = 0;
   if(smps > hsize) blockSize = hsize;

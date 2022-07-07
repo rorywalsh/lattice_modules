@@ -29,7 +29,7 @@ void OnePoleProcessor::prepareProcessor(int sr, std::size_t)
 	lp.reset(sr);
 }
 
-void OnePoleProcessor::process(float** buffer, int numChannels, std::size_t blockSize, const HostData /*hostInfo*/)
+void OnePoleProcessor::process(float** buffer, std::size_t blockSize)
 {
     in.resize(blockSize);
 

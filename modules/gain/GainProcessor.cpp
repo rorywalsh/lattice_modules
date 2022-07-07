@@ -33,7 +33,7 @@ void GainProcessor::prepareProcessor(int sr, std::size_t block)
 }  
 
 
-void GainProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void GainProcessor::process(float** buffer, std::size_t blockSize)
 {
     float g = getParameter("Gain");
 

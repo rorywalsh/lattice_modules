@@ -108,7 +108,7 @@ void SimpleSynthProcessor::stopNote (int, float /* velocity */)
 }
 
 
-void SimpleSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
+void SimpleSynthProcessor::processSynthVoice(float** buffer, std::size_t blockSize)
 {
     const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
     synth.setBlockSize(blockSize);

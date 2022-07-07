@@ -71,7 +71,7 @@ void DriveSynthProcessor::stopNote (int, float velocity)
     isNoteOn = false;
 }
 
-void DriveSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
+void DriveSynthProcessor::processSynthVoice(float** buffer, std::size_t blockSize)
 {
     const float freq = static_cast<float>(getMidiNoteInHertz(getMidiNoteNumber(), 440));
     synth.setBlockSize(blockSize);

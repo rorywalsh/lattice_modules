@@ -64,7 +64,7 @@ void VOCSynthProcessor::triggerParameterUpdate(const std::string& parameterID, f
   updateParameter(parameterID, newValue);
 }
 
-void VOCSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
+void VOCSynthProcessor::processSynthVoice(float** buffer, std::size_t blockSize)
 {
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);
   float thresh = std::pow(10, getParameter("Threshold")/20.), cps, scl = 1.;

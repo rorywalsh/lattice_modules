@@ -81,7 +81,7 @@ void FilePlayerProcessor::prepareProcessor(int /*sr*/, std::size_t /*block*/)
 }
 
 
-void FilePlayerProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void FilePlayerProcessor::process(float** buffer, std::size_t blockSize)
 {
     for(int i = 0; i < blockSize ; i++)
     {

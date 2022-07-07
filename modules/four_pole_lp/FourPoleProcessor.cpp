@@ -40,7 +40,7 @@ void FourPoleProcessor::triggerParameterUpdate(const std::string& parameterID, f
 }
 
 
-void FourPoleProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void FourPoleProcessor::process(float** buffer, std::size_t blockSize)
 {
     inL.resize(static_cast<std::size_t>(blockSize));
     inR.resize(static_cast<std::size_t>(blockSize));

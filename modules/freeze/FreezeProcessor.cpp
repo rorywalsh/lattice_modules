@@ -78,7 +78,7 @@ void FreezeProcessor::prepareProcessor(int sr, std::size_t/*block*/)
     ar = sr/Aurora::def_hsize;
 }
 
-void FreezeProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void FreezeProcessor::process(float** buffer, std::size_t blockSize)
 {
     int smps = blockSize, hsize = anal.hsize(), offs = 0;
     if(smps > hsize) blockSize = hsize;

@@ -40,9 +40,8 @@ LatticeProcessorModule::ChannelData ChorusProcessor::createChannels()
     return ChannelData(getChannels(), getNumberOfChannels());
 }
 
-void ChorusProcessor::process(float** buffer, int numChannels, std::size_t blockSize, const HostData)
-{
-   
+void ChorusProcessor::process(float **buffer, std::size_t blockSize)
+{   
     inL.resize(blockSize);
     inR.resize(blockSize);
     chorus.vsize(blockSize);

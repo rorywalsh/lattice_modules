@@ -43,7 +43,7 @@ void DelayProcessor::prepareProcessor(int sr, std::size_t/*block*/)
    samplingRate = sr;
 }
 
-void DelayProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void DelayProcessor::process(float** buffer, std::size_t blockSize)
 {
     inL.resize(blockSize);
     inR.resize(blockSize);  

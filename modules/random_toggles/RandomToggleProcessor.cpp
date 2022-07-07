@@ -51,7 +51,7 @@ void RandomToggleProcessor::hostParameterChanged(const char* parameterID, float 
     
 }
 
-void RandomToggleProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData /*hostInfo*/)
+void RandomToggleProcessor::process(float** buffer, std::size_t blockSize)
 {
     for( int i = 0 ; i < blockSize ; i++)
     {

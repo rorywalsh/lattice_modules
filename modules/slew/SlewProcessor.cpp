@@ -31,7 +31,7 @@ void SlewProcessor::prepareProcessor(int sr, std::size_t block)
 }  
 
 
-void SlewProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void SlewProcessor::process(float** buffer, std::size_t blockSize)
 {
     float sl = getParameter("Slew Time")*0.125;
     for(int i = 0; i < blockSize ; i++)

@@ -22,7 +22,7 @@ public:
     
     /*  Main processing function called continuously by the host on the audio thread.
         paramValues is a list of parameter values passed from the host in order of their creation */
-	void processMidi(float** buffer, int numChannels, std::size_t blockSize, const HostData data, std::vector<LatticeMidiMessage>& midiMessages) override;
+	void processMidi(std::size_t blockSize, std::vector<LatticeMidiMessage>& midiMessages) override;
 
     const char* getModuleName() override {    return "Midi Transpose + Delay";     }
     

@@ -68,7 +68,7 @@ void BlSynthProcessor::stopNote (int, float velocity)
   isNoteOn = false;
 }
 
-void BlSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
+void BlSynthProcessor::processSynthVoice(float** buffer, std::size_t blockSize)
 {
   const float f = getMidiNoteInHertz(getMidiNoteNumber(), 440)*getParameter("Detune");
   const float cf = getParameter("Cutoff Freq") + f*getParameter("Filter Key Track");

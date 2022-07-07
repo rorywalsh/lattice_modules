@@ -35,7 +35,7 @@ LatticeProcessorModule::ChannelData VibratoProcessor::createChannels()
     return ChannelData(getChannels(), getNumberOfChannels());
 }
 
-void VibratoProcessor::process(float** buffer, int numChannels, std::size_t blockSize, const HostData)
+void VibratoProcessor::process(float** buffer, std::size_t blockSize)
 {
    
     in.resize(blockSize);

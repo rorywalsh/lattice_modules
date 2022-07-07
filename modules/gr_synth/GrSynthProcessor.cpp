@@ -85,7 +85,7 @@ void GrSynthProcessor::triggerParameterUpdate(const std::string& parameterID, fl
 
 static float rnd(float s) { return s * std::rand() / float(RAND_MAX); }
 
-void GrSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
+void GrSynthProcessor::processSynthVoice(float** buffer, std::size_t blockSize)
 {
    
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440);

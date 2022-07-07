@@ -55,7 +55,7 @@ void MidiFilterProcessor::triggerParameterUpdate(const std::string& parameterID,
     updateParameter(parameterID, newValue);
 }
 
-void MidiFilterProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std::size_t blockSize, const HostData, std::vector<LatticeMidiMessage>& midiMessages)
+void MidiFilterProcessor::processMidi(std::size_t blockSize, std::vector<LatticeMidiMessage>& midiMessages)
 {
      int range_max = getParameter("Note number max");
      int range_min = getParameter("Note number min");

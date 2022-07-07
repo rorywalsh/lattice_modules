@@ -65,7 +65,7 @@ void KSSynthProcessor::triggerParameterUpdate(const std::string& parameterID, fl
 {
 }
 
-void KSSynthProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
+void KSSynthProcessor::processSynthVoice(float** buffer, std::size_t blockSize)
 {
   const float freq = getMidiNoteInHertz(getMidiNoteNumber(), 440) + buffer[1][0];
   pluckL.vsize(blockSize);

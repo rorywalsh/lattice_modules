@@ -113,7 +113,7 @@ void MidiMakerProcessor::triggerParameterUpdate(const std::string& parameterID, 
     updateParameter(parameterID, newValue);
 }
 
-void MidiMakerProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std::size_t blockSize, const HostData, std::vector<LatticeMidiMessage>& midiMessages)
+void MidiMakerProcessor::processMidi(std::size_t blockSize, std::vector<LatticeMidiMessage>& midiMessages)
 {
 	int numSamples = blockSize;
     midiMessages.clear();

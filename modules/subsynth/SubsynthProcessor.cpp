@@ -160,8 +160,7 @@ inline static float limcf(float cf) {
   return cf > 0 ? (cf < 20000 ? cf : 20000) : 0;
 }
 
-void SubsynthProcessor::processSynthVoice(float** buffer,
-					  int numChannels, std::size_t blockSize)
+void SubsynthProcessor::processSynthVoice(float** buffer, std::size_t blockSize)
 {
   float freq;
   const float fs = oscs[0].osc.fs();

@@ -47,7 +47,7 @@ void ADSRProcessor::hostParameterChanged(const char* parameterID, float newValue
    }    
 }
 
-void ADSRProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void ADSRProcessor::process(float** buffer, std::size_t blockSize)
 {
   env.vsize(blockSize);
   auto &e = env(getParameter("Gate"));

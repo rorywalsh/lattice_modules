@@ -43,7 +43,7 @@ void TScaleProcessor::prepareProcessor(int sr, std::size_t/*block*/)
   fs = sr;
 }
 
-void TScaleProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void TScaleProcessor::process(float** buffer, std::size_t blockSize)
 {
     int smps = blockSize, hsize = anal.hsize(), offs = 0;
     if(smps > hsize) blockSize = hsize;

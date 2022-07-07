@@ -54,7 +54,7 @@ void TVConvProcessor::prepareProcessor(int sr, std::size_t block)
 }
 
 
-void TVConvProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void TVConvProcessor::process(float** buffer, std::size_t blockSize)
 {
     if (getParameter("Bypass")==0)
     {

@@ -61,7 +61,7 @@ void ConvolutionReverbProcessor::prepareProcessor(int /*sr*/, std::size_t /*bloc
 }
 
 
-void ConvolutionReverbProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void ConvolutionReverbProcessor::process(float** buffer, std::size_t blockSize)
 {
      if(!fileLoaded) return;
     if (getParameter("Bypass")==0)

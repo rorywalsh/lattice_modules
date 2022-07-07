@@ -50,7 +50,7 @@ void BubblesProcessor::prepareProcessor(int /*sr*/, std::size_t block)
 }
 
 
-void BubblesProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void BubblesProcessor::process(float** buffer, std::size_t blockSize)
 {
     //std::copy(buffer[0], buffer[0] + blockSize, signal.begin());
     

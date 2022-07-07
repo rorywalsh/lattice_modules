@@ -38,7 +38,7 @@ void SVocProcessor::prepareProcessor(int sr, std::size_t/*block*/)
   syn.reset(sr);
 }
 
-void SVocProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData)
+void SVocProcessor::process(float** buffer, std::size_t blockSize)
 {
 
   float check1 = 0.f, check2 = 0.f;

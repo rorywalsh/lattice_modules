@@ -40,7 +40,7 @@ void MidiDelayProcessor::triggerParameterUpdate(const std::string& parameterID, 
     updateParameter(parameterID, newValue);
 }
 
-void MidiDelayProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std::size_t blockSize, const HostData, std::vector<LatticeMidiMessage>& midiMessages)
+void MidiDelayProcessor::processMidi(std::size_t blockSize, std::vector<LatticeMidiMessage>& midiMessages)
 {    
     auto delay = static_cast<int> (samplingRate * (getParameter("Delay Time")));
 

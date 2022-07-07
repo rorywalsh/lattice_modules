@@ -44,7 +44,7 @@ void RandomProcessor::hostParameterChanged(const char* parameterID, float newVal
     
 }
 
-void RandomProcessor::process(float** buffer, int /*numChannels*/, std::size_t blockSize, const HostData /*hostInfo*/)
+void RandomProcessor::process(float** buffer, std::size_t blockSize)
 {
     for( int i = 0 ; i < blockSize ; i++)
     {

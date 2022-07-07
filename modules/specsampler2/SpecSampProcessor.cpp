@@ -174,7 +174,7 @@ void SpecSampProcessor::triggerParameterUpdate(const std::string& parameterID, f
     updateParameter(parameterID, newValue);
 }
 
-void SpecSampProcessor::processSynthVoice(float** buffer, int numChannels, std::size_t blockSize)
+void SpecSampProcessor::processSynthVoice(float** buffer, std::size_t blockSize)
 {
     
      if(doReset) {
