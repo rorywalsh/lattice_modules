@@ -20,6 +20,9 @@ public:
     /* Call this method to trigger host callback */
     void triggerParameterUpdate(const std::string& parameterID, float newValue);
     
+    void startNote(int noteNumber, float velocity) override;
+    void stopNote(int noteNumber, float velocity) override;
+    
     /*  Main processing function called continuously by the host on the audio thread.
         paramValues is a list of parameter values passed from the host in order of their creation */
 	void processMidi(float** buffer, int numChannels, std::size_t blockSize, const HostData data, std::vector<LatticeMidiMessage>& midiMessages) override;
@@ -43,20 +46,19 @@ public:
 
     const char* getModuleName() override {    return "Midi Pattern Generator";     }
     
-    int getRandomNote(int lowestNote, int range)
+    int getRandomNote(int range)
     {
-        return rand() % range + lowestNote;
+        return rand() % range;
     }
 
-    int getRandomMajorNote(int lowestNote, int range)
+    int getRandomMajorNote(int range)
     {
-        int index = rand() % range;
-        return lowestNote + major[index];
+        return major[rand() % range];
     }
 
-    int getRandomMinorNote(int lowestNote, int range)
+    int getRandomMinorNote(int range)
     {
-        return lowestNote + minor[rand() % range];
+        return minor[rand() % range];
     }
 
 	/* override this method if you want to draw to the Lattice generic editor viewport */
@@ -86,7 +88,9 @@ private:
     int noteIndex = 0;
     int majorIntervals[8] = { 2, 2, 1, 2, 2, 2, 1 };
     int minorIntervals[8] = { 2, 1, 2, 2, 1, 2, 2 };
+    bool noteOn = false;
     
+    std::vector<int> noteOns;
     std::vector<int> major;
     std::vector<int> minor;
     std::vector<int> chromaticNotes;

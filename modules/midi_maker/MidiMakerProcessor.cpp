@@ -36,8 +36,8 @@ LatticeProcessorModule::ParameterData MidiMakerProcessor::createParameters()
     addParameter({ "Number of Notes in Loop", {1, 32, 8, 1, 1}, Parameter::Type::Slider, true });
     addParameter({ "Tempo", {0, 20, 1, 0.2, 1}, Parameter::Type::Slider, true});
     addParameter({ "Lowest Note (Root)", {24, 128, 48, 1, 1}, Parameter::Type::Slider, true });
+    addParameter({ "Note Mode", {0, 2, 0, 1, 1}, Parameter::Type::Slider, true });
     addParameter({ "Range in semitones", {0, 60, 12, 1, 1}, Parameter::Type::Slider, true});
-    addParameter({ "Tuning", {0, 2, 0, 1, 1},  Parameter::Type::Slider, true});
 	addParameter({ "Generate new pattern", {0, 1, 1, 1, 1},  Parameter::Type::Trigger, true });
 	addParameter({ "Permit silences", {0, 1, 0, 1, 1},  Parameter::Type::Switch, true });
 	addParameter({ "Play Midi", {0, 1, 0, 1, 1},  Parameter::Type::Switch, true });
@@ -48,44 +48,46 @@ void MidiMakerProcessor::hostParameterChanged(const char* parameterID, float /*n
 {
     const std::string paramName = getParameterNameFromId(parameterID);
 
-    if(paramName == "Generate new pattern")
-    {
-        chromaticNotes.clear();
-        minorNotes.clear();
-        majorNotes.clear();
-		canUpdate.store(false);
- 
-        for( int i = 0 ; i < getParameter("Number of Notes in Loop")  ; i++)
-        {
-            auto addSilence = (int)getParameter("Permit silences");
-            if(addSilence > 0)
-            {
-                    if (getRandomNote(0, 100) > 20)
-                    {
-                        chromaticNotes.push_back(getRandomNote((int)getParameter("Lowest Note (Root)"), (int)getParameter("Range in semitones")));
-                        majorNotes.push_back(getRandomMajorNote((int)getParameter("Lowest Note (Root)"), (int)getParameter("Range in semitones")));
-                        minorNotes.push_back(getRandomMinorNote((int)getParameter("Lowest Note (Root)"), (int)getParameter("Range in semitones")));
-                    }
-                    else
-                    {
-                        chromaticNotes.push_back(0);
-                        majorNotes.push_back(0);
-                        minorNotes.push_back(0);
-                        
-                    }
-           
-            }
-            else
-            {
-                chromaticNotes.push_back(getRandomNote((int)getParameter("Lowest Note (Root)"), (int)getParameter("Range in semitones")));
-                majorNotes.push_back(getRandomMajorNote((int)getParameter("Lowest Note (Root)"), (int)getParameter("Range in semitones")));
-                minorNotes.push_back(getRandomMinorNote((int)getParameter("Lowest Note (Root)"), (int)getParameter("Range in semitones")));
-            }
-        }
+    if(paramName == "Tempo" || paramName == "Note Mode")
+        return;
+    
+    
+    chromaticNotes.clear();
+    minorNotes.clear();
+    majorNotes.clear();
+    canUpdate.store(false);
 
-		canUpdate.store(true);
-		okToDraw = true;
+    for( int i = 0 ; i < getParameter("Number of Notes in Loop")  ; i++)
+    {
+        auto addSilence = (int)getParameter("Permit silences");
+        if(addSilence > 0)
+        {
+                if (getRandomNote(100) > 20)
+                {
+                    chromaticNotes.push_back(getRandomNote((int)getParameter("Range in semitones")));
+                    majorNotes.push_back(getRandomMajorNote((int)getParameter("Range in semitones")));
+                    minorNotes.push_back(getRandomMinorNote((int)getParameter("Range in semitones")));
+                }
+                else
+                {
+                    chromaticNotes.push_back(0);
+                    majorNotes.push_back(0);
+                    minorNotes.push_back(0);
+                    
+                }
+       
+        }
+        else
+        {
+            chromaticNotes.push_back(getRandomNote((int)getParameter("Range in semitones")));
+            majorNotes.push_back(getRandomMajorNote((int)getParameter("Range in semitones")));
+            minorNotes.push_back(getRandomMinorNote((int)getParameter("Range in semitones")));
+        }
     }
+
+    canUpdate.store(true);
+    okToDraw = true;
+
 }
 
 void MidiMakerProcessor::prepareProcessor(int sr, std::size_t /*block*/)
@@ -93,6 +95,18 @@ void MidiMakerProcessor::prepareProcessor(int sr, std::size_t /*block*/)
     samplingRate = sr;
 }
 
+void MidiMakerProcessor::startNote(int noteNumber, float velocity)
+{
+    updateParameter("Lowest Note (Root)", noteNumber);
+    noteOns.push_back(noteNumber);
+}
+
+void MidiMakerProcessor::stopNote(int noteNumber, float velocity)
+{
+    auto it = find(noteOns.begin(), noteOns.end(), noteNumber);
+    if (it != noteOns.end())
+        noteOns.erase(it);
+}
 
 void MidiMakerProcessor::triggerParameterUpdate(const std::string& parameterID, float newValue)
 {
@@ -102,26 +116,30 @@ void MidiMakerProcessor::triggerParameterUpdate(const std::string& parameterID, 
 void MidiMakerProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, std::size_t blockSize, const HostData, std::vector<LatticeMidiMessage>& midiMessages)
 {
 	int numSamples = blockSize;
-
-    if(getParameter("Tuning") == 0)
+    midiMessages.clear();
+    
+    if(getParameter("Note Mode") == 0)
         outgoingNotes = chromaticNotes;
-    else if(getParameter("Tuning") == 1)
+    else if(getParameter("Note Mode") == 1)
         outgoingNotes = majorNotes;
-    else if(getParameter("Tuning") == 2)
+    else if(getParameter("Note Mode") == 2)
         outgoingNotes = minorNotes;
     
-    if (getParameter("Play Midi") == 1 && canUpdate.load())
+    if ((getParameter("Play Midi") == 1 || noteOns.size() > 0) && canUpdate.load())
     {
         for (int i = 0; i < numSamples; i++)
         {
-            const int newNote = noteIndex <= outgoingNotes.size() ? outgoingNotes[noteIndex] : 0;
+            
             if (sampleIndex == 0)
             {
+                const int newNote = std::clamp(outgoingNotes[noteIndex] + (int)getParameter("Lowest Note (Root)"), 0, 128);
+                std::cout << "Index:" << noteIndex << " Note:" << newNote << std::endl;
+                
                 midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOff, 1, lastNotePlayed, .0f)); //turn off previous note.
-                if(playNote == true && newNote != 0)
+                if((newNote - (int)getParameter("Lowest Note (Root)"))!= 0)
                     midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOn, 1, newNote, .5f)); // add new previous note.
                 lastNotePlayed = newNote;
-                playNote = !playNote;
+                //playNote = !playNote;
                     
                 noteIndex = (noteIndex < outgoingNotes.size()-1 ? noteIndex+1 : 0);
             }
@@ -136,11 +154,11 @@ void MidiMakerProcessor::processMidi(float** /*buffer*/, int /*numChannels*/, st
 
 const char* MidiMakerProcessor::getSVGXml()
 {
-    if(getParameter("Tuning") == 0)
+    if(getParameter("Note Mode") == 0)
         outgoingNotes = chromaticNotes;
-    else if(getParameter("Tuning") == 1)
+    else if(getParameter("Note Mode") == 1)
         outgoingNotes = majorNotes;
-    else if(getParameter("Tuning") == 2)
+    else if(getParameter("Note Mode") == 2)
         outgoingNotes = minorNotes;
     
 	const float width = 200;
