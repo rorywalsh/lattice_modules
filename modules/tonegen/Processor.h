@@ -1,6 +1,7 @@
 #pragma once
 #include "LatticeProcessorModule.h"
 #include "Tonegen.h"
+#include "Env.h"
 #include <iterator>
 #include "simple_svg_1.0.0.hpp"
 
@@ -34,11 +35,12 @@ class TWProcessor : public LatticeProcessorModule
   /* override this method and return true if you wish to enable drawing on the generic editor viewport */
   bool canDraw() override { return true; }
     
-  const char* getModuleName() override {    return "Tone Generator";     }
+  const char* getModuleName() override {    return "Sawtooth Tone Generator";     }
     
  private:
-  std::vector<ParamSmooth> sm;
   Aurora::Wavegen<float> tg;
+  float att, dec, sus, rel;
+  Aurora::Env<float> env;
   bool keys[128] = {0};
   float fs = 44100;
 
