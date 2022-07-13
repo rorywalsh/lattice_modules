@@ -5,7 +5,8 @@
 
 
 TWProcessor::TWProcessor()
-  :LatticeProcessorModule(), att(0.01f), dec(0), sus(1.f), rel(0.1f), env(att,dec,sus,rel), sm(128)
+  :LatticeProcessorModule(), tg(Aurora::SQUARE),
+   att(0.01f), dec(0), sus(1.f), rel(0.1f), env(att,dec,sus,rel), sm(128)
 {
 
 }
@@ -23,6 +24,10 @@ LatticeProcessorModule::ParameterData TWProcessor::createParameters()
     addParameter({"16'", {0.f, 1.f, 0.f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
     addParameter({"8'", {0.f, 1.f, 1.f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
     addParameter({"4'", {0.f, 1.f, 0.f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
+    addParameter({"2 2/3'", {0.f, 1.f, 0.f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
+    addParameter({"2'", {0.f, 1.f, 0.f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
+    addParameter({"1 1/3'", {0.f, 1.f, 0.f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
+    
     addParameter({"detune", {0.5f, 2.f, 1.f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
    addParameter({"attack", {0.f, 4.f, 0.01f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
    addParameter({"decay", {0.f, 4.f, 0.1f, 0.001f, 1.f}, LatticeProcessorModule::Parameter::Type::Slider, true});
@@ -32,7 +37,7 @@ LatticeProcessorModule::ParameterData TWProcessor::createParameters()
 void TWProcessor::prepareProcessor(int sr, std::size_t block)
 {
   fs = sr;
-  tg.reset(fs);
+  tg.reset(fs, Aurora::SQUARE);
 }
 
 
@@ -45,7 +50,10 @@ void TWProcessor::process(float** buffer, std::size_t blockSize)
         const float rate = fs/blockSize;
     const float g[] = { getParameter("8'"),
 			getParameter("4'"),
-                        getParameter("16'")};
+                        getParameter("16'"),
+                        getParameter("2 2/3'"),
+                        getParameter("2'"),
+                        getParameter("1 1/3'")};
     float scal = 0.5;
     auto &gen = tg(blockSize,getParameter("detune"));
     for(n=12; n < 128; n++) {
@@ -54,15 +62,16 @@ void TWProcessor::process(float** buffer, std::size_t blockSize)
        }
     }
     if(gate && !ogate) 
-      for(auto &s : sm) s.reset();
-
-    
+      for(auto &s : sm) s.reset();  
     for(n=12; n < 128; n++) {
       auto e = sm[n](keys[n],time[n],fs/blockSize);
        if(e > 0.001) {
-	 tg.tone(n,g[0]*e*0.2);
-         tg.tone(n+12,g[1]*e*0.2);
-         tg.tone(n-12,g[2]*e*0.2);	       
+	 tg.tone(n,g[0]*e*0.12);
+         tg.tone(n+12,g[1]*e*0.12);
+         tg.tone(n-12,g[2]*e*0.12);
+         tg.tone(n+19,g[3]*e*0.12);
+         tg.tone(n+24,g[4]*e*0.12);
+         tg.tone(n+28,g[5]*e*0.12);
         }
     }
     
