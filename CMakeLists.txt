@@ -21,6 +21,7 @@ SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 include_directories("${CMAKE_SOURCE_DIR}/include/")
 include_directories("${CMAKE_SOURCE_DIR}/aurora/include")
+add_subdirectory(${CMAKE_SOURCE_DIR}/modules/tonegen)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/slew)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/tapdelay)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/noisegen)

@@ -136,6 +136,9 @@ void SubsynthProcessor::prepareProcessor(int sr, std::size_t blockSize)
   lfo2.osc.reset(sr);
   lp.reset(sr);
   svf.reset(sr);
+  Aurora::sawtooth.reset(Aurora::SAW, sr);
+  Aurora::triangle.reset(Aurora::TRIANGLE, sr);
+  Aurora::square.reset(Aurora::SQUARE, sr);
 }
 
 void SubsynthProcessor::startNote(int midiNoteNumber, float velocity)

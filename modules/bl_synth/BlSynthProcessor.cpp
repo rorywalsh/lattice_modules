@@ -53,6 +53,9 @@ void BlSynthProcessor::prepareProcessor(int r, std::size_t block)
   osc.reset(sr);
   env.reset(sr);
   filter.reset(sr);
+  sawWave.reset(Aurora::SAW, sr);
+  triangleWave.reset(Aurora::TRIANGLE, sr);
+  squareWave.reset(Aurora::SQUARE, sr);
 }
 
 void BlSynthProcessor::startNote(int noteNumber, float velocity)

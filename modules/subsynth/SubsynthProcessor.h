@@ -10,9 +10,9 @@
 #include <array>
 
 namespace Aurora {
-const TableSet<float> sawtooth(SAW);
-const TableSet<float> square(SQUARE);
-const Aurora::TableSet<float> triangle(TRIANGLE);
+static TableSet<float> sawtooth(SAW);
+static TableSet<float> square(SQUARE);
+static TableSet<float> triangle(TRIANGLE);
 const TableSet<float> *sawtab = &sawtooth;
 const TableSet<float> *sqrtab = &square;
 const TableSet<float> *tritab = &triangle;

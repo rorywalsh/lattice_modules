@@ -7,9 +7,9 @@
 #include "FourPole.h"
 #include <iterator>
 
-const static Aurora::TableSet<float> squareWave(Aurora::SQUARE);
-const static Aurora::TableSet<float> triangleWave(Aurora::TRIANGLE);
-const static Aurora::TableSet<float> sawWave(Aurora::SAW);
+static Aurora::TableSet<float> squareWave(Aurora::SQUARE);
+static Aurora::TableSet<float> triangleWave(Aurora::TRIANGLE);
+static Aurora::TableSet<float> sawWave(Aurora::SAW);
 static float add(float a, float b) { return a + b; }
 
 class BlSynthProcessor : public LatticeProcessorModule

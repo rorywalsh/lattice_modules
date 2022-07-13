@@ -34,6 +34,9 @@ void SimpleSynthProcessor::Synth::setSampleRate(int sr)
 {
 	osc.reset(sr);
 	env.reset(sr);
+	sawWave.reset(Aurora::SAW, sr);
+        triangleWave.reset(Aurora::TRIANGLE, sr);
+        squareWave.reset(Aurora::SQUARE, sr);
 }
 
 void SimpleSynthProcessor::Synth::setBlockSize(std::size_t blockSize)
