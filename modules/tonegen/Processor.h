@@ -25,11 +25,13 @@ class TWProcessor : public LatticeProcessorModule
   void startNote(int n, float vel) override
   {
      keys[n] = 1;
+     time[n] = 0.001f;
   }
 
   void stopNote(int n, float vel) override
   {
      keys[n] = 0;
+     time[n] = rel;
   }
 
   /* override this method and return true if you wish to enable drawing on the generic editor viewport */
@@ -41,7 +43,9 @@ class TWProcessor : public LatticeProcessorModule
   Aurora::Wavegen<float> tg;
   float att, dec, sus, rel;
   Aurora::Env<float> env;
+  std::vector<ParamSmooth> sm;
   bool keys[128] = {0};
+  float time[128] = {0.001f};
   float fs = 44100;
-
+  bool ogate = 0;
 };

@@ -40,7 +40,7 @@ class ParamSmooth {
     }
     return (y = x*(1-cf) + y*cf);
   }
-
+  void reset() { y = 0; }
   float operator()() { return y;}  
 };
 
