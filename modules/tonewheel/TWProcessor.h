@@ -1,6 +1,6 @@
 #pragma once
 #include "LatticeProcessorModule.h"
-#include "Tonewheel.h"
+#include "Tonegen.h"
 #include <iterator>
 #include "simple_svg_1.0.0.hpp"
 
