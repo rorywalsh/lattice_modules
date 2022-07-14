@@ -31,7 +31,7 @@ class TWProcessor : public LatticeProcessorModule
   void stopNote(int n, float vel) override
   {
      keys[n] = 0;
-     time[n] = rel;
+     time[n] = rel*.125;
   }
 
   /* override this method and return true if you wish to enable drawing on the generic editor viewport */

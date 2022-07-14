@@ -11,10 +11,12 @@ ChorusProcessor::ChorusProcessor()
 
 LatticeProcessorModule::ParameterData ChorusProcessor::createParameters()
 {
-    addParameter({ "Delay Time (L)", {0, 5, .017f, .001f, 1}, Parameter::Type::Slider, true});
-    addParameter({ "LFO Frequency (L)", {0, 10, .93, .001f, 1}, Parameter::Type::Slider, true});
-    addParameter({ "Delay Time (R)", {0, 5, .013f, .001f, 1}, Parameter::Type::Slider, true});
-	addParameter({ "LFO Frequency (R)", {0, 10, .083f, .001f, 1}, Parameter::Type::Slider, true });
+    addParameter({ "Delay Time (L)", {0, 0.05, .017f, .0001f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "LFO Frequency (L)", {0, 10, .96, .001f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Delay Time (R)", {0, 0.05, .013f, .0001f, 1}, Parameter::Type::Slider, true});
+    addParameter({ "LFO Frequency (R)", {0, 10, 1.28f, .001f, 1}, Parameter::Type::Slider, true });
+    addParameter({ "Direct signal", {0, 1, .2f, .001f, 1}, Parameter::Type::Slider, true });
+    addParameter({ "Effect signal", {0, 1, 1.f, .001f, 1}, Parameter::Type::Slider, true });
     return ParameterData(getParameters(), getNumberOfParameters());
 }
 
@@ -33,10 +35,10 @@ void ChorusProcessor::triggerParameterUpdate(const std::string& parameterID, flo
 
 LatticeProcessorModule::ChannelData ChorusProcessor::createChannels()
 {
-    addChannel({"Input 1", ChannelType::input });
-    addChannel({"Input 2", ChannelType::input });
-    addChannel({"Output 1", ChannelType::output });
-    addChannel({"Output 2", ChannelType::output });
+    addChannel({"Left Input", ChannelType::input });
+    addChannel({"Right Input", ChannelType::input });
+    addChannel({"Left Output", ChannelType::output });
+    addChannel({"Right Output", ChannelType::output });
     return ChannelData(getChannels(), getNumberOfChannels());
 }
 
@@ -47,7 +49,9 @@ void ChorusProcessor::process(float **buffer, std::size_t blockSize)
     chorus.vsize(blockSize);
     std::copy(buffer[0], buffer[0] + blockSize, inL.begin());
     std::copy(buffer[1], buffer[1] + blockSize, inR.begin());
-    
+
+    const float d = getParameter("Direct signal");
+    const float c = getParameter("Effect signal");
 
     getParameter("test");
 
@@ -56,8 +60,8 @@ void ChorusProcessor::process(float **buffer, std::size_t blockSize)
 
     for(int i = 0; i < blockSize ; i++)
     {
-        buffer[0][i] = l[i] * 0.1 - r[i] * 0.13;
-        buffer[1][i] = r[i] * 0.1 - l[i] * 0.13;
+      buffer[0][i] = buffer[0][i]*d + (l[i] * 0.1 - r[i] * 0.13)*c;
+      buffer[1][i] = buffer[1][i]*d + (r[i] * 0.1 - l[i] * 0.13)*c;
     }
     
 }
