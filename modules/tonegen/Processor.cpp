@@ -53,8 +53,9 @@ void TWProcessor::process(float** buffer, std::size_t blockSize)
 	 gate = 1;
        }
     }
-    if(gate && !ogate) 
+    if(gate && !ogate) {
       for(auto &s : sm) s.reset();
+    }
 
     
     for(n=12; n < 128; n++) {
@@ -65,14 +66,13 @@ void TWProcessor::process(float** buffer, std::size_t blockSize)
          tg.tone(n-12,g[2]*e*0.2);	       
         }
     }
-    
+    auto &out = env(gen,gate);
+    std::copy(out.begin(),out.end(),buffer[0]);
     if(!gate) {
       att = getParameter("attack");
       rel = getParameter("decay");
       env.release(rel);
     }
-    auto &out = env(gen,gate);
-    std::copy(out.begin(),out.end(),buffer[0]);
     ogate = gate;
 }
 

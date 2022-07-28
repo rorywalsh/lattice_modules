@@ -25,7 +25,7 @@ class TWProcessor : public LatticeProcessorModule
   void startNote(int n, float vel) override
   {
      keys[n] = 1;
-     time[n] = 0.001f;
+     time[n] = 0.01f;
   }
 
   void stopNote(int n, float vel) override
