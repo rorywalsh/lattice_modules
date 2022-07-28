@@ -27,7 +27,7 @@ void VibratoProcessor::prepareProcessor(int sr, std::size_t block)
 void VibratoProcessor::triggerParameterUpdate(const std::string& parameterID, float newValue)
 {
     updateParameter(parameterID, newValue);
-}
+} 
 
 LatticeProcessorModule::ChannelData VibratoProcessor::createChannels()
 {
@@ -38,7 +38,6 @@ LatticeProcessorModule::ChannelData VibratoProcessor::createChannels()
 
 void VibratoProcessor::process(float** buffer, std::size_t blockSize)
 {
-   
     in.resize(blockSize);
     std::copy(buffer[0], buffer[0] + blockSize, in.begin());
     const float speed = 0.4 + getParameter("Speed")*3;

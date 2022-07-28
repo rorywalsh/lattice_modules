@@ -37,7 +37,6 @@ LatticeProcessorModule::ChannelData VibratoProcessor::createChannels()
 
 void VibratoProcessor::process(float** buffer, std::size_t blockSize)
 {
-   
     in.resize(blockSize);
     std::copy(buffer[0], buffer[0] + blockSize, in.begin());
     auto &s = vibr(in, getParameter("Rate"), getParameter("Depth"));

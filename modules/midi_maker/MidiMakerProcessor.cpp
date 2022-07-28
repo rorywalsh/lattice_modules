@@ -132,7 +132,7 @@ void MidiMakerProcessor::processMidi(std::size_t blockSize, std::vector<LatticeM
             
             if (sampleIndex == 0)
             {
-                const int newNote = std::clamp(outgoingNotes[noteIndex] + (int)getParameter("Lowest Note (Root)"), 0, 128);
+                const int newNote = std::clamp(outgoingNotes[noteIndex] + (int)getParameter("Lowest Note (Root)"), 0, 127);
                 std::cout << "Index:" << noteIndex << " Note:" << newNote << std::endl;
                 
                 midiMessages.push_back(LatticeMidiMessage(LatticeMidiMessage::Type::noteOff, 1, lastNotePlayed, .0f)); //turn off previous note.
