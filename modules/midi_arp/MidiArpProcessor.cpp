@@ -144,7 +144,7 @@ void MidiArpProcessor::processMidi(std::size_t blockSize, std::vector<LatticeMid
                         default:
                             currentNoteIndex = 0;
                     };
-                    
+                      
                     std::set<int>::iterator itA = notes.begin();
                     std::advance(itA, std::min(std::max(0, currentNoteIndex), (int)notes.size()));
                     

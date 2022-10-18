@@ -37,7 +37,7 @@ LatticeProcessorModule::ParameterData MidiMakerProcessor::createParameters()
     addParameter({ "Tempo", {0, 20, 1, 0.2, 1}, Parameter::Type::Slider, true});
     addParameter({ "Lowest Note (Root)", {24, 128, 48, 1, 1}, Parameter::Type::Slider, true });
     addParameter({ "Note Mode", {0, 2, 0, 1, 1}, Parameter::Type::Slider, true });
-    addParameter({ "Range in semitones", {0, 60, 12, 1, 1}, Parameter::Type::Slider, true});
+    addParameter({ "Range in semitones", {1, 60, 12, 1, 1}, Parameter::Type::Slider, true});
 	addParameter({ "Generate new pattern", {0, 1, 1, 1, 1},  Parameter::Type::Trigger, true });
 	addParameter({ "Permit silences", {0, 1, 0, 1, 1},  Parameter::Type::Switch, true });
 	addParameter({ "Play Midi", {0, 1, 0, 1, 1},  Parameter::Type::Switch, true });
