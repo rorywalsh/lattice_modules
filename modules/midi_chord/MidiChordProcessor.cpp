@@ -36,7 +36,7 @@ LatticeProcessorModule::ParameterData MidiChordProcessor::createParameters()
 {
     for ( int i = 0 ; i < chords.size() ; i++)
     {
-        addParameter({ chords[i].c_str(), {0, 1, (i==0 ? 1 : 0), 1, 1}, Parameter::Type::Switch, true});
+        addParameter({ chords[i].c_str(), {0.f, 1.f, (i==0.f ? 1.f : 0.f), 1.f, 1.f}, Parameter::Type::Switch, true});
     }
     
     return ParameterData(getParameters(), getNumberOfParameters());

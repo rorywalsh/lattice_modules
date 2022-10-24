@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project (LatticeModules)
 
 if(NOT DEFINED BUILD_VERSION)
-	set(BUILD_VERSION 0.1.207)
+	set(BUILD_VERSION 0.1.208)
 endif()
 
 
@@ -73,5 +73,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/modules/waveform_viewer)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/midi_arp)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/midi_delay)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/mixer4)
+add_subdirectory(${CMAKE_SOURCE_DIR}/modules/mixer8)
+add_subdirectory(${CMAKE_SOURCE_DIR}/modules/mixer16)
 # add_subdirectory(${CMAKE_SOURCE_DIR}/modules/midi_seq)
 add_subdirectory(${CMAKE_SOURCE_DIR}/modules/midi_chord)
