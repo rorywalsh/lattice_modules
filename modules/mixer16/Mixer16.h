@@ -3,6 +3,8 @@
 #include <iterator>
 #include "simple_svg_1.0.0.hpp"
 
+#define SIZE 16
+
 class Mixer16 : public LatticeProcessorModule
 {
 public:
@@ -20,20 +22,22 @@ public:
         paramValues is a list of parameter values passed from the host in order of their creation */
     void process(float** buffer, std::size_t blockSize) override;
  
-    const char* getModuleName() override {    return "Mixer16";     }
+    const char* getModuleName() override {    return "Mixer 16";     }
     
     int getModuleType() override
     {
         return ModuleType::AudioProcessor::mixer;
     }
-
 private:
 	static int remap(float value, float rangeMin, float rangeMax, float newRangeMin, float newRangeMax)
 	{
 		return static_cast<int>(newRangeMin + (value - rangeMin) * (newRangeMax - newRangeMin) / (rangeMax - rangeMin));
 	}
 
-    ParamSmooth gSmooth1, gSmooth2, gSmooth3, gSmooth4, pSmooth1, pSmooth2, pSmooth3, pSmooth4;
+    ParamSmooth gainSmooth[4];
+    ParamSmooth panSmooth[4];
+    std::vector<std::string> gainParams;
+    std::vector<std::string> panParams;
     float fs = 44100;
 
 };

@@ -7,9 +7,9 @@
 Mixer4::Mixer4()
 	:LatticeProcessorModule()
 {
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < SIZE; i++)
         gainParams.push_back("Gain " + std::to_string(i+1));
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < SIZE; i++)
         panParams.push_back("Pan " + std::to_string(i + 1));
 }
 
@@ -28,14 +28,13 @@ LatticeProcessorModule::ChannelData Mixer4::createChannels()
 
 LatticeProcessorModule::ParameterData Mixer4::createParameters()
 {
-    addParameter({"Gain 1", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 0.5f, 0.001f, 1.f), Parameter::Type::Slider, true});
-    addParameter({"Pan 1", LatticeProcessorModule::Parameter::Range(-1.f, 1.f, 0.0f, 0.001f, 1.f), Parameter::Type::Slider, true});
-    addParameter({"Gain 2", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 0.5f, 0.001f, 1.f), Parameter::Type::Slider, true});
-    addParameter({"Pan 2", LatticeProcessorModule::Parameter::Range(-1.f, 1.f, 0.0f, 0.001f, 1.f), Parameter::Type::Slider, true});
-    addParameter({"Gain 3", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 0.5f, 0.001f, 1.f), Parameter::Type::Slider, true});
-    addParameter({"Pan 3", LatticeProcessorModule::Parameter::Range(-1.f, 1.f, 0.0f, 0.001f, 1.f), Parameter::Type::Slider, true});
-    addParameter({"Gain 4", LatticeProcessorModule::Parameter::Range(0.f, 1.f, 0.5f, 0.001f, 1.f), Parameter::Type::Slider, true});
-    addParameter({"Pan 4", LatticeProcessorModule::Parameter::Range(-1.f, 1.f, 0.0f, 0.001f, 1.f), Parameter::Type::Slider, true});
+    for (int i = 0; i < SIZE; i++)
+    {
+        addParameter({ gainParams[i].c_str(), LatticeProcessorModule::Parameter::Range(0.f, 1.f, 0.5f, 0.001f, 1.f), Parameter::Type::Slider, true});
+        addParameter({ panParams[i].c_str(), LatticeProcessorModule::Parameter::Range(-1.f, 1.f, 0.0f, 0.001f, 1.f), Parameter::Type::Slider, true});
+    }
+
+
     return {getParameters(), getNumberOfParameters()};
 }
 
@@ -47,10 +46,10 @@ void Mixer4::prepareProcessor(int sr, std::size_t block)
 
 void Mixer4::process(float** buffer, std::size_t blockSize)
 {
-    float gain[4];
-    float pan[4];
+    float gain[SIZE];
+    float pan[SIZE];
 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < SIZE; i++)
     {
         gain[i] = gainSmooth[i](getParameter(gainParams[i].c_str()), 0.001);
         pan[i] = panSmooth[i]((getParameter(panParams[i].c_str())+1.f / 2.f), 0.001);
@@ -59,16 +58,14 @@ void Mixer4::process(float** buffer, std::size_t blockSize)
     
     for(int i = 0; i < blockSize ; i++)
     {
-        float ins[4] = {};
-        ins[0] = buffer[0][i];
-        ins[1] = buffer[1][i];
-        ins[2] = buffer[2][i];
-        ins[3] = buffer[3][i];
+        float ins[SIZE] = {};
+        for( int p = 0 ; p < SIZE ; p++ )
+            ins[p] = buffer[p][i];
         
         buffer[0][i] = (1 - pan[0]) * (isInputConnected(0) ? ins[0] * gain[0] : 0);
         buffer[1][i] = (pan[0]) * (isInputConnected(0) ? ins[0] * gain[0] : 0);
 
-        for (int x = 1; x < 4; x++)
+        for (int x = 1; x < SIZE; x++)
         {
             buffer[0][i] += (1 - pan[x]) * (isInputConnected(i) ? ins[x] * gain[x] : 0);
             buffer[1][i] += (pan[x]) * (isInputConnected(i) ? ins[x] * gain[x] : 0);
