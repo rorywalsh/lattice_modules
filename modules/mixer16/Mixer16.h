@@ -34,8 +34,8 @@ private:
 		return static_cast<int>(newRangeMin + (value - rangeMin) * (newRangeMax - newRangeMin) / (rangeMax - rangeMin));
 	}
 
-    ParamSmooth gainSmooth[4];
-    ParamSmooth panSmooth[4];
+    ParamSmooth gainSmooth[SIZE];
+    ParamSmooth panSmooth[SIZE];
     std::vector<std::string> gainParams;
     std::vector<std::string> panParams;
     float fs = 44100;

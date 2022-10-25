@@ -19,6 +19,18 @@ LatticeProcessorModule::ChannelData Mixer16::createChannels()
 	addChannel({ "input2", ChannelType::input });
     addChannel({ "input3", ChannelType::input });
     addChannel({ "input4", ChannelType::input });
+    addChannel({ "input5", ChannelType::input });
+    addChannel({ "input6", ChannelType::input });
+    addChannel({ "input7", ChannelType::input });
+    addChannel({ "input8", ChannelType::input });
+    addChannel({ "input9", ChannelType::input });
+    addChannel({ "input10", ChannelType::input });
+    addChannel({ "input11", ChannelType::input });
+    addChannel({ "input12", ChannelType::input });
+    addChannel({ "input13", ChannelType::input });
+    addChannel({ "input14", ChannelType::input });
+    addChannel({ "input15", ChannelType::input });
+    addChannel({ "input16", ChannelType::input });
 	addChannel({ "outputL", ChannelType::output });
     addChannel({ "outputR", ChannelType::output });
 	return {getChannels(), getNumberOfChannels()};
