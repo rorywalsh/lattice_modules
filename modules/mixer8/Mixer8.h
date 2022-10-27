@@ -38,6 +38,7 @@ private:
     ParamSmooth panSmooth[SIZE];
     std::vector<std::string> gainParams;
     std::vector<std::string> panParams;
+    std::vector<std::string> inputs;
     float fs = 44100;
 
 };

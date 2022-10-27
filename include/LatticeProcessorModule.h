@@ -12,6 +12,24 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+
+/** Simple debug macro 
+* Writes a string to the standard error stream.
+* Can also be used to multiple items using <<, for example
+      @code
+        DBG ("value = " << value);
+      @endcode
+* Only available in debug builds
+ */
+#ifdef NDEBUG
+#define DBG(textToWrite) 
+#else
+#define DBG(x)    do { std::cerr << x; } while (0)
+#endif
+
+
+
+
 //silence unused warnings..
 template <typename... Types>
 void unused(Types&&...) noexcept {}

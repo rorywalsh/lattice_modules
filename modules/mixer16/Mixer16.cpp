@@ -8,29 +8,20 @@ Mixer16::Mixer16()
 	:LatticeProcessorModule()
 {
     for (int i = 0; i < SIZE; i++)
-        gainParams.push_back("Gain " + std::to_string(i+1));
-    for (int i = 0; i < SIZE; i++)
+    {
+        gainParams.push_back("Gain " + std::to_string(i + 1));
         panParams.push_back("Pan " + std::to_string(i + 1));
+        inputs.push_back("input" + std::to_string(i + 1));
+    }
 }
 
 LatticeProcessorModule::ChannelData Mixer16::createChannels()
 {
-	addChannel({ "input1", ChannelType::input });
-	addChannel({ "input2", ChannelType::input });
-    addChannel({ "input3", ChannelType::input });
-    addChannel({ "input4", ChannelType::input });
-    addChannel({ "input5", ChannelType::input });
-    addChannel({ "input6", ChannelType::input });
-    addChannel({ "input7", ChannelType::input });
-    addChannel({ "input8", ChannelType::input });
-    addChannel({ "input9", ChannelType::input });
-    addChannel({ "input10", ChannelType::input });
-    addChannel({ "input11", ChannelType::input });
-    addChannel({ "input12", ChannelType::input });
-    addChannel({ "input13", ChannelType::input });
-    addChannel({ "input14", ChannelType::input });
-    addChannel({ "input15", ChannelType::input });
-    addChannel({ "input16", ChannelType::input });
+    for (int i = 0; i < SIZE; i++)
+    {
+        addChannel({ inputs[i].c_str(), ChannelType::input });
+    }
+
 	addChannel({ "outputL", ChannelType::output });
     addChannel({ "outputR", ChannelType::output });
 	return {getChannels(), getNumberOfChannels()};
@@ -79,8 +70,8 @@ void Mixer16::process(float** buffer, std::size_t blockSize)
 
         for (int x = 1; x < SIZE; x++)
         {
-            buffer[0][i] += (1 - pan[x]) * (isInputConnected(i) ? ins[x] * gain[x] : 0);
-            buffer[1][i] += (pan[x]) * (isInputConnected(i) ? ins[x] * gain[x] : 0);
+            buffer[0][i] += (1 - pan[x]) * (isInputConnected(x) ? ins[x] * gain[x] : 0);
+            buffer[1][i] += (pan[x]) * (isInputConnected(x) ? ins[x] * gain[x] : 0);
         }
     }
 
