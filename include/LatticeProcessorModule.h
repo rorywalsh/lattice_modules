@@ -24,7 +24,7 @@
 #ifdef NDEBUG
 #define DEBUG(textToWrite) 
 #else
-#define DEBUG(x)    do { std::cerr << x; } while (0)
+#define LDEBUG(x)    do { std::cerr << x; } while (0)
 #endif
 
 
