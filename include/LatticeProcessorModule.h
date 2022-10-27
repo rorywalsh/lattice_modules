@@ -22,7 +22,7 @@
 * Only available in debug builds
  */
 #ifdef NDEBUG
-#define DEBUG(textToWrite) 
+#define LDEBUG(textToWrite) 
 #else
 #define LDEBUG(x)    do { std::cerr << x; } while (0)
 #endif
