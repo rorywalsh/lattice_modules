@@ -48,7 +48,7 @@ public:
     
     int getRandomNote(int range)
     {
-        return rand() % range;
+        return rand() % (range+1);
     }
 
     int getRandomMajorNote(int range)

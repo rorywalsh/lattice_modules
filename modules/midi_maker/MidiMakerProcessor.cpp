@@ -130,7 +130,6 @@ void MidiMakerProcessor::processMidi(std::size_t blockSize, std::vector<LatticeM
     {
         for (int i = 0; i < numSamples; i++)
         {
-            
             if (sampleIndex == 0)
             {
                 const int newNote = std::clamp(outgoingNotes[noteIndex] + (int)getParameter("Lowest Note (Root)"), 0, 127);
