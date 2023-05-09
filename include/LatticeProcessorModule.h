@@ -522,6 +522,7 @@ public:
         return 0;
     }
 
+    ///@private
     void updateAutomationForParameters(float** buffer, int numChannels)
     {
         int inputs = getNumberOfInputChannels();
@@ -559,24 +560,36 @@ public:
         if (hostParamCallbackChar)
             hostParamCallbackChar(parameterID, newValue);
     }
-    
+
+    void updateUI(const char* jsonData)
+    {
+        if (snedToUICallback)
+            snedToUICallback(jsonData);
+    }
+
+    ///@private
+    void registerUICallback(const std::function<void(const char*)>& func1)
+    {
+        snedToUICallback = func1;
+    }
+    ///@private
     void registerHostParameterCallback(const std::function<void(const char*, float)>& func1, const std::function<void(const char*, const char*)>& func2)
     {
         hostParamCallback = func1;
         hostParamCallbackChar = func2;
     }
-    
+    ///@private
     void registerSampleLoadCallback(const std::function<void(const char*)>& func1)
     {
         sampleLoadCallback = func1;
     }
-    
+    ///@private
     void loadSamplePack(const char* filename)
     {
         if (sampleLoadCallback)
             sampleLoadCallback(filename);
     }
-    
+    ///@private
     void updateParameter(std::string name, float newValue)
     {
         parameterValues.at(name) = newValue;
@@ -614,12 +627,13 @@ public:
     }
 
 
-    
+    ///@private
     void setSamplerGlideTime(float value)
     {
         glideTime = value;
     }
     
+    ///@private
     float getSamplerGlideTime()
     {
         return glideTime;
@@ -790,6 +804,7 @@ private:
     //std::function<void(const std::string& parameterID, float newValue)> paramCallback;
     std::function<void(const char*, float)> hostParamCallback;
     std::function<void(const char*)> sampleLoadCallback;
+    std::function<void(const char*)> snedToUICallback;
     std::function<void(const char*, const char*)> hostParamCallbackChar;
     int voiceNum = -1;
     std::vector<LatticeProcessorModule *> voices;

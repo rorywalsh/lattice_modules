@@ -41,7 +41,6 @@ void TestToneProcessor::prepareProcessor(int sr, std::size_t block)
 void TestToneProcessor::hostParameterChanged(const char* parameterID, float newValue)
 {
     const std::string paramName = getParameterNameFromId(parameterID);
-
 }
 
 
@@ -54,9 +53,14 @@ void TestToneProcessor::process(float** buffer, std::size_t blockSize)
     for(std::size_t i = 0; i < blockSize ; i++)
     {
         buffer[0][i] = out[i];
+        
     }
     
-    
+
+    sampleIndex = sampleIndex > 44100 ? 0 : sampleIndex + blockSize;
+    if (sampleIndex == 0)
+        updateUI("{test:100}");
+
 //    blockCnt = blockCnt > 10 ? 0 : blockCnt+1;
 //    if (blockCnt == 0)
 //    {

@@ -39,5 +39,6 @@ private:
 	float amp = .5f;
     float freq = 100;
     int blockCnt = 0;
+    int sampleIndex = 0;
 };
 
