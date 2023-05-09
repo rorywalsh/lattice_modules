@@ -561,6 +561,11 @@ public:
             hostParamCallbackChar(parameterID, newValue);
     }
 
+    /** Call this to send a JSON object to the UI. 
+       Be careful that you don't call this too often!
+    * @param [in] jsonData A string holding JSON data. The outer object 
+    * will be given the module's unique name/Id, i.e., 'Delay (4)'
+    */
     void updateUI(const char* jsonData)
     {
         if (snedToUICallback)
