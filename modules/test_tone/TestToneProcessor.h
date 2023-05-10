@@ -2,6 +2,7 @@
 #include "LatticeProcessorModule.h"
 #include "Osc.h"
 #include <iterator>
+#include <sstream>
 
 class TestToneProcessor : public LatticeProcessorModule
 {
@@ -29,13 +30,15 @@ public:
     
     const char* getModuleName() override {    return "Test Tone";     }
 
-
+    const std::string getSampleJson();
+    std::stringstream ss;
 
 private:
 	Aurora::Osc<float, Aurora::lookupi<float>> osc;
 	std::vector<float> wave;
     std::vector<float> ampVector;
     std::vector<float> freqVector;
+    std::vector<float> samples;
 	float amp = .5f;
     float freq = 100;
     int blockCnt = 0;

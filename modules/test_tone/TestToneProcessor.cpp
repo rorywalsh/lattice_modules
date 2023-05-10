@@ -1,7 +1,7 @@
 
 #include "TestToneProcessor.h"
 #include <iterator>
-#include <sstream>
+
 
 
 TestToneProcessor::TestToneProcessor()
@@ -34,6 +34,7 @@ void TestToneProcessor::prepareProcessor(int sr, std::size_t block)
 	osc.reset(sr);
     ampVector.resize(block);
     freqVector.resize(block);
+    samples.resize(block * 4);
     
 }
 
@@ -43,6 +44,15 @@ void TestToneProcessor::hostParameterChanged(const char* parameterID, float newV
     const std::string paramName = getParameterNameFromId(parameterID);
 }
 
+const std::string TestToneProcessor::getSampleJson()
+{
+    ss.str("");
+    ss << "{\"samples\": [" << samples[0];
+    for (int i = 1; i < samples.size(); i++)
+        ss << ", " << std::to_string(samples[i]);
+    ss << "]}";
+    return ss.str();
+}
 
 void TestToneProcessor::process(float** buffer, std::size_t blockSize)
 {
@@ -50,16 +60,17 @@ void TestToneProcessor::process(float** buffer, std::size_t blockSize)
 
     auto& out = osc(getParameter("Amplitude"), getParameter("Frequency"));
     
-    for(std::size_t i = 0; i < blockSize ; i++)
+    for(std::size_t i = 0; i < blockSize ; i++, sampleIndex++)
     {
         buffer[0][i] = out[i];
-        
+        samples[sampleIndex] = out[i];
     }
     
+    if (sampleIndex > samples.size() - 1)
+        sampleIndex = 0;
 
-    sampleIndex = sampleIndex > 44100 ? 0 : sampleIndex + blockSize;
     if (sampleIndex == 0)
-        updateUI("{test:100}");
+        updateUI(getSampleJson().c_str());
 
 //    blockCnt = blockCnt > 10 ? 0 : blockCnt+1;
 //    if (blockCnt == 0)
