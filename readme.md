@@ -10,51 +10,21 @@ Although the API itself is free of any dependencies, most of the example here us
 
 #### Examples:
 
-**`bl_synth`**: demonstrates a a simple band-limited polyphonic synth with selectable waveforms, an ADSR, and PWM.
-
 **`chorus`**: a stereo chorus effect
 
 **`delay`**: a simple delay line with feedback
 
-**`drive_synth`**: a non band-limited polyphonic wave-shaper synth
-
 **`flanger`**: a simple flanger
-
-**`four_pole_lp`**: a resonant, four-pole low pass filter
-
-**`freeze`**: a spectral freeze
 
 **`freverb`**: a play on the popular freeverb reverb algorithm
 
 **`gain`**: a simple two channel gain module with waveform viewer
 
-**`gr_synth`**: a granular synth with optional audio rate amp and freq inputs
-
-**`ks_synth`**: a Karplus Strong synth with option audio input
-
-**`midi_maker`**: a simple generative MIDI note maker
-
-**`morph`**: a spectral morpher
-
 **`one_pole_lp`**: a simple-pole low pass filter
-
-**`param_eq`**: a single band parametric EQ
-
-**`pshift`**: a spectral pitch-shifter
-
-**`sill`**: a spectral filter
 
 **`simple_synth`**: a bare-bone synth with ADSR and selectable waveforms
 
-**`svoc`**: a spectral vocoder
-
-**`tscale`**: a spectral timescale effect
-
-**`tvconv`**: a time varying convolution reverb
-
 **`two_pole_svf`**: a two-pole state variable filter
-
-**`waveform_viewer`**: a bare-bones example of how to draw SVGs directly to a viewport on a Lattice module.
 
 To build:
 
