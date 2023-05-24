@@ -46,6 +46,7 @@ void TestToneProcessor::hostParameterChanged(const char* parameterID, float newV
 
 const std::string TestToneProcessor::getSampleJson()
 {
+    //clearly there are better ways to do this...
     ss.str("");
     ss << "{\"samples\": [" << samples[0];
     for (int i = 1; i < samples.size(); i++)

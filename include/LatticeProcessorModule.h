@@ -53,7 +53,7 @@ class ParamSmooth {
       t = ti;
       sr = rate;
       if(t > 0 && sr > 0)
-       cf = std::pow(0.5, 1./(t*sr));
+       cf = std::pow(0.5f, 1./(t*sr));
       else cf = 0;
     }
     return (y = x*(1-cf) + y*cf);
