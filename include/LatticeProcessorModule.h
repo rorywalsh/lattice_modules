@@ -610,19 +610,6 @@ public:
         return parameterId.substr(parameterId.find_first_of(")") + 2);
     }
 
-    /** override this method if you want to draw to the Lattice generic editor viewport
-     * @return This should return a Valid SVG Xml string
-    */
-    virtual const char* getSVGXml() { return ""; }
-
-    /** override this method and return true if you wish to enable drawing on the generic editor viewport. Note that you should only return true when you need the graphics updated. Leaving this permanently set to true will have a negative effect on performance.
-     * @return This should return true is you wish the viewport to update
-    */
-    virtual bool canDraw()
-    {
-        return false;
-    }
-
     /** Called by Lattice when a user right-clicks and module and select 'Show Info'
      * @return Text that will appear in a module's info window.
     */

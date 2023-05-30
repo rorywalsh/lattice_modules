@@ -1,7 +1,6 @@
 #pragma once
 #include "LatticeProcessorModule.h"
 #include <iterator>
-#include "simple_svg_1.0.0.hpp"
 
 #define SIZE 8
 

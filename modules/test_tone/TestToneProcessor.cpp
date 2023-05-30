@@ -59,7 +59,7 @@ void TestToneProcessor::process(float** buffer, std::size_t blockSize)
 {
     osc.vsize(blockSize);
 
-    auto& out = osc(getParameter("Amplitude"), getParameter("Frequency"));
+    auto& out = osc(ampSmooth(getParameter("Amplitude"), 0.1), getParameter("Frequency"));
     
     for(std::size_t i = 0; i < blockSize ; i++, sampleIndex++)
     {
@@ -70,8 +70,8 @@ void TestToneProcessor::process(float** buffer, std::size_t blockSize)
     if (sampleIndex > samples.size() - 1)
         sampleIndex = 0;
 
-    if (sampleIndex == 0)
-        updateUI(getSampleJson().c_str());
+    // if (sampleIndex == 0)
+    //     updateUI(getSampleJson().c_str());
 
 //    blockCnt = blockCnt > 10 ? 0 : blockCnt+1;
 //    if (blockCnt == 0)

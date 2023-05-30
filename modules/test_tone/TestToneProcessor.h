@@ -39,6 +39,7 @@ private:
     std::vector<float> ampVector;
     std::vector<float> freqVector;
     std::vector<float> samples;
+    ParamSmooth ampSmooth;
 	float amp = .5f;
     float freq = 100;
     int blockCnt = 0;

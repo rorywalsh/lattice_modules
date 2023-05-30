@@ -1,7 +1,6 @@
 #pragma once
 #include "LatticeProcessorModule.h"
 #include <iterator>
-#include "simple_svg_1.0.0.hpp"
 
 class GainProcessor : public LatticeProcessorModule
 {
@@ -19,13 +18,6 @@ public:
     /*  Main processing function called continuously by the host on the audio thread.
         paramValues is a list of parameter values passed from the host in order of their creation */
     void process(float** buffer, std::size_t blockSize) override;
-
-    /* override this method if you want to draw to the Lattice generic editor viewport */
-    const char* getSVGXml() override;
-
-    /* override this method and return true if you wish to enable drawing on the generic editor viewport */
-    bool canDraw() override { return true; }
-    
     
     const char* getModuleName() override {    return "Amplifier";     }
     

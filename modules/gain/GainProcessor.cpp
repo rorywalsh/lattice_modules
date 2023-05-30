@@ -43,27 +43,6 @@ void GainProcessor::process(float** buffer, std::size_t blockSize)
     samples.push_back(buffer[0][0]);
 }
 
-const char* GainProcessor::getSVGXml()
-{
-	const float width = 200;
-	const float height = 180;
-	svg::Dimensions dimensions(width, height);
-	svg::Document doc("rms.svg", svg::Layout(dimensions, svg::Layout::TopLeft));
-	svg::Polyline svgPathLeft(svg::Fill(), svg::Stroke(1, svg::Color("#00ABD1"), 1));
-  
-	for (int i = 0; i < samples.size(); i += 12)
-	{
-		double x = remap(float(i), 0.f, static_cast<float>(samples.size()), 0.f, width);
-		double y = remap(samples[i], -1, 1, 0, height/2);
-        svgPathLeft << svg::Point(x, y);;
-	}
-
-	doc << svgPathLeft;
-	svgText = doc.toString();
-	return svgText.c_str();
-}
-
-
 // the class factories
 #ifdef WIN32
 extern "C" 
