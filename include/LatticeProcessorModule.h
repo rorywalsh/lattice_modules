@@ -292,6 +292,7 @@ public:
     };
 
     LatticeProcessorModule() {}
+    virtual ~LatticeProcessorModule() {}
 
     /**
      * This method is called by the host to create channel layout. Override to configure your plugin's inputs and outputs
