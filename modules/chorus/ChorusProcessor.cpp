@@ -53,8 +53,6 @@ void ChorusProcessor::process(float **buffer, std::size_t blockSize)
     const float d = getParameter("Direct signal");
     const float c = getParameter("Effect signal");
 
-    getParameter("test");
-
     auto &l = chorus(inL, getParameter("LFO Frequency (L)"), getParameter("Delay Time (L)"), 0);
     auto &r = chorus(inR, getParameter("LFO Frequency (R)"), getParameter("Delay Time (R)"), 1);
 
